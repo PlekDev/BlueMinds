@@ -1,0 +1,860 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inventario BlueMinds - Quiz para Padres</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --primary: #6366f1;
+            --primary-dark: #4f46e5;
+            --secondary: #8b5cf6;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --white: #ffffff;
+            --gray-50: #f9fafb;
+            --gray-100: #f3f4f6;
+            --gray-200: #e5e7eb;
+            --gray-300: #d1d5db;
+            --gray-600: #4b5563;
+            --gray-700: #374151;
+            --gray-800: #1f2937;
+            --gray-900: #111827;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 2rem 1rem;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            color: white;
+            margin-bottom: 2rem;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+
+        .header p {
+            font-size: 1.125rem;
+            opacity: 0.95;
+        }
+
+        .card {
+            background: var(--white);
+            border-radius: 1.5rem;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            padding: 2.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .progress-container {
+            margin-bottom: 2rem;
+        }
+
+        .progress-bar-bg {
+            background: var(--gray-200);
+            border-radius: 9999px;
+            height: 1rem;
+            overflow: hidden;
+            margin-bottom: 0.5rem;
+        }
+
+        .progress-bar-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            transition: width 0.5s ease;
+        }
+
+        .progress-text {
+            text-align: center;
+            font-size: 0.875rem;
+            color: var(--gray-600);
+            font-weight: 600;
+        }
+
+        .section-badge {
+            display: inline-block;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            padding: 0.5rem 1.5rem;
+            border-radius: 2rem;
+            font-weight: 600;
+            font-size: 0.875rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .question-number {
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: var(--primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .question-text {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--gray-900);
+            margin-bottom: 2rem;
+            line-height: 1.4;
+        }
+
+        .options-container {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .option {
+            background: var(--gray-50);
+            border: 3px solid var(--gray-200);
+            border-radius: 1rem;
+            padding: 1.5rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: flex-start;
+            gap: 1rem;
+        }
+
+        .option:hover {
+            border-color: var(--primary);
+            background: var(--white);
+            transform: translateX(8px);
+            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.2);
+        }
+
+        .option.selected {
+            border-color: var(--primary);
+            background: linear-gradient(135deg, rgba(99, 102, 241, 0.1), rgba(139, 92, 246, 0.1));
+            transform: translateX(8px);
+            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+        }
+
+        .option-letter {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 1.125rem;
+            flex-shrink: 0;
+        }
+
+        .option-text {
+            flex: 1;
+            color: var(--gray-700);
+            font-size: 1rem;
+            line-height: 1.6;
+        }
+
+        .option.selected .option-text {
+            color: var(--gray-900);
+            font-weight: 600;
+        }
+
+        .navigation-buttons {
+            display: flex;
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+
+        .btn {
+            flex: 1;
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: 0.75rem;
+            font-size: 1.125rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+        }
+
+        .btn-primary:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(99, 102, 241, 0.4);
+        }
+
+        .btn-secondary {
+            background: var(--gray-200);
+            color: var(--gray-700);
+        }
+
+        .btn-secondary:hover {
+            background: var(--gray-300);
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .results-container {
+            text-align: center;
+        }
+
+        .results-icon {
+            width: 120px;
+            height: 120px;
+            background: linear-gradient(135deg, #10b981, #059669);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 2rem;
+            animation: scaleIn 0.5s ease-out;
+        }
+
+        @keyframes scaleIn {
+            from { transform: scale(0); }
+            to { transform: scale(1); }
+        }
+
+        .results-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--gray-900);
+            margin-bottom: 1rem;
+        }
+
+        .results-subtitle {
+            font-size: 1.125rem;
+            color: var(--gray-600);
+            margin-bottom: 3rem;
+        }
+
+        .results-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .result-card {
+            background: linear-gradient(135deg, var(--gray-50), var(--white));
+            border: 2px solid var(--gray-200);
+            border-radius: 1rem;
+            padding: 1.5rem;
+            text-align: left;
+        }
+
+        .result-card-title {
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: var(--primary);
+            margin-bottom: 0.5rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .result-card-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--gray-900);
+            margin-bottom: 0.25rem;
+        }
+
+        .result-card-description {
+            font-size: 0.875rem;
+            color: var(--gray-600);
+        }
+
+        .analysis-section {
+            background: linear-gradient(135deg, rgba(99, 102, 241, 0.05), rgba(139, 92, 246, 0.05));
+            border: 2px solid var(--primary);
+            border-radius: 1rem;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            text-align: left;
+        }
+
+        .analysis-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--gray-900);
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .analysis-content {
+            color: var(--gray-700);
+            line-height: 1.8;
+        }
+
+        .analysis-item {
+            margin-bottom: 1rem;
+            padding-left: 1.5rem;
+            position: relative;
+        }
+
+        .analysis-item::before {
+            content: "•";
+            position: absolute;
+            left: 0;
+            color: var(--primary);
+            font-weight: 700;
+            font-size: 1.5rem;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        @media (max-width: 640px) {
+            .header h1 {
+                font-size: 1.875rem;
+            }
+            .question-text {
+                font-size: 1.25rem;
+            }
+            .navigation-buttons {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>💙 BlueMinds</h1>
+            <p>Inventario de Base Adaptativa - Evaluación para Padres</p>
+        </div>
+
+        <div id="quiz-container" class="card">
+            <div class="progress-container">
+                <div class="progress-bar-bg">
+                    <div id="progress-bar" class="progress-bar-fill" style="width: 0%"></div>
+                </div>
+                <div class="progress-text">
+                    <span id="current-question">1</span> de <span id="total-questions">19</span> preguntas
+                </div>
+            </div>
+
+            <div id="section-badge" class="section-badge"></div>
+            <div id="question-number" class="question-number"></div>
+            <div id="question-text" class="question-text"></div>
+
+            <div id="options-container" class="options-container"></div>
+
+            <div class="navigation-buttons">
+                <button id="prev-btn" class="btn btn-secondary" onclick="previousQuestion()">
+                    ← Anterior
+                </button>
+                <button id="next-btn" class="btn btn-primary" onclick="nextQuestion()" disabled>
+                    Siguiente →
+                </button>
+            </div>
+        </div>
+
+        <div id="results-container" class="card hidden">
+            <div class="results-container">
+                <div class="results-icon">
+                    <i class="fas fa-check-circle" style="font-size: 4rem; color: white;"></i>
+                </div>
+                <h2 class="results-title">¡Evaluación Completada!</h2>
+                <p class="results-subtitle">Gracias por completar el inventario BlueMinds</p>
+
+                <div class="results-grid">
+                    <div class="result-card">
+                        <div class="result-card-title">📊 Respuestas</div>
+                        <div class="result-card-value">19/19</div>
+                        <div class="result-card-description">Preguntas completadas</div>
+                    </div>
+                    <div class="result-card">
+                        <div class="result-card-title">👂 Estilo de Aprendizaje</div>
+                        <div class="result-card-value" id="learning-style">Visual</div>
+                        <div class="result-card-description">Predominante</div>
+                    </div>
+                    <div class="result-card">
+                        <div class="result-card-title">🎯 Perfil de Comunicación</div>
+                        <div class="result-card-value" id="communication-profile">Moderado</div>
+                        <div class="result-card-description">Nivel identificado</div>
+                    </div>
+                </div>
+
+                <div class="analysis-section">
+                    <div class="analysis-title">
+                        <i class="fas fa-brain"></i>
+                        Análisis Detallado
+                    </div>
+                    <div class="analysis-content" id="detailed-analysis"></div>
+                </div>
+
+                <button onclick="downloadResults()" class="btn btn-primary" style="width: 100%; margin-bottom: 1rem;">
+                    <i class="fas fa-download"></i> Descargar Resultados
+                </button>
+                <button onclick="goToMain()" class="btn btn-secondary" style="width: 100%;">
+                    <i class="fas fa-arrow-right"></i> Ir a la Aplicación Principal
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const questions = [
+            {
+                section: "Comunicación y Relación",
+                number: 1,
+                text: "Para llamar tu atención o empezar a hablar, ¿qué hace tu hijo/a?",
+                options: [
+                    { letter: "A", text: "Inicia una plática completa (pueden platicar de ida y vuelta).", value: "A" },
+                    { letter: "B", text: "Solo habla de lo que le gusta mucho o para pedir algo.", value: "B" },
+                    { letter: "C", text: "Casi no empieza la plática, pero sí te contesta si le hablas.", value: "C" },
+                    { letter: "D", text: "Te jala de la mano, te lleva, o hace un sonido para que lo veas.", value: "D" }
+                ]
+            },
+            {
+                section: "Comunicación y Relación",
+                number: 2,
+                text: "Cuando están platicando:",
+                options: [
+                    { letter: "A", text: "Platican bien, de un tema a otro.", value: "A" },
+                    { letter: "B", text: "Habla sin parar de lo que le gusta, sin notar si el otro está interesado.", value: "B" },
+                    { letter: "C", text: "Da respuestas muy cortas (sí, no, ajá).", value: "C" },
+                    { letter: "D", text: "A veces repite tus preguntas en lugar de contestarlas.", value: "D" }
+                ]
+            },
+            {
+                section: "Comunicación y Relación",
+                number: 3,
+                text: "Si le dices un chiste o un dicho (ej. \"me muero de risa\" o \"te va a salir un ojo de la cara\"):",
+                options: [
+                    { letter: "A", text: "Entiende la broma y se ríe contigo.", value: "A" },
+                    { letter: "B", text: "Se confunde o se lo toma al pie de la letra (ej. \"¿Por qué te vas a morir?\").", value: "B" },
+                    { letter: "C", text: "Solo entiende si le hablas de forma muy directa y clara.", value: "C" },
+                    { letter: "D", text: "Se enoja o se pone ansioso porque no entiende el doble sentido.", value: "D" }
+                ]
+            },
+            {
+                section: "Comunicación y Relación",
+                number: 4,
+                text: "Sobre el contacto visual y los gestos (como saludar con la mano):",
+                options: [
+                    { letter: "A", text: "Los usa de forma natural al hablar.", value: "A" },
+                    { letter: "B", text: "A veces te mira, pero se siente un poco forzado o es muy rápido.", value: "B" },
+                    { letter: "C", text: "Casi no usa gestos (como señalar) para apoyarse al hablar.", value: "C" },
+                    { letter: "D", text: "Evita mirar a los ojos de las personas.", value: "D" }
+                ]
+            },
+            {
+                section: "Comunicación y Relación",
+                number: 5,
+                text: "Cuando está con otros niños:",
+                options: [
+                    { letter: "A", text: "Se une al juego y sigue las reglas del grupo.", value: "A" },
+                    { letter: "B", text: "Juega cerca de ellos, pero a lo suyo.", value: "B" },
+                    { letter: "C", text: "Intenta que todos jueguen a lo que él/ella quiere y a su manera.", value: "C" },
+                    { letter: "D", text: "Prefiere jugar solo y se aleja.", value: "D" }
+                ]
+            },
+            {
+                section: "Comunicación y Relación",
+                number: 6,
+                text: "Si hay un cambio de planes (ej. \"se canceló la ida al parque\"):",
+                options: [
+                    { letter: "A", text: "Se adapta bien, no hay gran problema.", value: "A" },
+                    { letter: "B", text: "Se molesta un poco, pero logras calmarlo y que acepte el nuevo plan.", value: "B" },
+                    { letter: "C", text: "Se pone muy ansioso o hace un berrinche que dura un buen rato.", value: "C" },
+                    { letter: "D", text: "Tiene una crisis fuerte, grita o llora y es muy difícil de calmar.", value: "D" }
+                ]
+            },
+            {
+                section: "Comunicación y Relación",
+                number: 7,
+                text: "Para pasar de algo divertido a algo obligatorio (ej. \"deja de jugar, a bañarse\"):",
+                options: [
+                    { letter: "A", text: "Lo hace sin problema, solo con que le avises.", value: "A" },
+                    { letter: "B", text: "Necesita varios avisos y un reloj o alarma para prepararse.", value: "B" },
+                    { letter: "C", text: "Se resiste mucho, no quiere dejar lo que está haciendo.", value: "C" },
+                    { letter: "D", text: "Parece no escucharte o se queda \"trabado\" en su juego.", value: "D" }
+                ]
+            },
+            {
+                section: "Comunicación y Relación",
+                number: 8,
+                text: "Sobre sus temas favoritos (dinosaurios, trenes, números, etc.):",
+                options: [
+                    { letter: "A", text: "Le gustan mucho, pero puede hacer otras cosas y hablar de otros temas.", value: "A" },
+                    { letter: "B", text: "Habla mucho de eso, aunque la plática sea sobre otra cosa.", value: "B" },
+                    { letter: "C", text: "A veces es difícil que haga otras cosas (comer, dormir) por estar en su tema.", value: "C" },
+                    { letter: "D", text: "Es casi lo único que le calma o le interesa hacer.", value: "D" }
+                ]
+            },
+            {
+                section: "Sensorial y Aprendizaje",
+                number: 9,
+                text: "Cuando se trata de ruidos, ropa o comida:",
+                options: [
+                    { letter: "A", text: "Es tranquilo/a, casi nada le molesta.", value: "A" },
+                    { letter: "B", text: "Busca sensaciones: muerde cosas, choca a propósito, le encanta el movimiento.", value: "B" },
+                    { letter: "C", text: "Evita sensaciones: le tapan los oídos los ruidos, le pican las etiquetas, es muy especial con las texturas de comida.", value: "C" },
+                    { letter: "D", text: "Ambas (le molestan ruidos, pero le gusta que lo aprieten fuerte).", value: "D" }
+                ]
+            },
+            {
+                section: "Sensorial y Aprendizaje",
+                number: 10,
+                text: "Piensa en cómo aprende algo nuevo. ¿Qué funciona mejor?",
+                options: [
+                    { letter: "A", text: "Viendo un video o un dibujo.", value: "visual" },
+                    { letter: "B", text: "Escuchando tu explicación paso a paso.", value: "auditivo" },
+                    { letter: "C", text: "Haciéndolo él/ella mismo/a (agarrándolo, moviéndose).", value: "kinestesico" },
+                    { letter: "D", text: "Leyendo un letrero o instrucciones (si ya lee).", value: "lectoescritura" }
+                ]
+            },
+            {
+                section: "Sensorial y Aprendizaje",
+                number: 11,
+                text: "¿Qué tan útiles son los horarios con dibujos (imágenes)?",
+                options: [
+                    { letter: "A", text: "¡Mucho! Los usa para saber qué sigue en el día.", value: "A" },
+                    { letter: "B", text: "Le ayudan, pero prefiere que le digas las cosas.", value: "B" },
+                    { letter: "C", text: "No les hace caso.", value: "C" },
+                    { letter: "D", text: "Se enoja si los dibujos cambian de orden.", value: "D" }
+                ]
+            },
+            {
+                section: "Sensorial y Aprendizaje",
+                number: 12,
+                text: "Para aprender una palabra nueva (ej. 'manzana'):",
+                options: [
+                    { letter: "A", text: "Funciona mejor ver una foto o dibujo de la manzana.", value: "visual" },
+                    { letter: "B", text: "Funciona mejor escuchar la palabra \"manzana\" varias veces.", value: "auditivo" },
+                    { letter: "C", text: "Funciona mejor tocar o sostener la manzana real.", value: "kinestesico" },
+                    { letter: "D", text: "Funciona mejor ver la palabra escrita \"manzana\" (si ya lee).", value: "lectoescritura" }
+                ]
+            },
+            {
+                section: "Sensorial y Aprendizaje",
+                number: 13,
+                text: "Si le das una orden sin señalar (solo con tu voz):",
+                options: [
+                    { letter: "A", text: "Sigue órdenes de varios pasos (ej. 've al cuarto y trae tu suéter').", value: "A" },
+                    { letter: "B", text: "Sigue órdenes de un solo paso (ej. 'dame el zapato').", value: "B" },
+                    { letter: "C", text: "Se confunde y necesita que le señales lo que quieres.", value: "C" },
+                    { letter: "D", text: "Es como si no te escuchara o no le importara.", value: "D" }
+                ]
+            },
+            {
+                section: "Sensorial y Aprendizaje",
+                number: 14,
+                text: "¿Qué recuerda más fácilmente?",
+                options: [
+                    { letter: "A", text: "Canciones o frases que escuchó (de películas, comerciales).", value: "auditivo" },
+                    { letter: "B", text: "Caras de personas o lugares donde estuvo.", value: "visual" },
+                    { letter: "C", text: "Cómo se siente algo (una textura, un movimiento).", value: "kinestesico" },
+                    { letter: "D", text: "Letreros o palabras que vio escritas (si ya lee).", value: "lectoescritura" }
+                ]
+            },
+            {
+                section: "Sensorial y Aprendizaje",
+                number: 15,
+                text: "Si tu hijo/a ya lee, ¿qué prefiere?",
+                options: [
+                    { letter: "A", text: "Leer él/ella mismo/a las instrucciones.", value: "lectoescritura" },
+                    { letter: "B", text: "Que tú le leas las instrucciones en voz alta.", value: "auditivo" },
+                    { letter: "C", text: "Ver dibujos (imágenes) de los pasos.", value: "visual" },
+                    { letter: "D", text: "No aplica / Aún no lee.", value: "N/A" }
+                ]
+            },
+            {
+                section: "Sensorial y Aprendizaje",
+                number: 16,
+                text: "Para calmarse o entretenerse solo/a:",
+                options: [
+                    { letter: "A", text: "Busca leer cualquier cosa (libros, letreros).", value: "lectoescritura" },
+                    { letter: "B", text: "Busca escuchar música o cuentos.", value: "auditivo" },
+                    { letter: "C", text: "Busca ver videos o fotos.", value: "visual" },
+                    { letter: "D", text: "Busca moverse, saltar o que lo abraces fuerte.", value: "kinestesico" }
+                ]
+            },
+            {
+                section: "Sensorial y Aprendizaje",
+                number: 17,
+                text: "Cuando le das un juguete nuevo:",
+                options: [
+                    { letter: "A", text: "Lo primero que hace es tocarlo, morderlo, desarmarlo o aventarlo.", value: "kinestesico" },
+                    { letter: "B", text: "Se queda mirándolo un buen rato antes de tocarlo.", value: "visual" },
+                    { letter: "C", text: "Espera a que le digas qué hacer con él.", value: "auditivo" },
+                    { letter: "D", text: "Espera a ver cómo juegas tú con el juguete primero.", value: "visual" }
+                ]
+            },
+            {
+                section: "Sensorial y Aprendizaje",
+                number: 18,
+                text: "Parece que aprende mejor cuando la lección incluye:",
+                options: [
+                    { letter: "A", text: "Mover el cuerpo (ej. saltar para contar, bailar).", value: "kinestesico" },
+                    { letter: "B", text: "Estar sentado/a quieto/a, escuchando.", value: "auditivo" },
+                    { letter: "C", text: "Estar sentado/a quieto/a, viendo.", value: "visual" },
+                    { letter: "D", text: "Escribir o dibujar.", value: "lectoescritura" }
+                ]
+            },
+            {
+                section: "Motivación",
+                number: 19,
+                text: "¿Qué funciona mejor para que haga una tarea difícil?",
+                options: [
+                    { letter: "A", text: "Un sistema de premios (juntar estrellas o puntos para ganar algo).", value: "A" },
+                    { letter: "B", text: "Un elogio o felicitación (ej. '¡qué bien lo hiciste!').", value: "B" },
+                    { letter: "C", text: "La satisfacción de haberlo terminado (se siente orgulloso/a).", value: "C" },
+                    { letter: "D", text: "Hacer la tarea contigo (que lo acompañes).", value: "D" }
+                ]
+            }
+        ];
+
+        let currentQuestionIndex = 0;
+        let answers = [];
+
+        function selectOption(optionValue) {
+            answers[currentQuestionIndex] = optionValue;
+            document.getElementById('next-btn').disabled = false;
+            render();
+        }
+
+        function nextQuestion() {
+            if (currentQuestionIndex < questions.length - 1) {
+                currentQuestionIndex++;
+                render();
+            } else {
+                showResults();
+            }
+        }
+
+        function previousQuestion() {
+            if (currentQuestionIndex > 0) {
+                currentQuestionIndex--;
+                render();
+            }
+        }
+
+        function showResults() {
+            const learningStyles = {
+                visual: 0,
+                auditivo: 0,
+                kinestesico: 0,
+                lectoescritura: 0
+            };
+
+            for (let i = 9; i < 18; i++) {
+                const answer = answers[i];
+                if (learningStyles.hasOwnProperty(answer)) {
+                    learningStyles[answer]++;
+                }
+            }
+
+            let maxStyle = 'visual';
+            let maxCount = 0;
+            for (let style in learningStyles) {
+                if (learningStyles[style] > maxCount) {
+                    maxCount = learningStyles[style];
+                    maxStyle = style;
+                }
+            }
+
+            const styleNames = {
+                visual: '👁️ Visual',
+                auditivo: '👂 Auditivo',
+                kinestesico: '✋ Kinestésico',
+                lectoescritura: '📖 Lectoescritura'
+            };
+
+            let communicationScore = 0;
+            const communicationAnswers = answers.slice(0, 8);
+            communicationAnswers.forEach(answer => {
+                if (answer === 'A') communicationScore += 4;
+                else if (answer === 'B') communicationScore += 3;
+                else if (answer === 'C') communicationScore += 2;
+                else if (answer === 'D') communicationScore += 1;
+            });
+
+            let communicationLevel = 'Nivel 3 - Apoyo Significativo';
+            if (communicationScore > 24) communicationLevel = 'Nivel 1 - Apoyo Mínimo';
+            else if (communicationScore > 16) communicationLevel = 'Nivel 2 - Apoyo Moderado';
+
+            document.getElementById('quiz-container').classList.add('hidden');
+            document.getElementById('results-container').classList.remove('hidden');
+            document.getElementById('learning-style').textContent = styleNames[maxStyle];
+            document.getElementById('communication-profile').textContent = communicationLevel;
+
+            let analysisHTML = `
+                <div class="analysis-item">
+                    <strong>Estilo de Aprendizaje Predominante:</strong> ${styleNames[maxStyle]}<br>
+                    Tu hijo/a aprende mejor cuando se utilizan métodos ${maxStyle === 'visual' ? 'visuales (imágenes, videos, dibujos)' : maxStyle === 'auditivo' ? 'auditivos (explicaciones verbales, música, sonidos)' : maxStyle === 'kinestesico' ? 'kinestésicos (actividades físicas, manipulación de objetos)' : 'de lectoescritura (palabras escritas, textos)'}.
+                </div>
+                <div class="analysis-item">
+                    <strong>Perfil de Comunicación:</strong> ${communicationLevel}<br>
+                    ${communicationScore > 24 ? 'Tu hijo/a muestra habilidades de comunicación avanzadas con necesidades mínimas de apoyo.' : communicationScore > 16 ? 'Tu hijo/a se beneficiaría de apoyo moderado en situaciones sociales y de comunicación.' : 'Tu hijo/a requiere apoyo significativo en comunicación y comprensión social.'}
+                </div>
+                <div class="analysis-item">
+                    <strong>Recomendaciones:</strong><br>
+                    • Utilizar apoyos visuales ${maxStyle === 'visual' || learningStyles.visual > 2 ? '(muy importante para este perfil)' : '(complementarios)'}<br>
+                    • ${maxStyle === 'auditivo' ? 'Reforzar el aprendizaje con explicaciones verbales claras y repetidas' : 'Incluir elementos auditivos como música y canciones'}<br>
+                    • ${maxStyle === 'kinestesico' ? 'Incorporar actividades físicas y manipulativas en el aprendizaje' : 'Permitir movimiento durante las actividades cuando sea apropiado'}<br>
+                    • ${communicationScore <= 16 ? 'Considerar evaluación por especialista en comunicación' : 'Continuar fomentando las habilidades sociales'}
+                </div>
+                <div class="analysis-item">
+                    <strong>Distribución de Estilos de Aprendizaje:</strong><br>
+                    • Visual: ${learningStyles.visual} respuestas<br>
+                    • Auditivo: ${learningStyles.auditivo} respuestas<br>
+                    • Kinestésico: ${learningStyles.kinestesico} respuestas<br>
+                    • Lectoescritura: ${learningStyles.lectoescritura} respuestas
+                </div>
+            `;
+
+            document.getElementById('detailed-analysis').innerHTML = analysisHTML;
+
+            // Guardar que completó el test
+            localStorage.setItem('blueminds_test_completed', 'true');
+            localStorage.setItem('blueminds_user_type', 'parent');
+            localStorage.setItem('blueminds_learning_style', maxStyle);
+            localStorage.setItem('blueminds_communication_level', communicationLevel);
+        }
+
+        function downloadResults() {
+            const learningStyles = {
+                visual: 0,
+                auditivo: 0,
+                kinestesico: 0,
+                lectoescritura: 0
+            };
+
+            for (let i = 9; i < 18; i++) {
+                const answer = answers[i];
+                if (learningStyles.hasOwnProperty(answer)) {
+                    learningStyles[answer]++;
+                }
+            }
+
+            let maxStyle = 'visual';
+            let maxCount = 0;
+            for (let style in learningStyles) {
+                if (learningStyles[style] > maxCount) {
+                    maxCount = learningStyles[style];
+                    maxStyle = style;
+                }
+            }
+
+            const styleNames = {
+                visual: 'Visual',
+                auditivo: 'Auditivo',
+                kinestesico: 'Kinestésico/Táctil',
+                lectoescritura: 'Lectoescritura'
+            };
+
+            let communicationScore = 0;
+            const communicationAnswers = answers.slice(0, 8);
+            communicationAnswers.forEach(answer => {
+                if (answer === 'A') communicationScore += 4;
+                else if (answer === 'B') communicationScore += 3;
+                else if (answer === 'C') communicationScore += 2;
+                else if (answer === 'D') communicationScore += 1;
+            });
+
+            let communicationLevel = 'Nivel 3 - Apoyo Significativo';
+            if (communicationScore > 24) communicationLevel = 'Nivel 1 - Apoyo Mínimo';
+            else if (communicationScore > 16) communicationLevel = 'Nivel 2 - Apoyo Moderado';
+
+            let resultText = `RESULTADOS - INVENTARIO BLUEMINDS\n`;
+            resultText += `=====================================\n\n`;
+            resultText += `Fecha: ${new Date().toLocaleDateString('es-ES')}\n\n`;
+            resultText += `ESTILO DE APRENDIZAJE PREDOMINANTE:\n`;
+            resultText += `${styleNames[maxStyle]}\n\n`;
+            resultText += `PERFIL DE COMUNICACIÓN:\n`;
+            resultText += `${communicationLevel}\n\n`;
+            resultText += `DISTRIBUCIÓN DE ESTILOS:\n`;
+            resultText += `- Visual: ${learningStyles.visual}\n`;
+            resultText += `- Auditivo: ${learningStyles.auditivo}\n`;
+            resultText += `- Kinestésico: ${learningStyles.kinestesico}\n`;
+            resultText += `- Lectoescritura: ${learningStyles.lectoescritura}\n\n`;
+            resultText += `RESPUESTAS DETALLADAS:\n`;
+            resultText += `=====================================\n\n`;
+            
+            questions.forEach((q, index) => {
+                resultText += `${index + 1}. ${q.text}\n`;
+                resultText += `   Respuesta: ${answers[index]}\n\n`;
+            });
+
+            const blob = new Blob([resultText], { type: 'text/plain;charset=utf-8' });
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = `BlueMinds_Resultados_${new Date().toISOString().split('T')[0]}.txt`;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            URL.revokeObjectURL(url);
+        }
+
+        function goToMain() {
+            window.location.href = 'BlueMindsMain.html';
+        }
+
+        function render() {
+            const current = questions[currentQuestionIndex];
+            const progress = ((currentQuestionIndex + 1) / questions.length) * 100;
+
+            document.getElementById('progress-bar').style.width = progress + '%';
+            document.getElementById('current-question').textContent = currentQuestionIndex + 1;
+            document.getElementById('total-questions').textContent = questions.length;
+            document.getElementById('section-badge').textContent = current.section;
+            document.getElementById('question-number').textContent = `Pregunta ${current.number}`;
+            document.getElementById('question-text').textContent = current.text;
+
+            const optionsContainer = document.getElementById('options-container');
+            optionsContainer.innerHTML = '';
+
+            current.options.forEach(option => {
+                const isSelected = answers[currentQuestionIndex] === option.value;
+                const optionDiv = document.createElement('div');
+                optionDiv.className = `option ${isSelected ? 'selected' : ''}`;
+                optionDiv.onclick = () => selectOption(option.value);
+                optionDiv.innerHTML = `
+                    <div class="option-letter">${option.letter}</div>
+                    <div class="option-text">${option.text}</div>
+                `;
+                optionsContainer.appendChild(optionDiv);
+            });
+
+            document.getElementById('prev-btn').disabled = currentQuestionIndex === 0;
+            document.getElementById('next-btn').disabled = !answers[currentQuestionIndex];
+            document.getElementById('next-btn').textContent = currentQuestionIndex === questions.length - 1 ? 'Ver Resultados' : 'Siguiente →';
+        }
+
+        document.addEventListener('DOMContentLoaded', render);
+    </script>
+</body>
+</html>

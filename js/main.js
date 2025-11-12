@@ -78,7 +78,7 @@ function showHomePage() {
                         <div class="feature-icon">
                             <i class="fas fa-clipboard-check"></i>
                         </div>
-                        <h3 class="feature-title">Test de Autismo</h3>
+                        <h3 class="feature-title">Test de Evaluación</h3>
                         <p class="feature-description">
                             Evaluación inicial para personalizar la experiencia de aprendizaje
                         </p>
@@ -124,7 +124,7 @@ function showGamesPage() {
     contentContainer.innerHTML = gamesHTML;
 }
 
-// Mostrar página de test
+// Mostrar página de test (ahora redirige al selector)
 function showTestPage() {
     const contentContainer = document.getElementById('content-container');
     contentContainer.innerHTML = `
@@ -133,10 +133,11 @@ function showTestPage() {
                 <h2 class="section-title">Test de Evaluación</h2>
                 <p class="home-description">
                     Realiza una evaluación inicial para personalizar la experiencia de aprendizaje.
+                    Elige si eres padre o niño para comenzar.
                 </p>
                 <div style="margin-top: 30px;">
-                    <a href="pages/testini.html" class="game-button" style="font-size: 18px; padding: 12px 24px;">
-                        Comenzar Test
+                    <a href="pages/test-selector.html" class="game-button" style="font-size: 18px; padding: 12px 24px;">
+                        Comenzar Evaluación
                     </a>
                 </div>
             </div>

@@ -19,56 +19,13 @@
             <h1 class="welcome-title">¡Bienvenido a BlueMinds!</h1>
             <p class="welcome-subtitle">Plataforma de aprendizaje para niños especiales</p>
             <div class="welcome-buttons">
-                <button class="btn btn-primary" onclick="showTestIntro()">
+                <button class="btn btn-primary" onclick="goToTestSelector()">
                     <i class="fas fa-user-plus"></i>
                     Soy Nuevo Usuario
                 </button>
                 <button class="btn btn-secondary" onclick="showMainScreen()">
                     <i class="fas fa-sign-in-alt"></i>
                     Ya Tengo Cuenta
-                </button>
-            </div>
-        </div>
-    </div>
-
-    <!-- Pantalla de Test de Autismo -->
-    <div class="test-screen" id="testScreen">
-        <!-- Introducción al Test -->
-        <div class="test-intro" id="testIntro">
-            <div class="test-intro-card">
-                <div class="test-icon">
-                    <i class="fas fa-sparkles"></i>
-                </div>
-                <h2 class="test-title">Test de Autismo para Niños</h2>
-                <p class="test-description">¡Hola! Vamos a hacer un cuestionario divertido con 5 preguntas. No hay respuestas correctas o incorrectas, solo responde con sinceridad.</p>
-                <div class="test-icons">
-                    <span class="emoji-icon">❤️</span>
-                    <span class="emoji-icon">⭐</span>
-                    <span class="emoji-icon">✨</span>
-                </div>
-                <button class="btn btn-primary" onclick="startTest()">
-                    ¡Empezar! <i class="fas fa-arrow-right"></i>
-                </button>
-            </div>
-        </div>
-
-        <!-- Cuestionario -->
-        <div class="test-question" id="testQuestion">
-            <div class="progress-bar-top">
-                <span id="questionCounter">Pregunta 1 de 5</span>
-                <span id="progressPercentage">20%</span>
-            </div>
-            <div class="progress-container">
-                <div class="progress-fill" id="progressFill"></div>
-            </div>
-            <div class="question-card">
-                <div class="question-number" id="questionNum">1</div>
-                <h3 class="question-text" id="questionText">¿Te gusta jugar con otros niños?</h3>
-                <div class="options" id="optionsContainer">
-                    <!-- Las opciones se generarán dinámicamente -->
-                </div>
-                <button class="btn-next" id="btnNext" onclick="nextQuestion()">
-                    Siguiente <i class="fas fa-arrow-right"></i>
                 </button>
             </div>
         </div>
@@ -84,8 +41,8 @@
                         <span>BlueMinds</span>
                     </div>
                     <div class="user-info">
-                        <span>Hola, Niño!</span>
-                        <div class="user-avatar">N</div>
+                        <span id="userName">Hola, Usuario!</span>
+                        <div class="user-avatar">U</div>
                     </div>
                 </div>
             </div>
@@ -291,6 +248,84 @@
         </footer>
     </div>
 
-    <script src="../js/welcome.js"></script>
+    <script>
+        // Verificar el estado del usuario
+        function checkUserStatus() {
+            const hasCompletedTest = localStorage.getItem('blueminds_test_completed') === 'true';
+            const userType = localStorage.getItem('blueminds_user_type');
+            
+            if (hasCompletedTest) {
+                // Si ya completó el test, mostrar la pantalla principal
+                showMainScreen();
+                
+                // Personalizar saludo según tipo de usuario
+                if (userType === 'child') {
+                    document.getElementById('userName').textContent = 'Hola, Niño!';
+                } else if (userType === 'parent') {
+                    document.getElementById('userName').textContent = 'Hola, Padre!';
+                }
+            } else {
+                // Si no, mostrar la pantalla de bienvenida
+                document.getElementById('welcomeScreen').style.display = 'flex';
+                document.getElementById('mainScreen').style.display = 'none';
+            }
+        }
+
+        // Ir al selector de test
+        function goToTestSelector() {
+            window.location.href = 'test-selector.html';
+        }
+
+        // Mostrar pantalla principal
+        function showMainScreen() {
+            document.getElementById('welcomeScreen').style.display = 'none';
+            document.getElementById('mainScreen').style.display = 'block';
+            
+            // Marcar que el usuario ha completado el test (si no lo está ya)
+            if (localStorage.getItem('blueminds_test_completed') !== 'true') {
+                localStorage.setItem('blueminds_test_completed', 'true');
+            }
+            
+            // Animar progreso
+            setTimeout(() => {
+                animateMainProgress();
+            }, 300);
+        }
+
+        // Animaciones de la pantalla principal
+        function animateMainProgress() {
+            const progressBar = document.querySelector('.level-path-progress');
+            if (progressBar) {
+                progressBar.style.width = '0%';
+                
+                setTimeout(() => {
+                    progressBar.style.width = '70%';
+                }, 300);
+            }
+
+            const categoryProgresses = document.querySelectorAll('.category-level-progress');
+            categoryProgresses.forEach(progress => {
+                const targetWidth = progress.style.width;
+                progress.style.width = '0%';
+                setTimeout(() => {
+                    progress.style.width = targetWidth;
+                }, 500);
+            });
+        }
+
+        function animateCard(card) {
+            card.style.transform = 'scale(0.95)';
+            setTimeout(() => {
+                card.style.transform = '';
+            }, 200);
+            
+            console.log('Navegando a:', card.querySelector('.category-title').textContent);
+        }
+
+        // Inicializar al cargar la página
+        document.addEventListener('DOMContentLoaded', () => {
+            checkUserStatus();
+        });
+    </script>
 </body>
 </html>

@@ -1,0 +1,1093 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz para Niños - BlueMinds</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --blue-500: #3b82f6;
+            --blue-600: #2563eb;
+            --green-500: #22c55e;
+            --green-600: #16a34a;
+            --yellow-400: #facc15;
+            --white: #ffffff;
+            --gray-50: #f9fafb;
+            --gray-200: #e5e7eb;
+            --gray-300: #d1d5db;
+            --gray-500: #6b7280;
+            --gray-600: #4b5563;
+            --gray-700: #374151;
+            --gray-800: #1f2937;
+            --red-500: #ef4444;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 1rem;
+        }
+
+        .container {
+            max-width: 56rem;
+            margin: 0 auto;
+        }
+
+        .card {
+            background: var(--white);
+            border-radius: 2rem;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            padding: 2.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .progress-bar-bg {
+            background: var(--gray-200);
+            border-radius: 9999px;
+            height: 1.5rem;
+            overflow: hidden;
+            margin-bottom: 2rem;
+            position: relative;
+        }
+
+        .progress-bar-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--green-500), var(--blue-500));
+            transition: width 0.5s ease;
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            padding-right: 1rem;
+            color: white;
+            font-weight: bold;
+            font-size: 0.875rem;
+        }
+
+        .question-title {
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: var(--gray-800);
+            margin-bottom: 0.5rem;
+            text-align: center;
+        }
+
+        .question-subtitle {
+            font-size: 1rem;
+            color: var(--gray-500);
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        /* Estilos para preguntas de sonido */
+        .sound-play-button {
+            width: 120px;
+            height: 120px;
+            background: linear-gradient(135deg, var(--blue-500), var(--blue-600));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            border: none;
+            box-shadow: 0 10px 25px rgba(59, 130, 246, 0.4);
+            transition: all 0.3s;
+            margin: 2rem auto;
+        }
+
+        .sound-play-button:hover {
+            transform: scale(1.1);
+            box-shadow: 0 15px 35px rgba(59, 130, 246, 0.6);
+        }
+
+        .animal-options-container, .image-options-container {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        .animal-option, .image-option {
+            background: var(--white);
+            border: 3px solid var(--gray-200);
+            border-radius: 1.5rem;
+            padding: 2rem 1rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1rem;
+            min-height: 160px;
+        }
+
+        .animal-option:hover, .image-option:hover {
+            transform: translateY(-8px);
+            border-color: var(--blue-500);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+        }
+
+        .animal-option.selected, .image-option.selected {
+            background: linear-gradient(135deg, var(--blue-500), var(--blue-600));
+            border-color: var(--blue-600);
+            color: var(--white);
+            transform: translateY(-8px) scale(1.05);
+        }
+
+        .animal-emoji {
+            font-size: 4rem;
+            transition: transform 0.3s;
+        }
+
+        .animal-name, .image-label {
+            font-size: 1.125rem;
+            font-weight: 600;
+            text-align: center;
+        }
+
+        .animal-option.selected .animal-name,
+        .image-option.selected .image-label {
+            color: var(--white);
+        }
+
+        /* Estilos para secuencias de imágenes */
+        .sequence-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 1rem;
+            flex-wrap: wrap;
+            margin: 2rem 0;
+        }
+
+        .sequence-box {
+            width: 140px;
+            height: 140px;
+            border: 3px dashed var(--gray-300);
+            border-radius: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 4rem;
+            background: var(--gray-50);
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .sequence-box.filled {
+            border: 3px solid var(--blue-500);
+            background: var(--white);
+        }
+
+        .sequence-box:hover {
+            transform: scale(1.05);
+            border-color: var(--blue-400);
+        }
+
+        .draggable-options {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-top: 2rem;
+        }
+
+        .draggable-item {
+            width: 120px;
+            height: 120px;
+            background: var(--white);
+            border: 3px solid var(--gray-300);
+            border-radius: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3.5rem;
+            cursor: grab;
+            transition: all 0.3s;
+        }
+
+        .draggable-item:hover {
+            transform: scale(1.1);
+            border-color: var(--blue-400);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        .draggable-item.used {
+            opacity: 0.3;
+            cursor: not-allowed;
+        }
+
+        /* Estilos para ordenar palabras */
+        .word-order-container {
+            display: flex;
+            gap: 0.75rem;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin: 2rem 0;
+            min-height: 80px;
+        }
+
+        .word-slot {
+            min-width: 120px;
+            height: 60px;
+            border: 3px dashed var(--gray-300);
+            border-radius: 0.75rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.25rem;
+            background: var(--gray-50);
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .word-slot.filled {
+            border: 3px solid var(--blue-500);
+            background: linear-gradient(135deg, var(--blue-500), var(--blue-600));
+            color: white;
+            font-weight: 600;
+        }
+
+        .word-options {
+            display: flex;
+            gap: 0.75rem;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-top: 2rem;
+        }
+
+        .word-item {
+            padding: 1rem 1.5rem;
+            background: var(--white);
+            border: 3px solid var(--gray-300);
+            border-radius: 0.75rem;
+            font-size: 1.25rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .word-item:hover {
+            transform: translateY(-4px);
+            border-color: var(--blue-400);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        .word-item.used {
+            opacity: 0.3;
+            cursor: not-allowed;
+        }
+
+        /* Botones de acción */
+        .action-button {
+            width: 100%;
+            background: linear-gradient(135deg, var(--green-500), var(--green-600));
+            color: var(--white);
+            font-weight: 700;
+            padding: 1.25rem;
+            border-radius: 1rem;
+            font-size: 1.25rem;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 10px 25px rgba(34, 197, 94, 0.3);
+            margin-top: 2rem;
+        }
+
+        .action-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 15px 35px rgba(34, 197, 94, 0.4);
+        }
+
+        .action-button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        /* Feedback */
+        .feedback-box {
+            border-radius: 1rem;
+            padding: 1.5rem;
+            margin-top: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .feedback-box.correct {
+            background: linear-gradient(135deg, #d1fae5, #a7f3d0);
+            border: 3px solid var(--green-500);
+        }
+
+        .feedback-box.incorrect {
+            background: linear-gradient(135deg, #fee2e2, #fecaca);
+            border: 3px solid var(--red-500);
+        }
+
+        /* Resultados */
+        .results-container {
+            text-align: center;
+            padding: 2rem;
+        }
+
+        .trophy-icon {
+            width: 120px;
+            height: 120px;
+            background: linear-gradient(135deg, var(--yellow-400), #f59e0b);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 2rem;
+            animation: bounce 1s infinite;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
+        }
+
+        .results-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--gray-800);
+            margin-bottom: 1rem;
+        }
+
+        .results-stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1rem;
+            margin: 2rem 0;
+        }
+
+        .stat-box {
+            background: linear-gradient(135deg, var(--blue-500), var(--blue-600));
+            color: white;
+            padding: 1.5rem;
+            border-radius: 1rem;
+            box-shadow: 0 10px 25px rgba(59, 130, 246, 0.3);
+        }
+
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: 700;
+        }
+
+        .stat-label {
+            font-size: 0.875rem;
+            opacity: 0.9;
+        }
+
+        .hidden { display: none; }
+
+        @media (max-width: 640px) {
+            .animal-options-container, .image-options-container {
+                grid-template-columns: 1fr;
+            }
+            .results-stats {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="app">
+        <div id="quiz-container" class="container">
+            <div class="card">
+                <div class="progress-bar-bg">
+                    <div id="progress-bar" class="progress-bar-fill" style="width: 0%">
+                        <span id="progress-text">0%</span>
+                    </div>
+                </div>
+
+                <h2 id="question-title" class="question-title"></h2>
+                <p id="question-subtitle" class="question-subtitle"></p>
+
+                <div id="question-content"></div>
+
+                <button id="verify-button" class="action-button" onclick="checkAnswer()" disabled>
+                    VERIFICAR RESPUESTA
+                </button>
+
+                <div id="feedback"></div>
+            </div>
+        </div>
+
+        <div id="results-container" class="hidden">
+            <div class="card results-container">
+                <div class="trophy-icon">
+                    <i class="fas fa-trophy" style="font-size: 4rem; color: white;"></i>
+                </div>
+                <h2 class="results-title">¡Excelente Trabajo! 🎉</h2>
+                <p style="font-size: 1.125rem; color: var(--gray-600); margin-bottom: 2rem;">
+                    Has completado todas las preguntas
+                </p>
+                
+                <div class="results-stats">
+                    <div class="stat-box">
+                        <div class="stat-number" id="total-questions">20</div>
+                        <div class="stat-label">Preguntas</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-number" id="correct-answers">0</div>
+                        <div class="stat-label">Correctas</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-number" id="completion-time">0m</div>
+                        <div class="stat-label">Tiempo</div>
+                    </div>
+                </div>
+
+                <div style="background: var(--gray-50); padding: 1.5rem; border-radius: 1rem; margin-top: 2rem;">
+                    <h3 style="color: var(--gray-800); margin-bottom: 1rem;">📊 Análisis de Aprendizaje</h3>
+                    <div id="learning-analysis" style="text-align: left; color: var(--gray-700);"></div>
+                </div>
+
+                <div style="display: flex; gap: 1rem; margin-top: 2rem;">
+                    <button onclick="location.reload()" class="action-button" style="flex: 1;">
+                        Volver a Empezar
+                    </button>
+                    <button onclick="goToMainApp()" class="action-button" style="flex: 1; background: linear-gradient(135deg, var(--blue-500), var(--blue-600));">
+                        Ir a la App
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentQuestionIndex = 0;
+        let answers = [];
+        let selectedAnswer = null;
+        let showFeedback = false;
+        let score = 0;
+        let startTime = Date.now();
+        let currentAudio = null;
+
+        // Definición de preguntas según el documento
+        const questions = [
+            // Pregunta 1 - Nivel 1 (Visual): Secuencia de imágenes
+            {
+                type: 'sequence',
+                nivel: 1,
+                learningStyle: 'visual',
+                question: 'Ordena la secuencia correcta',
+                subtitle: 'Arrastra los emojis en el orden correcto',
+                sequence: ['👤', '🍽️', '🍎'],
+                options: ['🍎', '👤', '🍽️'],
+                correct: ['👤', '🍽️', '🍎']
+            },
+            // Pregunta 2 - Nivel 1 (Visual): Completar secuencia
+            {
+                type: 'complete-sequence',
+                nivel: 1,
+                learningStyle: 'visual',
+                question: '¿Qué imagen falta?',
+                subtitle: 'Selecciona la imagen que completa la secuencia',
+                sequence: ['🚶', '🏫', '?', '🪑'],
+                options: [
+                    { emoji: '🚗', value: 'carro' },
+                    { emoji: '🎒', value: 'mochila' },
+                    { emoji: '📚', value: 'libros' }
+                ],
+                correct: 'libros'
+            },
+            // Pregunta 3 - Nivel 2 (Visual): Imagen a palabra
+            {
+                type: 'image-to-word',
+                nivel: 2,
+                learningStyle: 'visual',
+                question: 'Selecciona la palabra correcta',
+                subtitle: 'Mira la imagen y elige la palabra',
+                image: '🌸',
+                options: ['Flor', 'Helado', 'Vaca'],
+                correct: 'Flor'
+            },
+            // Pregunta 4 - Nivel 3 (Visual): Palabra a imagen
+            {
+                type: 'word-to-image',
+                nivel: 3,
+                learningStyle: 'visual',
+                question: '¿La imagen corresponde a la palabra?',
+                subtitle: 'Verifica si cada imagen es correcta',
+                pairs: [
+                    { word: 'Vaca', image: '🐮', correct: true },
+                    { word: 'Manzana', image: '🍎', correct: true },
+                    { word: 'Escuela', image: '🏫', correct: true }
+                ],
+                currentPair: 0
+            },
+            // Pregunta 5 - Nivel 1 (Auditivo): Audio incompleto
+            {
+                type: 'sound-complete',
+                nivel: 1,
+                learningStyle: 'auditivo',
+                question: 'Escucha y completa',
+                subtitle: 'Elige la imagen correcta',
+                audioText: 'Yo como manza',
+                soundFile: null,
+                options: [
+                    { emoji: '🍎', label: 'Manzana', value: 'manzana' },
+                    { emoji: '🐱', label: 'Gato', value: 'gato' },
+                    { emoji: '🏠', label: 'Casa', value: 'casa' }
+                ],
+                correct: 'manzana'
+            },
+            // Pregunta 6 - Nivel 2 (Auditivo): Ordenar palabras según audio
+            {
+                type: 'order-words',
+                nivel: 2,
+                learningStyle: 'auditivo',
+                question: 'Ordena las palabras',
+                subtitle: 'Escucha y ordena para formar la oración',
+                audioText: 'Papá come manzana',
+                soundFile: null,
+                words: ['Manzana', 'come', 'Papá'],
+                correct: ['Papá', 'come', 'Manzana']
+            },
+            // Pregunta 7 - Nivel 1 (Auditivo): Reconocimiento de sonido animal
+            {
+                type: 'sound',
+                nivel: 1,
+                learningStyle: 'auditivo',
+                question: 'Escucha y selecciona el animal',
+                subtitle: 'Presiona el botón para escuchar',
+                soundFile: '../sonidos/vaca.mp3',
+                options: [
+                    { animal: 'Vaca', emoji: '🐮', value: 'vaca' },
+                    { animal: 'Cerdo', emoji: '🐷', value: 'cerdo' },
+                    { animal: 'Pollo', emoji: '🐔', value: 'pollo' }
+                ],
+                correct: 'vaca'
+            },
+            // Pregunta 8 - Nivel 2 (Auditivo): Reconocimiento de sonido
+            {
+                type: 'sound',
+                nivel: 2,
+                learningStyle: 'auditivo',
+                question: 'Escucha y selecciona el animal',
+                subtitle: 'Presiona el botón para escuchar',
+                soundFile: '../sonidos/perro.mp3',
+                options: [
+                    { animal: 'Perro', emoji: '🐕', value: 'perro' },
+                    { animal: 'Gato', emoji: '🐈', value: 'gato' },
+                    { animal: 'Pájaro', emoji: '🐦', value: 'pajaro' }
+                ],
+                correct: 'perro'
+            },
+            // Pregunta 9 - Nivel 3 (Auditivo)
+            {
+                type: 'sound',
+                nivel: 3,
+                learningStyle: 'auditivo',
+                question: 'Escucha y selecciona el animal',
+                subtitle: 'Presiona el botón para escuchar',
+                soundFile: '../sonidos/gato.mp3',
+                options: [
+                    { animal: 'León', emoji: '🦁', value: 'leon' },
+                    { animal: 'Gato', emoji: '🐈', value: 'gato' },
+                    { animal: 'Tigre', emoji: '🐯', value: 'tigre' }
+                ],
+                correct: 'gato'
+            },
+            // Preguntas 10-14: Kinestésico/Táctil (simuladas con interacción)
+            {
+                type: 'drag-sequence',
+                nivel: 1,
+                learningStyle: 'kinestesico',
+                question: 'Arrastra y ordena',
+                subtitle: 'Toca y arrastra cada emoji al lugar correcto',
+                sequence: ['🌅', '☀️', '🌙'],
+                options: ['🌙', '☀️', '🌅'],
+                correct: ['🌅', '☀️', '🌙']
+            },
+            {
+                type: 'image-to-word',
+                nivel: 2,
+                learningStyle: 'kinestesico',
+                question: 'Toca la respuesta correcta',
+                subtitle: 'Mira y selecciona la palabra',
+                image: '🚗',
+                options: ['Carro', 'Casa', 'Comida'],
+                correct: 'Carro'
+            },
+            {
+                type: 'complete-sequence',
+                nivel: 2,
+                learningStyle: 'kinestesico',
+                question: 'Completa tocando',
+                subtitle: 'Toca la imagen correcta',
+                sequence: ['🍞', '🧈', '?', '🍴'],
+                options: [
+                    { emoji: '🥛', value: 'leche' },
+                    { emoji: '🔪', value: 'cuchillo' },
+                    { emoji: '🧂', value: 'sal' }
+                ],
+                correct: 'cuchillo'
+            },
+            {
+                type: 'word-to-image',
+                nivel: 3,
+                learningStyle: 'kinestesico',
+                question: 'Verifica tocando',
+                subtitle: '¿La imagen es correcta?',
+                pairs: [
+                    { word: 'Pelota', image: '⚽', correct: true },
+                    { word: 'Libro', image: '📚', correct: true }
+                ],
+                currentPair: 0
+            },
+            {
+                type: 'drag-sequence',
+                nivel: 3,
+                learningStyle: 'kinestesico',
+                question: 'Organiza arrastrando',
+                subtitle: 'Del más pequeño al más grande',
+                sequence: ['🐜', '🐕', '🐘'],
+                options: ['🐘', '🐜', '🐕'],
+                correct: ['🐜', '🐕', '🐘']
+            },
+            // Preguntas 15-20: Lectoescritura
+            {
+                type: 'image-to-word',
+                nivel: 1,
+                learningStyle: 'lectoescritura',
+                question: 'Lee y selecciona',
+                subtitle: 'Mira la imagen y elige la palabra escrita',
+                image: '☀️',
+                options: ['Sol', 'Luna', 'Estrella'],
+                correct: 'Sol'
+            },
+            {
+                type: 'order-words',
+                nivel: 2,
+                learningStyle: 'lectoescritura',
+                question: 'Ordena la oración',
+                subtitle: 'Toca las palabras en orden',
+                audioText: 'El gato come pescado',
+                soundFile: null,
+                words: ['pescado', 'gato', 'come', 'El'],
+                correct: ['El', 'gato', 'come', 'pescado']
+            },
+            {
+                type: 'image-to-word',
+                nivel: 2,
+                learningStyle: 'lectoescritura',
+                question: 'Lee la palabra',
+                subtitle: 'Selecciona la palabra que corresponde',
+                image: '🌳',
+                options: ['Árbol', 'Flor', 'Pasto'],
+                correct: 'Árbol'
+            },
+            {
+                type: 'complete-sequence',
+                nivel: 3,
+                learningStyle: 'lectoescritura',
+                question: 'Completa la secuencia',
+                subtitle: 'Lee y selecciona',
+                sequence: ['📖', '✏️', '?', '🎓'],
+                options: [
+                    { emoji: '📝', value: 'escribir' },
+                    { emoji: '🎮', value: 'jugar' },
+                    { emoji: '🍕', value: 'comer' }
+                ],
+                correct: 'escribir'
+            },
+            {
+                type: 'word-to-image',
+                nivel: 3,
+                learningStyle: 'lectoescritura',
+                question: 'Verifica la palabra',
+                subtitle: '¿La imagen corresponde?',
+                pairs: [
+                    { word: 'Mariposa', image: '🦋', correct: true },
+                    { word: 'Nube', image: '☁️', correct: true }
+                ],
+                currentPair: 0
+            },
+            {
+                type: 'order-words',
+                nivel: 3,
+                learningStyle: 'lectoescritura',
+                question: 'Forma la oración',
+                subtitle: 'Ordena las palabras correctamente',
+                audioText: 'María juega en el parque',
+                soundFile: null,
+                words: ['juega', 'parque', 'el', 'en', 'María'],
+                correct: ['María', 'juega', 'en', 'el', 'parque']
+            }
+        ];
+
+        // Variables para el tipo de pregunta actual
+        let sequenceAnswer = [];
+        let wordOrderAnswer = [];
+        let pairAnswers = [];
+
+        function playSound() {
+            const current = questions[currentQuestionIndex];
+            if (current.soundFile) {
+                if (currentAudio) {
+                    currentAudio.pause();
+                    currentAudio.currentTime = 0;
+                }
+                currentAudio = new Audio(current.soundFile);
+                currentAudio.play().catch(error => {
+                    console.log('Error reproduciendo audio:', error);
+                });
+            } else if (current.audioText) {
+                // Usar Text-to-Speech del navegador
+                const utterance = new SpeechSynthesisUtterance(current.audioText);
+                utterance.lang = 'es-ES';
+                utterance.rate = 0.9;
+                speechSynthesis.speak(utterance);
+            }
+        }
+
+        function handleSelection(value) {
+            selectedAnswer = value;
+            document.getElementById('verify-button').disabled = false;
+            render();
+        }
+
+        function handleSequenceClick(index, emoji) {
+            const current = questions[currentQuestionIndex];
+            if (!sequenceAnswer.includes(emoji)) {
+                sequenceAnswer[index] = emoji;
+                document.getElementById('verify-button').disabled = sequenceAnswer.length !== current.correct.length;
+                render();
+            }
+        }
+
+        function handleWordClick(word) {
+            if (!wordOrderAnswer.includes(word)) {
+                wordOrderAnswer.push(word);
+                const current = questions[currentQuestionIndex];
+                document.getElementById('verify-button').disabled = wordOrderAnswer.length !== current.correct.length;
+                render();
+            }
+        }
+
+        function handlePairAnswer(answer) {
+            const current = questions[currentQuestionIndex];
+            pairAnswers.push(answer);
+            
+            if (pairAnswers.length < current.pairs.length) {
+                current.currentPair++;
+                render();
+            } else {
+                // Todas las parejas completadas, verificar automáticamente
+                selectedAnswer = pairAnswers.every(a => a === true);
+                checkAnswer();
+            }
+        }
+
+        function checkAnswer() {
+            const current = questions[currentQuestionIndex];
+            let isCorrect = false;
+
+            if (current.type === 'sequence' || current.type === 'drag-sequence') {
+                isCorrect = JSON.stringify(sequenceAnswer) === JSON.stringify(current.correct);
+            } else if (current.type === 'order-words') {
+                isCorrect = JSON.stringify(wordOrderAnswer) === JSON.stringify(current.correct);
+            } else {
+                isCorrect = selectedAnswer === current.correct || selectedAnswer === true;
+            }
+
+            if (isCorrect) score++;
+
+            answers.push({
+                questionIndex: currentQuestionIndex,
+                nivel: current.nivel,
+                learningStyle: current.learningStyle,
+                correct: isCorrect,
+                answer: selectedAnswer || sequenceAnswer || wordOrderAnswer
+            });
+
+            showFeedback = true;
+            document.getElementById('feedback').innerHTML = `
+                <div class="feedback-box ${isCorrect ? 'correct' : 'incorrect'}">
+                    <i class="fas fa-${isCorrect ? 'check-circle' : 'times-circle'}" 
+                       style="font-size: 2rem; color: ${isCorrect ? 'var(--green-600)' : 'var(--red-500)'}"></i>
+                    <div>
+                        <div style="font-weight: 700; font-size: 1.25rem; margin-bottom: 0.5rem;">
+                            ${isCorrect ? '¡Muy bien! ✨' : 'Respuesta registrada 📝'}
+                        </div>
+                        <div style="color: var(--gray-600);">
+                            ${isCorrect ? 'Excelente trabajo, sigamos adelante' : 'Continuemos con la siguiente pregunta'}
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            document.getElementById('verify-button').textContent = 'SIGUIENTE PREGUNTA';
+            document.getElementById('verify-button').onclick = nextQuestion;
+            
+            // CORRECCIÓN: Asegurar que el botón sea visible para todos los tipos de preguntas
+            document.getElementById('verify-button').style.display = 'block';
+            document.getElementById('verify-button').disabled = false;
+        }
+
+        function nextQuestion() {
+            if (currentQuestionIndex < questions.length - 1) {
+                currentQuestionIndex++;
+                selectedAnswer = null;
+                sequenceAnswer = [];
+                wordOrderAnswer = [];
+                pairAnswers = [];
+                showFeedback = false;
+                document.getElementById('feedback').innerHTML = '';
+                document.getElementById('verify-button').textContent = 'VERIFICAR RESPUESTA';
+                document.getElementById('verify-button').onclick = checkAnswer;
+                document.getElementById('verify-button').disabled = true;
+                
+                const current = questions[currentQuestionIndex];
+                if (current.type === 'word-to-image') {
+                    current.currentPair = 0;
+                }
+                
+                render();
+            } else {
+                completeGame();
+            }
+        }
+
+        // Reemplazamos la función showResults() con completeGame()
+        function completeGame() {
+            const endTime = Date.now();
+            const timeInMinutes = Math.round((endTime - startTime) / 60000);
+            
+            // Análisis por estilo de aprendizaje
+            const learningStats = {
+                visual: { correct: 0, total: 0 },
+                auditivo: { correct: 0, total: 0 },
+                kinestesico: { correct: 0, total: 0 },
+                lectoescritura: { correct: 0, total: 0 }
+            };
+
+            // Análisis por nivel
+            const levelStats = {
+                1: { correct: 0, total: 0 },
+                2: { correct: 0, total: 0 },
+                3: { correct: 0, total: 0 }
+            };
+
+            answers.forEach(answer => {
+                const style = answer.learningStyle;
+                const level = answer.nivel;
+                
+                learningStats[style].total++;
+                levelStats[level].total++;
+                
+                if (answer.correct) {
+                    learningStats[style].correct++;
+                    levelStats[level].correct++;
+                }
+            });
+
+            // Determinar estilo de aprendizaje predominante
+            let bestStyle = '';
+            let bestScore = 0;
+            for (let style in learningStats) {
+                const percentage = (learningStats[style].correct / learningStats[style].total) * 100;
+                if (percentage > bestScore) {
+                    bestScore = percentage;
+                    bestStyle = style;
+                }
+            }
+
+            const styleNames = {
+                visual: '👁️ Visual',
+                auditivo: '👂 Auditivo',
+                kinestesico: '✋ Kinestésico',
+                lectoescritura: '📖 Lectoescritura'
+            };
+
+            // Determinar nivel predominante
+            let suggestedLevel = 0;
+            for (let level in levelStats) {
+                const percentage = (levelStats[level].correct / levelStats[level].total) * 100;
+                if (percentage >= 60) {
+                    suggestedLevel = Math.max(suggestedLevel, parseInt(level));
+                }
+            }
+
+            // Guardar resultados en localStorage
+            localStorage.setItem('blueminds_test_completed', 'true');
+            localStorage.setItem('blueminds_user_type', 'child');
+            localStorage.setItem('blueminds_learning_style', bestStyle);
+            localStorage.setItem('blueminds_suggested_level', suggestedLevel || 1);
+            localStorage.setItem('blueminds_score', score);
+
+            document.getElementById('quiz-container').classList.add('hidden');
+            document.getElementById('results-container').classList.remove('hidden');
+            document.getElementById('correct-answers').textContent = score;
+            document.getElementById('completion-time').textContent = timeInMinutes + 'm';
+
+            let analysisHTML = `
+                <p style="margin-bottom: 1rem;"><strong>🎯 Estilo de aprendizaje predominante:</strong> ${styleNames[bestStyle]}</p>
+                <p style="margin-bottom: 1rem;"><strong>📊 Nivel sugerido:</strong> Nivel ${suggestedLevel || 1}</p>
+                <div style="margin-top: 1rem; padding-top: 1rem; border-top: 2px solid var(--gray-300);">
+                    <p style="font-weight: 600; margin-bottom: 0.5rem;">Desglose por estilo:</p>
+            `;
+
+            for (let style in learningStats) {
+                const stats = learningStats[style];
+                const percentage = Math.round((stats.correct / stats.total) * 100);
+                analysisHTML += `
+                    <div style="margin-bottom: 0.5rem;">
+                        ${styleNames[style]}: ${stats.correct}/${stats.total} (${percentage}%)
+                    </div>
+                `;
+            }
+
+            analysisHTML += `</div>`;
+            document.getElementById('learning-analysis').innerHTML = analysisHTML;
+        }
+
+        // Agregamos la función goToMainApp()
+        function goToMainApp() {
+            window.location.href = 'BlueMindsMain.html';
+        }
+
+        function render() {
+            const current = questions[currentQuestionIndex];
+            const progress = ((currentQuestionIndex + 1) / questions.length) * 100;
+
+            document.getElementById('progress-bar').style.width = progress + '%';
+            document.getElementById('progress-text').textContent = Math.round(progress) + '%';
+            document.getElementById('question-title').textContent = current.question;
+            document.getElementById('question-subtitle').textContent = current.subtitle + ` (${currentQuestionIndex + 1}/${questions.length})`;
+
+            const contentEl = document.getElementById('question-content');
+            contentEl.innerHTML = '';
+
+            if (current.type === 'sound' || current.type === 'sound-complete') {
+                contentEl.innerHTML = `
+                    <button onclick="playSound()" class="sound-play-button">
+                        <i class="fas fa-volume-up" style="font-size: 3rem; color: white;"></i>
+                    </button>
+                    <div class="animal-options-container">
+                        ${current.options.map(opt => `
+                            <div onclick="handleSelection('${opt.value}')" 
+                                 class="animal-option ${selectedAnswer === opt.value ? 'selected' : ''}">
+                                <span class="animal-emoji">${opt.emoji}</span>
+                                <span class="animal-name">${opt.label || opt.animal}</span>
+                            </div>
+                        `).join('')}
+                    </div>
+                `;
+            } else if (current.type === 'sequence' || current.type === 'drag-sequence') {
+                contentEl.innerHTML = `
+                    <div class="sequence-container">
+                        ${current.correct.map((_, index) => `
+                            <div class="sequence-box ${sequenceAnswer[index] ? 'filled' : ''}">
+                                ${sequenceAnswer[index] || '?'}
+                            </div>
+                        `).join('')}
+                    </div>
+                    <div class="draggable-options">
+                        ${current.options.map((emoji, index) => `
+                            <div onclick="handleSequenceClick(${sequenceAnswer.length}, '${emoji}')" 
+                                 class="draggable-item ${sequenceAnswer.includes(emoji) ? 'used' : ''}">
+                                ${emoji}
+                            </div>
+                        `).join('')}
+                    </div>
+                `;
+            } else if (current.type === 'complete-sequence') {
+                contentEl.innerHTML = `
+                    <div class="sequence-container">
+                        ${current.sequence.map(item => `
+                            <div class="sequence-box filled">${item}</div>
+                        `).join('')}
+                    </div>
+                    <div class="image-options-container">
+                        ${current.options.map(opt => `
+                            <div onclick="handleSelection('${opt.value}')" 
+                                 class="image-option ${selectedAnswer === opt.value ? 'selected' : ''}">
+                                <span class="animal-emoji">${opt.emoji}</span>
+                            </div>
+                        `).join('')}
+                    </div>
+                `;
+            } else if (current.type === 'image-to-word') {
+                contentEl.innerHTML = `
+                    <div style="text-align: center; margin: 2rem 0;">
+                        <div style="font-size: 8rem; margin-bottom: 2rem;">${current.image}</div>
+                    </div>
+                    <div class="image-options-container">
+                        ${current.options.map(word => `
+                            <div onclick="handleSelection('${word}')" 
+                                 class="image-option ${selectedAnswer === word ? 'selected' : ''}">
+                                <span class="image-label">${word}</span>
+                            </div>
+                        `).join('')}
+                    </div>
+                `;
+            } else if (current.type === 'word-to-image') {
+                const pair = current.pairs[current.currentPair];
+                contentEl.innerHTML = `
+                    <div style="text-align: center; margin: 2rem 0;">
+                        <div style="font-size: 2rem; font-weight: 700; margin-bottom: 2rem; color: var(--gray-800);">
+                            ${pair.word}
+                        </div>
+                        <div style="font-size: 8rem; margin-bottom: 2rem;">${pair.image}</div>
+                        <p style="color: var(--gray-600); margin-bottom: 2rem;">¿Es correcto?</p>
+                    </div>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                        <button onclick="handlePairAnswer(true)" class="action-button" style="background: linear-gradient(135deg, var(--green-500), var(--green-600)); margin: 0;">
+                            ✓ SÍ
+                        </button>
+                        <button onclick="handlePairAnswer(false)" class="action-button" style="background: linear-gradient(135deg, var(--red-500), #dc2626); margin: 0;">
+                            ✗ NO
+                        </button>
+                    </div>
+                `;
+                
+                // CORRECCIÓN: Solo ocultar el botón si no estamos mostrando feedback
+                if (!showFeedback) {
+                    document.getElementById('verify-button').style.display = 'none';
+                }
+            } else if (current.type === 'order-words') {
+                if (current.audioText) {
+                    contentEl.innerHTML = `
+                        <button onclick="playSound()" class="sound-play-button">
+                            <i class="fas fa-volume-up" style="font-size: 3rem; color: white;"></i>
+                        </button>
+                    `;
+                }
+                contentEl.innerHTML += `
+                    <div class="word-order-container">
+                        ${wordOrderAnswer.map(word => `
+                            <div class="word-slot filled">${word}</div>
+                        `).join('')}
+                        ${Array(current.correct.length - wordOrderAnswer.length).fill(0).map(() => `
+                            <div class="word-slot">?</div>
+                        `).join('')}
+                    </div>
+                    <div class="word-options">
+                        ${current.words.map(word => `
+                            <div onclick="handleWordClick('${word}')" 
+                                 class="word-item ${wordOrderAnswer.includes(word) ? 'used' : ''}">
+                                ${word}
+                            </div>
+                        `).join('')}
+                    </div>
+                `;
+            }
+
+            // CORRECCIÓN: Asegurar que el botón sea visible para todos los tipos de preguntas excepto word-to-image sin feedback
+            if (current.type !== 'word-to-image' || showFeedback) {
+                document.getElementById('verify-button').style.display = 'block';
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', render);
+    </script>
+</body>
+</html>

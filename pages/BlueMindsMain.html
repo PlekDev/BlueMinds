@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BlueMinds - Neuro Play World</title>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../css/main.css">
+    <link rel="stylesheet" href="../css/welcome.css">
+</head>
+<body>
+    <!-- Pantalla de Bienvenida -->
+    <div class="welcome-screen" id="welcomeScreen">
+        <div class="welcome-card">
+            <div class="welcome-logo">
+                <i class="fas fa-graduation-cap"></i>
+            </div>
+            <h1 class="welcome-title">¡Bienvenido a BlueMinds!</h1>
+            <p class="welcome-subtitle">Plataforma de aprendizaje para niños especiales</p>
+            <div class="welcome-buttons">
+                <button class="btn btn-primary" onclick="showTestIntro()">
+                    <i class="fas fa-user-plus"></i>
+                    Soy Nuevo Usuario
+                </button>
+                <button class="btn btn-secondary" onclick="showMainScreen()">
+                    <i class="fas fa-sign-in-alt"></i>
+                    Ya Tengo Cuenta
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Pantalla de Test de Autismo -->
+    <div class="test-screen" id="testScreen">
+        <!-- Introducción al Test -->
+        <div class="test-intro" id="testIntro">
+            <div class="test-intro-card">
+                <div class="test-icon">
+                    <i class="fas fa-sparkles"></i>
+                </div>
+                <h2 class="test-title">Test de Autismo para Niños</h2>
+                <p class="test-description">¡Hola! Vamos a hacer un cuestionario divertido con 5 preguntas. No hay respuestas correctas o incorrectas, solo responde con sinceridad.</p>
+                <div class="test-icons">
+                    <span class="emoji-icon">❤️</span>
+                    <span class="emoji-icon">⭐</span>
+                    <span class="emoji-icon">✨</span>
+                </div>
+                <button class="btn btn-primary" onclick="startTest()">
+                    ¡Empezar! <i class="fas fa-arrow-right"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Cuestionario -->
+        <div class="test-question" id="testQuestion">
+            <div class="progress-bar-top">
+                <span id="questionCounter">Pregunta 1 de 5</span>
+                <span id="progressPercentage">20%</span>
+            </div>
+            <div class="progress-container">
+                <div class="progress-fill" id="progressFill"></div>
+            </div>
+            <div class="question-card">
+                <div class="question-number" id="questionNum">1</div>
+                <h3 class="question-text" id="questionText">¿Te gusta jugar con otros niños?</h3>
+                <div class="options" id="optionsContainer">
+                    <!-- Las opciones se generarán dinámicamente -->
+                </div>
+                <button class="btn-next" id="btnNext" onclick="nextQuestion()">
+                    Siguiente <i class="fas fa-arrow-right"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Pantalla Principal -->
+    <div class="main-screen" id="mainScreen">
+        <header>
+            <div class="container">
+                <div class="header-content">
+                    <div class="logo">
+                        <i class="fas fa-graduation-cap"></i>
+                        <span>BlueMinds</span>
+                    </div>
+                    <div class="user-info">
+                        <span>Hola, Niño!</span>
+                        <div class="user-avatar">N</div>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <main>
+            <div class="container">
+                <section class="progress-section">
+                    <div class="progress-header">
+                        <h2 class="progress-title">Progreso del día</h2>
+                        <div class="progress-count">7 / 10 tareas</div>
+                    </div>
+                    <div class="level-path">
+                        <div class="level-path-progress" style="width: 70%;"></div>
+                        <div class="flag-item completed">
+                            <div class="flag-circle">
+                                <i class="fas fa-flag-checkered"></i>
+                            </div>
+                            <span class="flag-label">Inicio</span>
+                        </div>
+                        <div class="flag-item completed">
+                            <div class="flag-circle">
+                                <i class="fas fa-flag"></i>
+                            </div>
+                            <span class="flag-label">Nivel 1</span>
+                        </div>
+                        <div class="flag-item completed">
+                            <div class="flag-circle">
+                                <i class="fas fa-flag"></i>
+                            </div>
+                            <span class="flag-label">Nivel 2</span>
+                        </div>
+                        <div class="flag-item current">
+                            <div class="flag-circle">
+                                <i class="fas fa-flag"></i>
+                            </div>
+                            <span class="flag-label">Nivel 3</span>
+                        </div>
+                        <div class="flag-item">
+                            <div class="flag-circle">
+                                <i class="fas fa-trophy"></i>
+                            </div>
+                            <span class="flag-label">Meta</span>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="categories">
+                    <div class="category-card language" onclick="animateCard(this)">
+                        <div class="category-icon">
+                            <i class="fas fa-language"></i>
+                        </div>
+                        <h3 class="category-title">Lenguaje</h3>
+                        <p class="category-description">Aprende nuevas palabras y mejora tu comunicación</p>
+                        <div class="category-level-path">
+                            <div class="category-level-progress" style="width: 65%;"></div>
+                            <div class="category-flag completed">
+                                <i class="fas fa-flag"></i>
+                            </div>
+                            <div class="category-flag completed">
+                                <i class="fas fa-flag"></i>
+                            </div>
+                            <div class="category-flag completed">
+                                <i class="fas fa-flag"></i>
+                            </div>
+                            <div class="category-flag">
+                                <i class="fas fa-flag"></i>
+                            </div>
+                            <div class="category-flag">
+                                <i class="fas fa-trophy"></i>
+                            </div>
+                        </div>
+                        <div class="stars">
+                            <i class="fas fa-star star"></i>
+                            <i class="fas fa-star star"></i>
+                            <i class="fas fa-star star"></i>
+                            <i class="far fa-star star"></i>
+                            <i class="far fa-star star"></i>
+                        </div>
+                    </div>
+
+                    <div class="category-card behavior" onclick="animateCard(this)">
+                        <div class="category-icon">
+                            <i class="fas fa-smile"></i>
+                        </div>
+                        <h3 class="category-title">Conducta</h3>
+                        <p class="category-description">Desarrolla habilidades sociales y emocionales</p>
+                        <div class="category-level-path">
+                            <div class="category-level-progress" style="width: 80%;"></div>
+                            <div class="category-flag completed">
+                                <i class="fas fa-flag"></i>
+                            </div>
+                            <div class="category-flag completed">
+                                <i class="fas fa-flag"></i>
+                            </div>
+                            <div class="category-flag completed">
+                                <i class="fas fa-flag"></i>
+                            </div>
+                            <div class="category-flag completed">
+                                <i class="fas fa-flag"></i>
+                            </div>
+                            <div class="category-flag">
+                                <i class="fas fa-trophy"></i>
+                            </div>
+                        </div>
+                        <div class="stars">
+                            <i class="fas fa-star star"></i>
+                            <i class="fas fa-star star"></i>
+                            <i class="fas fa-star star"></i>
+                            <i class="fas fa-star star"></i>
+                            <i class="far fa-star star"></i>
+                        </div>
+                    </div>
+
+                    <div class="category-card occupational" onclick="animateCard(this)">
+                        <div class="category-icon">
+                            <i class="fas fa-briefcase"></i>
+                        </div>
+                        <h3 class="category-title">Ocupacional</h3>
+                        <p class="category-description">Explora diferentes profesiones y actividades</p>
+                        <div class="category-level-path">
+                            <div class="category-level-progress" style="width: 45%;"></div>
+                            <div class="category-flag completed">
+                                <i class="fas fa-flag"></i>
+                            </div>
+                            <div class="category-flag completed">
+                                <i class="fas fa-flag"></i>
+                            </div>
+                            <div class="category-flag">
+                                <i class="fas fa-flag"></i>
+                            </div>
+                            <div class="category-flag">
+                                <i class="fas fa-flag"></i>
+                            </div>
+                            <div class="category-flag">
+                                <i class="fas fa-trophy"></i>
+                            </div>
+                        </div>
+                        <div class="stars">
+                            <i class="fas fa-star star"></i>
+                            <i class="fas fa-star star"></i>
+                            <i class="far fa-star star"></i>
+                            <i class="far fa-star star"></i>
+                            <i class="far fa-star star"></i>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Sección de Minijuegos -->
+                <section class="games-section">
+                    <h2 class="section-title">Minijuegos Disponibles</h2>
+                    <div class="games-grid">
+                        <div class="game-card">
+                            <div class="game-thumbnail">
+                                <i class="fas fa-smile"></i>
+                            </div>
+                            <div class="game-info">
+                                <h3 class="game-title">Reconoce Emociones</h3>
+                                <p class="game-description">Aprende a identificar diferentes emociones</p>
+                                <a href="../games/emotion-game/index.html" class="game-button">Jugar</a>
+                            </div>
+                        </div>
+                        
+                        <div class="game-card">
+                            <div class="game-thumbnail">
+                                <i class="fas fa-brain"></i>
+                            </div>
+                            <div class="game-info">
+                                <h3 class="game-title">Juego de Memoria</h3>
+                                <p class="game-description">Repite la secuencia de colores</p>
+                                <a href="../games/memory-game/index.html" class="game-button">Jugar</a>
+                            </div>
+                        </div>
+                        
+                        <div class="game-card">
+                            <div class="game-thumbnail">
+                                <i class="fas fa-shapes"></i>
+                            </div>
+                            <div class="game-info">
+                                <h3 class="game-title">Juego de Patrones</h3>
+                                <p class="game-description">Completa los patrones secuenciales</p>
+                                <a href="../games/patterns-game/index.html" class="game-button">Jugar</a>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </main>
+
+        <footer>
+            <div class="container">
+                <div class="footer-content">
+                    <p>&copy; BlueMinds - Neuro Play World</p>
+                    <div class="footer-links">
+                        <a href="../index.html">Inicio</a>
+                        <a href="#">Acerca de</a>
+                        <a href="#">Para Padres</a>
+                        <a href="#">Ayuda</a>
+                        <a href="#">Términos</a>
+                    </div>
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    <script src="../js/welcome.js"></script>
+</body>
+</html>

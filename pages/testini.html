@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test de Autismo - Neuro Play World</title>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../css/main.css">
+    <link rel="stylesheet" href="../css/welcome.css">
+</head>
+<body>
+    <!-- Pantalla de Test de Autismo -->
+    <div class="test-screen" id="testScreen">
+        <!-- Introducción al Test -->
+        <div class="test-intro" id="testIntro">
+            <div class="test-intro-card">
+                <div class="test-icon">
+                    <i class="fas fa-sparkles"></i>
+                </div>
+                <h2 class="test-title">Test de Autismo para Niños</h2>
+                <p class="test-description">¡Hola! Vamos a hacer un cuestionario divertido con 20 preguntas. No hay respuestas correctas o incorrectas, solo responde con sinceridad.</p>
+                <div class="test-icons">
+                    <span class="emoji-icon">❤️</span>
+                    <span class="emoji-icon">⭐</span>
+                    <span class="emoji-icon">✨</span>
+                </div>
+                <button class="btn btn-primary" onclick="startTest()">
+                    ¡Empezar! <i class="fas fa-arrow-right"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Cuestionario -->
+        <div class="test-question" id="testQuestion">
+            <div class="progress-bar-top">
+                <span id="questionCounter">Pregunta 1 de 20</span>
+                <span id="progressPercentage">5%</span>
+            </div>
+            <div class="progress-container">
+                <div class="progress-fill" id="progressFill"></div>
+            </div>
+            <div class="question-card">
+                <div class="question-number" id="questionNum">1</div>
+                <h3 class="question-text" id="questionText">¿Te gusta jugar con otros niños?</h3>
+                <div class="options" id="optionsContainer">
+                    <!-- Las opciones se generarán dinámicamente -->
+                </div>
+                <button class="btn-next" id="btnNext" onclick="nextQuestion()">
+                    Siguiente <i class="fas fa-arrow-right"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Resultados del Test -->
+        <div class="test-results" id="testResults" style="display: none;">
+            <div class="test-intro-card">
+                <div class="test-icon">
+                    <i class="fas fa-trophy"></i>
+                </div>
+                <h2 class="test-title">¡Test Completado!</h2>
+                <p class="test-description">Gracias por completar el test. Tus respuestas nos ayudarán a personalizar tu experiencia de aprendizaje.</p>
+                <div class="result-actions">
+                    <button class="btn btn-primary" onclick="goToMainApp()">
+                        Ir a la App Principal <i class="fas fa-arrow-right"></i>
+                    </button>
+                    <button class="btn btn-secondary" onclick="restartTest()">
+                        Hacer Test de Nuevo <i class="fas fa-redo"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="../js/welcome.js"></script>
+</body>
+</html>

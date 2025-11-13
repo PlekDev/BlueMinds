@@ -6,12 +6,12 @@ let isRecording = false;
 let hasPlayed = false;
 
 const words = [
-    { src: "https://picsum.photos/seed/sol/300/300.jpg", name: "sol", audio: "sol", color: "primary" },
-    { src: "https://picsum.photos/seed/luna/300/300.jpg", name: "luna", audio: "luna", color: "blue" },
-    { src: "https://picsum.photos/seed/estrella/300/300.jpg", name: "estrella", audio: "estrella", color: "red" },
-    { src: "https://picsum.photos/seed/nube/300/300.jpg", name: "nube", audio: "nube", color: "purple" },
-    { src: "https://picsum.photos/seed/lluvia/300/300.jpg", name: "lluvia", audio: "lluvia", color: "accent" },
-    { src: "https://picsum.photos/seed/arbol/300/300.jpg", name: "árbol", audio: "arbol", color: "primary" },
+    { src: "https://tse1.mm.bing.net/th/id/OIP.z589HEF6wuRZZR-B9C49RQHaFK?rs=1&pid=ImgDetMain&o=7&rm=3", name: "sol", audio: "sol", color: "primary" },
+    { src: "https://img.freepik.com/vector-premium/icono-luna-lindo-estilo-dibujos-animados_74102-7166.jpg?w=2000", name: "luna", audio: "luna", color: "blue" },
+    { src: "https://img.freepik.com/vector-premium/estrella-dibujada-mano-plana-elegante-mascota-personaje-dibujos-animados-dibujo-pegatina-icono-concepto-aislado_730620-302755.jpg", name: "estrella", audio: "estrella", color: "red" },
+    { src: "https://static.vecteezy.com/system/resources/previews/024/190/108/non_2x/cute-cartoon-cloud-kawaii-weather-illustrations-for-kids-free-png.png", name: "nube", audio: "nube", color: "purple" },
+    { src: "https://img.freepik.com/fotos-premium/estilo-ilustracion-vectorial-lluvia-dibujos-animados_750724-13162.jpg", name: "lluvia", audio: "lluvia", color: "accent" },
+    { src: "https://static.vecteezy.com/system/resources/previews/008/132/083/non_2x/green-tree-cartoon-isolated-on-white-background-illustration-of-green-tree-cartoon-free-vector.jpg", name: "árbol", audio: "arbol", color: "primary" },
 ];
 
 const totalRounds = 5;
@@ -182,7 +182,7 @@ function completeGame() {
     audioCard.innerHTML = `
         <h2>¡Juego Completado!</h2>
         <div class="image-display">
-            <img src="https://picsum.photos/seed/completado/300/300.jpg" alt="Juego completado">
+            <img src="https://img.freepik.com/vector-gratis/personaje-feliz-dibujos-animados-ganando-premio_23-2147880844.jpg?w=1380&t=st=1664713364~exp=1664713964~hmac=0fdd3e22a937b74843cf341e4f575247c075c0495a5e4f7ac7983f37a3e1d9ed" alt="Juego completado">
         </div>
         <div class="feedback correct">
             <p>Tu puntaje final: ${score} puntos</p>

@@ -13,7 +13,7 @@ const sentences = [
             { text: "perro", color: "red" },
             { text: "corre", color: "green" }
         ],
-        image: "https://picsum.photos/seed/perrocorriendo/300/200.jpg",
+        image: "https://img.freepik.com/vector-premium/lindo-perrito-corriendo-ilustracion-dibujos-animados-vector_2699-745.jpg",
         color: "primary" 
     },
     { 
@@ -22,7 +22,7 @@ const sentences = [
             { text: "niña", color: "red" },
             { text: "salta", color: "green" }
         ],
-        image: "https://picsum.photos/seed/ninasaltando/300/200.jpg",
+        image: "https://img.freepik.com/vector-premium/nina-saltando-aislado-blanco_253263-210.jpg?w=2000",
         color: "blue" 
     },
     { 
@@ -31,7 +31,7 @@ const sentences = [
             { text: "gato", color: "red" },
             { text: "duerme", color: "green" }
         ],
-        image: "https://picsum.photos/seed/gatodurmiendo/300/200.jpg",
+        image: "https://img.freepik.com/vector-premium/dibujo-dibujos-animados-gato-durmiendo_29937-9676.jpg?w=2000",
         color: "red" 
     },
     { 
@@ -40,7 +40,7 @@ const sentences = [
             { text: "pájaro", color: "red" },
             { text: "vuela", color: "green" }
         ],
-        image: "https://picsum.photos/seed/pajarovolando/300/200.jpg",
+        image: "https://th.bing.com/th/id/R.ce83d3472f6439efaade884fc47b6f1e?rik=L55fb4CfQuAcOQ&riu=http%3a%2f%2fst.depositphotos.com%2f1199300%2f1509%2fv%2f950%2fdepositphotos_15093187-stock-illustration-flying-bird-cartoon-isolated-on.jpg&ehk=8pgE4ap73POBZLUYjAbuQHk4wtZjcI0d%2bviTP29cANQ%3d&risl=&pid=ImgRaw&r=0",
         color: "purple" 
     },
     { 
@@ -49,7 +49,7 @@ const sentences = [
             { text: "sol", color: "red" },
             { text: "brilla", color: "green" }
         ],
-        image: "https://picsum.photos/seed/olbrillando/300/200.jpg",
+        image: "https://png.pngtree.com/background/20230519/original/pngtree-cartoon-sun-in-a-sunny-landscape-picture-image_2666701.jpg",
         color: "accent" 
     }
 ];
@@ -281,7 +281,7 @@ function completeGame() {
     sentenceCard.innerHTML = `
         <h2>¡Juego Completado!</h2>
         <div class="image-display">
-            <img src="https://picsum.photos/seed/completado/300/200.jpg" alt="Juego completado">
+            <img src="https://img.freepik.com/vector-gratis/personaje-feliz-dibujos-animados-ganando-premio_23-2147880844.jpg?w=1380&t=st=1664713364~exp=1664713964~hmac=0fdd3e22a937b74843cf341e4f575247c075c0495a5e4f7ac7983f37a3e1d9ed" alt="Juego completado">
         </div>
         <div class="feedback correct">
             <p>Tu puntaje final: ${score} puntos</p>

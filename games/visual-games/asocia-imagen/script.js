@@ -6,12 +6,12 @@ let options = [];
 let showFeedback = false;
 
 const images = [
-    { src: "https://picsum.photos/seed/coche/300/300.jpg", name: "coche", color: "primary" },
-    { src: "https://picsum.photos/seed/casa/300/300.jpg", name: "casa", color: "blue" },
-    { src: "https://picsum.photos/seed/pelota/300/300.jpg", name: "pelota", color: "red" },
-    { src: "https://picsum.photos/seed/perro/300/300.jpg", name: "perro", color: "purple" },
-    { src: "https://picsum.photos/seed/gato/300/300.jpg", name: "gato", color: "accent" },
-    { src: "https://picsum.photos/seed/flor/300/300.jpg", name: "flor", color: "primary" },
+    { src: "https://i.pinimg.com/originals/29/1e/d3/291ed353f93b45f607755109cca2a052.jpg", name: "coche", color: "primary" },
+    { src: "https://cdn5.vectorstock.com/i/1000x1000/43/49/cartoon-house-vector-4514349.jpg", name: "casa", color: "blue" },
+    { src: "https://thumbs.dreamstime.com/z/pelota-de-f%C3%BAtbol-para-jugar-icono-en-el-estilo-dibujos-animados-caricatura-aislado-fondo-blanco-236463054.jpg", name: "pelota", color: "red" },
+    { src: "https://cdn.pixabay.com/photo/2024/03/10/13/43/dog-8624743_1280.png", name: "perro", color: "purple" },
+    { src: "https://static.vecteezy.com/system/resources/previews/013/089/641/original/illustration-of-cute-colored-cat-cat-cartoon-image-in-eps10-format-suitable-for-children-s-book-design-elements-introduction-of-cats-to-children-books-or-posters-about-animal-vector.jpg", name: "gato", color: "accent" },
+    { src: "https://cdn.pixabay.com/photo/2022/12/13/05/16/flowers-7652496_1280.png", name: "flor", color: "primary" },
 ];
 
 const totalRounds = 5;
@@ -113,7 +113,7 @@ function completeGame() {
     imageCard.innerHTML = `
         <h2>¡Juego Completado!</h2>
         <div class="image-display">
-            <img src="https://picsum.photos/seed/completado/300/300.jpg" alt="Juego completado">
+            <img src="https://img.freepik.com/vector-gratis/personaje-feliz-dibujos-animados-ganando-premio_23-2147880844.jpg?w=1380&t=st=1664713364~exp=1664713964~hmac=0fdd3e22a937b74843cf341e4f575247c075c0495a5e4f7ac7983f37a3e1d9ed" alt="Juego completado">
         </div>
         <div class="feedback correct">
             <p>Tu puntaje final: ${score} puntos</p>

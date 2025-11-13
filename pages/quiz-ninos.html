@@ -856,99 +856,76 @@
             }
         }
 
-        // Reemplazamos la función showResults() con completeGame()
-        function completeGame() {
-            const endTime = Date.now();
-            const timeInMinutes = Math.round((endTime - startTime) / 60000);
-            
-            // Análisis por estilo de aprendizaje
-            const learningStats = {
-                visual: { correct: 0, total: 0 },
-                auditivo: { correct: 0, total: 0 },
-                kinestesico: { correct: 0, total: 0 },
-                lectoescritura: { correct: 0, total: 0 }
-            };
 
-            // Análisis por nivel
-            const levelStats = {
-                1: { correct: 0, total: 0 },
-                2: { correct: 0, total: 0 },
-                3: { correct: 0, total: 0 }
-            };
+        async function completeGame() {
+    const endTime = Date.now();
+    const timeInMinutes = Math.round((endTime - startTime) / 60000);
 
-            answers.forEach(answer => {
-                const style = answer.learningStyle;
-                const level = answer.nivel;
-                
-                learningStats[style].total++;
-                levelStats[level].total++;
-                
-                if (answer.correct) {
-                    learningStats[style].correct++;
-                    levelStats[level].correct++;
-                }
-            });
+    // === ENVIAR AL ML ===
+    const respuestasParaML = answers.map(a => ({
+        tipo_aprendizaje: a.learningStyle,
+        nivel: a.nivel,
+        es_correcta: a.correct,
+        tiempo_segundos: 0 // opcional
+    }));
 
-            // Determinar estilo de aprendizaje predominante
-            let bestStyle = '';
-            let bestScore = 0;
-            for (let style in learningStats) {
-                const percentage = (learningStats[style].correct / learningStats[style].total) * 100;
-                if (percentage > bestScore) {
-                    bestScore = percentage;
-                    bestStyle = style;
-                }
-            }
-
-            const styleNames = {
-                visual: '👁️ Visual',
-                auditivo: '👂 Auditivo',
-                kinestesico: '✋ Kinestésico',
-                lectoescritura: '📖 Lectoescritura'
-            };
-
-            // Determinar nivel predominante
-            let suggestedLevel = 0;
-            for (let level in levelStats) {
-                const percentage = (levelStats[level].correct / levelStats[level].total) * 100;
-                if (percentage >= 60) {
-                    suggestedLevel = Math.max(suggestedLevel, parseInt(level));
-                }
-            }
-
-            // Guardar resultados en localStorage
-            localStorage.setItem('blueminds_test_completed', 'true');
-            localStorage.setItem('blueminds_user_type', 'child');
-            localStorage.setItem('blueminds_learning_style', bestStyle);
-            localStorage.setItem('blueminds_suggested_level', suggestedLevel || 1);
-            localStorage.setItem('blueminds_score', score);
-
-            document.getElementById('quiz-container').classList.add('hidden');
-            document.getElementById('results-container').classList.remove('hidden');
-            document.getElementById('correct-answers').textContent = score;
-            document.getElementById('completion-time').textContent = timeInMinutes + 'm';
-
-            let analysisHTML = `
-                <p style="margin-bottom: 1rem;"><strong>🎯 Estilo de aprendizaje predominante:</strong> ${styleNames[bestStyle]}</p>
-                <p style="margin-bottom: 1rem;"><strong>📊 Nivel sugerido:</strong> Nivel ${suggestedLevel || 1}</p>
-                <div style="margin-top: 1rem; padding-top: 1rem; border-top: 2px solid var(--gray-300);">
-                    <p style="font-weight: 600; margin-bottom: 0.5rem;">Desglose por estilo:</p>
-            `;
-
-            for (let style in learningStats) {
-                const stats = learningStats[style];
-                const percentage = Math.round((stats.correct / stats.total) * 100);
-                analysisHTML += `
-                    <div style="margin-bottom: 0.5rem;">
-                        ${styleNames[style]}: ${stats.correct}/${stats.total} (${percentage}%)
-                    </div>
-                `;
-            }
-
-            analysisHTML += `</div>`;
-            document.getElementById('learning-analysis').innerHTML = analysisHTML;
+    let roadmap = null;
+    try {
+        const response = await fetch('http://localhost:8000/api/generar-roadmap', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ respuestas_nino: respuestasParaML })
+        });
+        const data = await response.json();
+        if (data.success) {
+            roadmap = data.roadmap;
         }
+    } catch (e) {
+        console.log("ML no disponible, usando fallback");
+        // Fallback si el servidor no está
+        const estilo = answers.reduce((prev, curr) => {
+            const count = answers.filter(a => a.learningStyle === curr.learningStyle && a.correct).length;
+            const prevCount = answers.filter(a => a.learningStyle === prev && a.correct).length;
+            return count > prevCount ? curr.learningStyle : prev;
+        }, answers[0].learningStyle);
 
+        roadmap = {
+            estilo: estilo,
+            nivel_autismo: score >= 15 ? "Bajo" : score >= 10 ? "Moderado" : "Alto",
+            precision: Math.round((score / answers.length) * 100),
+            actividades: [
+                { nombre: "Juego de " + estilo, nivel: 1 },
+                { nombre: "Actividad " + estilo, nivel: 2 }
+            ]
+        };
+    }
+
+    // === GUARDAR EN localStorage ===
+    localStorage.setItem('blueminds_roadmap', JSON.stringify(roadmap));
+    localStorage.setItem('blueminds_score', score);
+    localStorage.setItem('blueminds_test_completed', 'true');
+
+    // === MOSTRAR RESULTADOS ===
+    document.getElementById('quiz-container').classList.add('hidden');
+    document.getElementById('results-container').classList.remove('hidden');
+    document.getElementById('correct-answers').textContent = score;
+    document.getElementById('completion-time').textContent = timeInMinutes + 'm';
+
+    // Análisis visual
+    let analysisHTML = `
+        <p style="margin-bottom: 1rem;"><strong>Estilo de aprendizaje:</strong> ${roadmap.estilo}</p>
+        <p style="margin-bottom: 1rem;"><strong>Nivel sugerido:</strong> ${roadmap.nivel_autismo}</p>
+        <p style="margin-bottom: 1rem;"><strong>Precisión:</strong> ${roadmap.precision}%</p>
+        <div style="margin-top: 1rem; padding-top: 1rem; border-top: 2px solid var(--gray-300);">
+            <p style="font-weight: 600; margin-bottom: 0.5rem;">Tu Camino Personalizado:</p>
+            <ul style="text-align: left; padding-left: 1.5rem;">
+                ${roadmap.actividades.map(a => `<li>${a.nombre} (Nivel ${a.nivel})</li>`).join('')}
+            </ul>
+        </div>
+    `;
+
+    document.getElementById('learning-analysis').innerHTML = analysisHTML;
+}
         // Agregamos la función goToMainApp()
         function goToMainApp() {
             window.location.href = 'BlueMindsMain.html';

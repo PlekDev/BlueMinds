@@ -50,10 +50,11 @@
 
         <main>
             <div class="container">
-                <section class="progress-section">
+                <!-- Sección de Progreso General -->
+                <section class="overall-progress">
                     <div class="progress-header">
-                        <h2 class="progress-title">Progreso del día</h2>
-                        <div class="progress-count">7 / 10 tareas</div>
+                        <h2>Progreso del día</h2>
+                        <span class="progress-count">7 / 10 tareas</span>
                     </div>
                     <div class="level-path">
                         <div class="level-path-progress" style="width: 70%;"></div>
@@ -90,8 +91,9 @@
                     </div>
                 </section>
 
-                <section class="categories">
-                    <div class="category-card language" onclick="animateCard(this)">
+                <!-- Sección de Categorías -->
+                <section class="categories-section">
+                    <div class="category-card language" onclick="showCategoryGames('lenguaje')">
                         <div class="category-icon">
                             <i class="fas fa-language"></i>
                         </div>
@@ -124,9 +126,9 @@
                         </div>
                     </div>
 
-                    <div class="category-card behavior" onclick="animateCard(this)">
+                    <div class="category-card behavior" onclick="showCategoryGames('conducta')">
                         <div class="category-icon">
-                            <i class="fas fa-smile"></i>
+                            <i class="fas fa-smile-beam"></i>
                         </div>
                         <h3 class="category-title">Conducta</h3>
                         <p class="category-description">Desarrolla habilidades sociales y emocionales</p>
@@ -157,7 +159,7 @@
                         </div>
                     </div>
 
-                    <div class="category-card occupational" onclick="animateCard(this)">
+                    <div class="category-card occupational" onclick="showCategoryGames('ocupacional')">
                         <div class="category-icon">
                             <i class="fas fa-briefcase"></i>
                         </div>
@@ -190,64 +192,16 @@
                         </div>
                     </div>
                 </section>
-
-                <!-- Sección de Minijuegos -->
-                <section class="games-section">
-                    <h2 class="section-title">Minijuegos Disponibles</h2>
-                    <div class="games-grid">
-                        <div class="game-card">
-                            <div class="game-thumbnail">
-                                <i class="fas fa-smile"></i>
-                            </div>
-                            <div class="game-info">
-                                <h3 class="game-title">Reconoce Emociones</h3>
-                                <p class="game-description">Aprende a identificar diferentes emociones</p>
-                                <a href="../games/emotion-game/index.html" class="game-button">Jugar</a>
-                            </div>
-                        </div>
-                        
-                        <div class="game-card">
-                            <div class="game-thumbnail">
-                                <i class="fas fa-brain"></i>
-                            </div>
-                            <div class="game-info">
-                                <h3 class="game-title">Juego de Memoria</h3>
-                                <p class="game-description">Repite la secuencia de colores</p>
-                                <a href="../games/memory-game/index.html" class="game-button">Jugar</a>
-                            </div>
-                        </div>
-                        
-                        <div class="game-card">
-                            <div class="game-thumbnail">
-                                <i class="fas fa-shapes"></i>
-                            </div>
-                            <div class="game-info">
-                                <h3 class="game-title">Juego de Patrones</h3>
-                                <p class="game-description">Completa los patrones secuenciales</p>
-                                <a href="../games/patterns-game/index.html" class="game-button">Jugar</a>
-                            </div>
-                        </div>
-                    </div>
-                </section>
             </div>
         </main>
-
-        <footer>
-            <div class="container">
-                <div class="footer-content">
-                    <p>&copy; BlueMinds - Neuro Play World</p>
-                    <div class="footer-links">
-                        <a href="../index.html">Inicio</a>
-                        <a href="#">Acerca de</a>
-                        <a href="#">Para Padres</a>
-                        <a href="#">Ayuda</a>
-                        <a href="#">Términos</a>
-                    </div>
-                </div>
-            </div>
-        </footer>
     </div>
 
+    <!-- Sección de Juegos por Categoría (se crea dinámicamente) -->
+    <div id="categoryGamesSection" class="category-games-section" style="display: none;">
+        <!-- El contenido se cargará dinámicamente -->
+    </div>
+
+    <script src="../games/game-list.js"></script>
     <script>
         // Verificar el estado del usuario
         function checkUserStatus() {
@@ -278,6 +232,12 @@
 
         // Mostrar pantalla principal
         function showMainScreen() {
+            // Ocultar cualquier sección de juegos por categoría
+            const categoryScreen = document.getElementById('categoryGamesScreen');
+            if (categoryScreen) {
+                categoryScreen.remove();
+            }
+            
             document.getElementById('welcomeScreen').style.display = 'none';
             document.getElementById('mainScreen').style.display = 'block';
             
@@ -318,8 +278,6 @@
             setTimeout(() => {
                 card.style.transform = '';
             }, 200);
-            
-            console.log('Navegando a:', card.querySelector('.category-title').textContent);
         }
 
         // Inicializar al cargar la página

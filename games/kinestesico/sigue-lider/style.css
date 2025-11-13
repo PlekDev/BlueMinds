@@ -1,0 +1,435 @@
+:root {
+    --primary-color: #58cc02;
+    --secondary-color: #89e219;
+    --accent-color: #ff9600;
+    --blue-color: #1cb0f6;
+    --purple-color: #ce82ff;
+    --red-color: #ff4b4b;
+    --light-bg: #f7f7f7;
+    --white: #ffffff;
+    --dark-text: #3c3c3c;
+    --shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    --border-radius: 16px;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Nunito', sans-serif;
+    background: linear-gradient(135deg, #58cc02 0%, #1cb0f6 50%, #ce82ff 100%);
+    color: var(--dark-text);
+    line-height: 1.6;
+    overflow-x: hidden;
+    min-height: 100vh;
+}
+
+.game-container {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.game-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    background-color: var(--white);
+    border-radius: var(--border-radius);
+    padding: 15px 20px;
+    box-shadow: var(--shadow);
+}
+
+.back-button button {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--dark-text);
+    text-decoration: none;
+    font-weight: 600;
+    transition: color 0.3s ease;
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+.back-button button:hover {
+    color: var(--primary-color);
+}
+
+.game-title {
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--primary-color);
+}
+
+.game-info {
+    font-weight: 600;
+    color: var(--primary-color);
+}
+
+.game-content {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.progress-card {
+    background-color: var(--white);
+    border-radius: var(--border-radius);
+    padding: 15px 20px;
+    box-shadow: var(--shadow);
+    border: 4px solid var(--primary-color);
+}
+
+.progress-header {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 10px;
+    font-weight: 700;
+}
+
+.progress-bar {
+    height: 12px;
+    background-color: #e9e9e9;
+    border-radius: 6px;
+    overflow: hidden;
+}
+
+.progress-fill {
+    height: 100%;
+    background-color: var(--primary-color);
+    border-radius: 6px;
+    transition: width 0.5s ease;
+    width: 20%;
+}
+
+.movement-card {
+    background-color: var(--white);
+    border-radius: var(--border-radius);
+    padding: 30px;
+    box-shadow: var(--shadow);
+    text-align: center;
+    border: 4px solid var(--primary-color);
+}
+
+.movement-card h2 {
+    font-size: 28px;
+    font-weight: 700;
+    margin-bottom: 20px;
+}
+
+.avatar-container {
+    height: 300px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 30px;
+}
+
+.avatar {
+    position: relative;
+    width: 100px;
+    height: 200px;
+    transition: all 0.5s ease;
+}
+
+.avatar-head {
+    width: 60px;
+    height: 60px;
+    background-color: var(--primary-color);
+    border-radius: 50%;
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+.avatar-body {
+    position: relative;
+    width: 80px;
+    height: 100px;
+    background-color: var(--blue-color);
+    border-radius: 20px;
+    margin: 50px auto 0;
+}
+
+.avatar-arm {
+    position: absolute;
+    width: 15px;
+    height: 60px;
+    background-color: var(--secondary-color);
+    border-radius: 10px;
+    top: 10px;
+}
+
+.avatar-arm-left {
+    left: -15px;
+    transform-origin: top center;
+}
+
+.avatar-arm-right {
+    right: -15px;
+    transform-origin: top center;
+}
+
+.avatar-leg {
+    position: absolute;
+    width: 20px;
+    height: 60px;
+    background-color: var(--secondary-color);
+    border-radius: 10px;
+    bottom: -50px;
+}
+
+.avatar-leg-left {
+    left: 15px;
+}
+
+.avatar-leg-right {
+    right: 15px;
+}
+
+/* Animaciones de movimiento */
+.avatar.raise-arms .avatar-arm-left {
+    transform: rotate(-120deg);
+}
+
+.avatar.raise-arms .avatar-arm-right {
+    transform: rotate(120deg);
+}
+
+.avatar.lower-arms .avatar-arm-left {
+    transform: rotate(45deg);
+}
+
+.avatar.lower-arms .avatar-arm-right {
+    transform: rotate(-45deg);
+}
+
+.avatar.jump {
+    animation: jump 1s ease;
+}
+
+@keyframes jump {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-50px); }
+}
+
+.avatar.turn-right {
+    animation: turnRight 1s ease;
+}
+
+@keyframes turnRight {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(90deg); }
+}
+
+.avatar.turn-left {
+    animation: turnLeft 1s ease;
+}
+
+@keyframes turnLeft {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(-90deg); }
+}
+
+.avatar.squat {
+    animation: squat 1s ease;
+}
+
+@keyframes squat {
+    0%, 100% { transform: scaleY(1); }
+    50% { transform: scaleY(0.7); }
+}
+
+.avatar.celebrate {
+    animation: celebrate 2s infinite;
+}
+
+@keyframes celebrate {
+    0%, 100% { 
+        transform: translateY(0) rotate(0deg); 
+    }
+    25% { 
+        transform: translateY(-20px) rotate(-10deg); 
+    }
+    75% { 
+        transform: translateY(-20px) rotate(10deg); 
+    }
+}
+
+.avatar.celebrate .avatar-arm-left {
+    animation: celebrateArmLeft 2s infinite;
+}
+
+.avatar.celebrate .avatar-arm-right {
+    animation: celebrateArmRight 2s infinite;
+}
+
+@keyframes celebrateArmLeft {
+    0%, 100% { transform: rotate(-45deg); }
+    50% { transform: rotate(-120deg); }
+}
+
+@keyframes celebrateArmRight {
+    0%, 100% { transform: rotate(45deg); }
+    50% { transform: rotate(120deg); }
+}
+
+.instruction-display {
+    margin-bottom: 30px;
+}
+
+.instruction-text {
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--dark-text);
+    padding: 15px;
+    border-radius: 12px;
+    background-color: rgba(88, 204, 2, 0.1);
+    border: 2px solid var(--primary-color);
+}
+
+.action-controls {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    margin-bottom: 20px;
+}
+
+.action-button {
+    padding: 15px 25px;
+    border-radius: 12px;
+    font-size: 18px;
+    font-weight: 700;
+    border: none;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    color: white;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.action-button:hover:not(:disabled) {
+    transform: scale(1.05);
+}
+
+.action-button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.action-button.primary {
+    background-color: var(--primary-color);
+}
+
+.action-button.blue {
+    background-color: var(--blue-color);
+}
+
+.feedback {
+    font-size: 24px;
+    font-weight: 700;
+    padding: 15px;
+    border-radius: 12px;
+    margin-top: 20px;
+}
+
+.feedback.correct {
+    background-color: var(--primary-color);
+    color: white;
+}
+
+.feedback.incorrect {
+    background-color: var(--red-color);
+    color: white;
+}
+
+.options-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 15px;
+    margin-top: 20px;
+}
+
+.option-button {
+    padding: 15px 20px;
+    border-radius: 12px;
+    font-size: 18px;
+    font-weight: 700;
+    border: none;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    color: white;
+}
+
+.option-button:hover {
+    transform: scale(1.05);
+}
+
+.option-button.primary {
+    background-color: var(--primary-color);
+}
+
+.option-button.blue {
+    background-color: var(--blue-color);
+}
+
+.instructions-card {
+    background-color: rgba(28, 176, 246, 0.1);
+    border-radius: var(--border-radius);
+    padding: 15px 20px;
+    border: 2px solid var(--blue-color);
+    text-align: center;
+}
+
+.font-bold {
+    font-weight: 700;
+}
+
+.hidden {
+    display: none !important;
+}
+
+@media (max-width: 768px) {
+    .game-header {
+        flex-direction: column;
+        gap: 10px;
+        text-align: center;
+    }
+    
+    .avatar-container {
+        height: 200px;
+    }
+    
+    .avatar {
+        width: 80px;
+        height: 160px;
+    }
+    
+    .avatar-head {
+        width: 50px;
+        height: 50px;
+    }
+    
+    .avatar-body {
+        width: 60px;
+        height: 80px;
+    }
+    
+    .action-controls {
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    .options-container {
+        grid-template-columns: 1fr;
+    }
+}

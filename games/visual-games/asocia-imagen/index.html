@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Asocia la Imagen Correcta - Neuro Play World</title>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../../css/main.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="game-container">
+        <header class="game-header">
+             <div class="back-button">
+                <button onclick="goToMainPage()">
+                 <i class="fas fa-arrow-left"></i> Volver
+             </button>
+            </div>
+            <h1 class="game-title">Asocia la Imagen Correcta</h1>
+            <div class="game-info">
+                <span id="score-display">0 puntos</span>
+            </div>
+        </header>
+
+        <main class="game-content">
+            <!-- Progress -->
+            <div class="progress-card">
+                <div class="progress-header">
+                    <span>Ronda <span id="current-round">1</span> de <span id="total-rounds">5</span></span>
+                    <span id="score">0 puntos</span>
+                </div>
+                <div class="progress-bar">
+                    <div id="progress-fill" class="progress-fill"></div>
+                </div>
+            </div>
+
+            <!-- Image Display -->
+            <div class="image-card">
+                <h2>¿Cuál es el nombre correcto?</h2>
+                <div id="image-display" class="image-display">
+                    <img id="current-image" src="" alt="Imagen para asociar">
+                </div>
+                
+                <div id="feedback" class="feedback hidden">
+                    <span id="feedback-text"></span>
+                </div>
+
+                <div id="options-container" class="options-container">
+                    <!-- Las opciones se generarán dinámicamente -->
+                </div>
+            </div>
+
+            <!-- Instructions -->
+            <div class="instructions-card">
+                <p>
+                    💡 <span class="font-bold">Tip:</span> Observa la imagen y selecciona la palabra correcta que la describe.
+                </p>
+            </div>
+        </main>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

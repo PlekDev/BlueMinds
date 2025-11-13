@@ -13,7 +13,7 @@
     "autism",
     "games"
   ],
-  "author": "DiegoLizarraga",
+  "author": "DiegoLizarraga and Victor Velazquez",
   "license": "MIT",
   "devDependencies": {
     "live-server": "^1.2.2"

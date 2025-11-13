@@ -20,6 +20,41 @@ const games = [
         description: 'Completa los patrones secuenciales',
         icon: 'fa-shapes',
         path: 'games/patterns-game/index.html'
+    },
+    {
+        id: 'auditorio',
+        title: 'Juego Auditivo',
+        description: 'Desarrolla tu capacidad auditiva',
+        icon: 'fa-headphones',
+        path: 'games/auditivo/eco-palabras/index.html'
+    },
+    {
+        id: 'kinestico',
+        title: 'Juego Kinestésico',
+        description: 'Mejora tu coordinación motora',
+        icon: 'fa-running',
+        path: 'games/kinestesico/sigue-lider/index.html'
+    },
+    {
+        id: 'lecto-escritor',
+        title: 'Lectoescritura',
+        description: 'Practica la lectura y escritura',
+        icon: 'fa-book-open',
+        path: 'games/lecto-escritor/oracion-colores/index.html'
+    },
+    {
+        id: 'explora-profesiones',
+        title: 'Explora Profesiones',
+        description: 'Aprende sobre diferentes profesiones',
+        icon: 'fa-user-tie',
+        path: 'games/ocupacional/explora-profesiones/index.html'
+    },
+    {
+        id: 'visual-games',
+        title: 'Juegos Visuales',
+        description: 'Estimula tu percepción visual',
+        icon: 'fa-eye',
+        path: 'games/visual-games/asocia-imagen/index.html'
     }
 ];
 
@@ -56,7 +91,7 @@ function showHomePage() {
     contentContainer.innerHTML = `
         <div class="container">
             <section class="home-section">
-                <h1 class="home-title">Bienvenido a Neuro Play World</h1>
+                <h1 class="home-title">Bienvenido a Blue Minds</h1>
                 <p class="home-description">
                     Una plataforma educativa diseñada para niños con necesidades especiales, 
                     con minijuegos interactivos que ayudan en el desarrollo de habilidades cognitivas, 
@@ -84,7 +119,7 @@ function showHomePage() {
                         </p>
                     </div>
                     
-                    <div class="feature-card progress">
+                    <div class="feature-card progress" onclick="showPage('progress')">
                         <div class="feature-icon">
                             <i class="fas fa-chart-line"></i>
                         </div>
@@ -151,9 +186,9 @@ function showAboutPage() {
     contentContainer.innerHTML = `
         <div class="container">
             <div class="home-section">
-                <h2 class="section-title">Acerca de Neuro Play World</h2>
+                <h2 class="section-title">Acerca de Blue Minds :D </h2>
                 <p class="home-description">
-                    Neuro Play World es una plataforma educativa diseñada específicamente para niños 
+                    Blue Minds es una plataforma educativa diseñada específicamente para niños 
                     con necesidades especiales de aprendizaje. Nuestro objetivo es proporcionar un 
                     entorno seguro y divertido donde los niños puedan desarrollar habilidades 
                     cognitivas, sociales y emocionales a través de minijuegos interactivos.

@@ -1,6 +1,6 @@
 :root {
-    --primary-color: #58cc02;
-    --secondary-color: #89e219;
+    --primary-color: #01B3E1;
+    --secondary-color: #02E2E2;
     --accent-color: #ff9600;
     --blue-color: #1cb0f6;
     --purple-color: #ce82ff;
@@ -100,7 +100,7 @@ footer {
 .footer-links {
     display: flex;
     gap: 20px;
-    margin-top: 10px;
+    margin-left: 2rem;
 }
 
 .footer-links a {

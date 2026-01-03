@@ -8,9 +8,246 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="../css/main.css">
     <link rel="stylesheet" href="../css/welcome.css">
+    <style>
+        .games-container {
+            display: none;
+            animation: fadeIn 0.5s ease;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #58cc02 0%, #1cb0f6 50%, #ce82ff 100%);
+        }
+
+        .games-container.show {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .category-header {
+            background-color: var(--white);
+            border-radius: 16px;
+            padding: 30px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            display: flex;
+            align-items: center;
+            position: relative;
+            overflow: hidden;
+            margin-bottom: 30px;
+        }
+
+        .category-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 5px;
+            background: linear-gradient(90deg, var(--primary-color), var(--blue-color), var(--purple-color));
+        }
+
+        .back-button-container {
+            margin-right: 30px;
+        }
+
+        .back-button-container button {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: var(--dark-text);
+            background-color: rgba(88, 204, 2, 0.1);
+            border: 2px solid var(--primary-color);
+            border-radius: 12px;
+            padding: 12px 20px;
+            font-weight: 600;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .back-button-container button:hover {
+            background-color: var(--primary-color);
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(88, 204, 2, 0.3);
+        }
+
+        .category-info {
+            display: flex;
+            align-items: center;
+            flex-grow: 1;
+        }
+
+        .category-icon-large {
+            font-size: 64px;
+            margin-right: 30px;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .category-title-header {
+            font-size: 42px;
+            font-weight: 800;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .games-section {
+            background-color: rgba(255, 255, 255, 0.95);
+            border-radius: 16px;
+            padding: 40px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            margin-bottom: 30px;
+        }
+
+        .games-section-title {
+            font-size: 32px;
+            font-weight: 700;
+            margin-bottom: 30px;
+            text-align: center;
+            position: relative;
+        }
+
+        .games-section-title::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary-color), var(--blue-color));
+            border-radius: 2px;
+        }
+
+        .games-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 30px;
+            margin-top: 30px;
+        }
+
+        .game-card {
+            background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+            border-radius: 16px;
+            padding: 30px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .game-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
+            border-color: var(--primary-color);
+        }
+
+        .game-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary-color), var(--blue-color));
+            transform: scaleX(0);
+            transition: transform 0.3s ease;
+        }
+
+        .game-card:hover::before {
+            transform: scaleX(1);
+        }
+
+        .game-thumbnail {
+            font-size: 64px;
+            margin-bottom: 15px;
+            text-align: center;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        .game-title {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--dark-text);
+            margin-bottom: 15px;
+            text-align: center;
+        }
+
+        .game-description {
+            font-size: 16px;
+            color: #777;
+            opacity: 0.8;
+            margin-bottom: 25px;
+            text-align: center;
+            line-height: 1.5;
+        }
+
+        .game-level-badge {
+            display: inline-block;
+            background-color: var(--primary-color);
+            color: white;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 700;
+            margin-bottom: 15px;
+        }
+
+        .game-button {
+            display: block;
+            width: 100%;
+            padding: 15px 25px;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            text-decoration: none;
+            border-radius: 12px;
+            font-weight: 700;
+            font-size: 18px;
+            text-align: center;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(88, 204, 2, 0.3);
+            cursor: pointer;
+            border: none;
+        }
+
+        .game-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(88, 204, 2, 0.4);
+            background: linear-gradient(135deg, var(--secondary-color), var(--primary-color));
+        }
+
+        .main-content {
+            display: block;
+        }
+
+        .main-content.hide {
+            display: none;
+        }
+
+        .games-footer {
+            text-align: center;
+            color: white;
+            padding: 20px;
+            background-color: rgba(0, 0, 0, 0.2);
+            border-radius: 8px;
+            margin-bottom: 30px;
+        }
+    </style>
 </head>
 <body>
-
 
     <!-- Pantalla Principal -->
     <header>
@@ -34,208 +271,365 @@
         </div>
     </header>
 
-        <main>
-            <div class="container">
-                <!-- Sección de Progreso General -->
-                <section class="overall-progress">
-                    <div class="progress-header">
-                        <h2>Progreso del día</h2>
-                        <span class="progress-count">7 / 10 tareas</span>
+    <main class="main-content">
+        <div class="container">
+            <!-- Sección de Progreso General -->
+            <section class="overall-progress">
+                <div class="progress-header">
+                    <h2>Progreso del día</h2>
+                    <span class="progress-count">7 / 10 tareas</span>
+                </div>
+                <div class="level-path">
+                    <div class="level-path-progress" style="width: 70%;"></div>
+                    <div class="flag-item completed">
+                        <div class="flag-circle">
+                            <i class="fas fa-flag-checkered"></i>
+                        </div>
+                        <span class="flag-label">Inicio</span>
                     </div>
-                    <div class="level-path">
-                        <div class="level-path-progress" style="width: 70%;"></div>
-                        <div class="flag-item completed">
-                            <div class="flag-circle">
-                                <i class="fas fa-flag-checkered"></i>
-                            </div>
-                            <span class="flag-label">Inicio</span>
+                    <div class="flag-item completed">
+                        <div class="flag-circle">
+                            <i class="fas fa-flag"></i>
                         </div>
-                        <div class="flag-item completed">
-                            <div class="flag-circle">
-                                <i class="fas fa-flag"></i>
-                            </div>
-                            <span class="flag-label">Nivel 1</span>
+                        <span class="flag-label">Nivel 1</span>
+                    </div>
+                    <div class="flag-item completed">
+                        <div class="flag-circle">
+                            <i class="fas fa-flag"></i>
                         </div>
-                        <div class="flag-item completed">
-                            <div class="flag-circle">
-                                <i class="fas fa-flag"></i>
-                            </div>
-                            <span class="flag-label">Nivel 2</span>
+                        <span class="flag-label">Nivel 2</span>
+                    </div>
+                    <div class="flag-item current">
+                        <div class="flag-circle">
+                            <i class="fas fa-flag"></i>
                         </div>
-                        <div class="flag-item current">
-                            <div class="flag-circle">
-                                <i class="fas fa-flag"></i>
-                            </div>
-                            <span class="flag-label">Nivel 3</span>
+                        <span class="flag-label">Nivel 3</span>
+                    </div>
+                    <div class="flag-item">
+                        <div class="flag-circle">
+                            <i class="fas fa-trophy"></i>
                         </div>
-                        <div class="flag-item">
-                            <div class="flag-circle">
-                                <i class="fas fa-trophy"></i>
-                            </div>
-                            <span class="flag-label">Meta</span>
+                        <span class="flag-label">Meta</span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Sección de Categorías -->
+            <section class="categories-section">
+                <div class="category-card language" onclick="showCategoryGames('lenguaje')">
+                    <div class="category-icon">
+                        <i class="fas fa-language"></i>
+                    </div>
+                    <h3 class="category-title">Lenguaje</h3>
+                    <p class="category-description">Aprende nuevas palabras y mejora tu comunicación</p>
+                    <div class="category-level-path">
+                        <div class="category-level-progress" style="width: 65%;"></div>
+                        <div class="category-flag completed">
+                            <i class="fas fa-flag"></i>
+                        </div>
+                        <div class="category-flag completed">
+                            <i class="fas fa-flag"></i>
+                        </div>
+                        <div class="category-flag completed">
+                            <i class="fas fa-flag"></i>
+                        </div>
+                        <div class="category-flag">
+                            <i class="fas fa-flag"></i>
+                        </div>
+                        <div class="category-flag">
+                            <i class="fas fa-trophy"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="category-card behavior" onclick="showCategoryGames('conducta')">
+                    <div class="category-icon">
+                        <i class="fas fa-smile-beam"></i>
+                    </div>
+                    <h3 class="category-title">Conducta</h3>
+                    <p class="category-description">Desarrolla habilidades sociales y emocionales</p>
+                    <div class="category-level-path">
+                        <div class="category-level-progress" style="width: 80%;"></div>
+                        <div class="category-flag completed">
+                            <i class="fas fa-flag"></i>
+                        </div>
+                        <div class="category-flag completed">
+                            <i class="fas fa-flag"></i>
+                        </div>
+                        <div class="category-flag completed">
+                            <i class="fas fa-flag"></i>
+                        </div>
+                        <div class="category-flag completed">
+                            <i class="fas fa-flag"></i>
+                        </div>
+                        <div class="category-flag">
+                            <i class="fas fa-trophy"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="category-card occupational" onclick="showCategoryGames('ocupacional')">
+                    <div class="category-icon">
+                        <i class="fas fa-briefcase"></i>
+                    </div>
+                    <h3 class="category-title">Ocupacional</h3>
+                    <p class="category-description">Explora diferentes profesiones y actividades</p>
+                    <div class="category-level-path">
+                        <div class="category-level-progress" style="width: 45%;"></div>
+                        <div class="category-flag completed">
+                            <i class="fas fa-flag"></i>
+                        </div>
+                        <div class="category-flag completed">
+                            <i class="fas fa-flag"></i>
+                        </div>
+                        <div class="category-flag">
+                            <i class="fas fa-flag"></i>
+                        </div>
+                        <div class="category-flag">
+                            <i class="fas fa-flag"></i>
+                        </div>
+                        <div class="category-flag">
+                            <i class="fas fa-trophy"></i>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <!-- Sección de Juegos por Categoría (se despliega dinámicamente) -->
+    <div id="gamesContainer" class="games-container">
+        <header style="background-color: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);">
+            <div class="container">
+                <div class="header-content">
+                    <div class="logo">
+                        <a href="https://plekdev.github.io/BlueMinds/" style="color: inherit; text-decoration: none; display: flex; align-items: center;">
+                            <img src="../android-chrome-512x512.png" style="width: 2rem; height: 2rem; margin-right: 1rem;" />
+                            <span style="color: #01B3E1;">BlueMinds</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <main style="padding: 40px 0;">
+            <div class="container">
+                <section class="category-header">
+                    <div class="back-button-container">
+                        <button onclick="backToMain()">
+                            <i class="fas fa-arrow-left"></i> Volver
+                        </button>
+                    </div>
+                    <div class="category-info">
+                        <div class="category-icon-large" id="categoryIconLarge"></div>
+                        <div>
+                            <h1 class="category-title-header" id="categoryTitleHeader"></h1>
+                            <p id="categoryDescHeader" style="font-size: 16px; color: #777;"></p>
                         </div>
                     </div>
                 </section>
 
-                <!-- Sección de Categorías -->
-                <section class="categories-section">
-                    <div class="category-card language" onclick="showCategoryGames('lenguaje')">
-                        <div class="category-icon">
-                            <i class="fas fa-language"></i>
-                        </div>
-                        <h3 class="category-title">Lenguaje</h3>
-                        <p class="category-description">Aprende nuevas palabras y mejora tu comunicación</p>
-                        <div class="category-level-path">
-                            <div class="category-level-progress" style="width: 65%;"></div>
-                            <div class="category-flag completed">
-                                <i class="fas fa-flag"></i>
-                            </div>
-                            <div class="category-flag completed">
-                                <i class="fas fa-flag"></i>
-                            </div>
-                            <div class="category-flag completed">
-                                <i class="fas fa-flag"></i>
-                            </div>
-                            <div class="category-flag">
-                                <i class="fas fa-flag"></i>
-                            </div>
-                            <div class="category-flag">
-                                <i class="fas fa-trophy"></i>
-                            </div>
-                        </div>
-                        <div class="stars">
-                            <i class="fas fa-star star"></i>
-                            <i class="fas fa-star star"></i>
-                            <i class="fas fa-star star"></i>
-                            <i class="far fa-star star"></i>
-                            <i class="far fa-star star"></i>
-                        </div>
-                    </div>
-
-                    <div class="category-card behavior" onclick="showCategoryGames('conducta')">
-                        <div class="category-icon">
-                            <i class="fas fa-smile-beam"></i>
-                        </div>
-                        <h3 class="category-title">Conducta</h3>
-                        <p class="category-description">Desarrolla habilidades sociales y emocionales</p>
-                        <div class="category-level-path">
-                            <div class="category-level-progress" style="width: 80%;"></div>
-                            <div class="category-flag completed">
-                                <i class="fas fa-flag"></i>
-                            </div>
-                            <div class="category-flag completed">
-                                <i class="fas fa-flag"></i>
-                            </div>
-                            <div class="category-flag completed">
-                                <i class="fas fa-flag"></i>
-                            </div>
-                            <div class="category-flag completed">
-                                <i class="fas fa-flag"></i>
-                            </div>
-                            <div class="category-flag">
-                                <i class="fas fa-trophy"></i>
-                            </div>
-                        </div>
-                        <div class="stars">
-                            <i class="fas fa-star star"></i>
-                            <i class="fas fa-star star"></i>
-                            <i class="fas fa-star star"></i>
-                            <i class="fas fa-star star"></i>
-                            <i class="far fa-star star"></i>
-                        </div>
-                    </div>
-
-                    <div class="category-card occupational" onclick="showCategoryGames('ocupacional')">
-                        <div class="category-icon">
-                            <i class="fas fa-briefcase"></i>
-                        </div>
-                        <h3 class="category-title">Ocupacional</h3>
-                        <p class="category-description">Explora diferentes profesiones y actividades</p>
-                        <div class="category-level-path">
-                            <div class="category-level-progress" style="width: 45%;"></div>
-                            <div class="category-flag completed">
-                                <i class="fas fa-flag"></i>
-                            </div>
-                            <div class="category-flag completed">
-                                <i class="fas fa-flag"></i>
-                            </div>
-                            <div class="category-flag">
-                                <i class="fas fa-flag"></i>
-                            </div>
-                            <div class="category-flag">
-                                <i class="fas fa-flag"></i>
-                            </div>
-                            <div class="category-flag">
-                                <i class="fas fa-trophy"></i>
-                            </div>
-                        </div>
-                        <div class="stars">
-                            <i class="fas fa-star star"></i>
-                            <i class="fas fa-star star"></i>
-                            <i class="far fa-star star"></i>
-                            <i class="far fa-star star"></i>
-                            <i class="far fa-star star"></i>
-                        </div>
-                    </div>
+                <section class="games-section">
+                    <h2 class="games-section-title" id="gamesSectionTitle"></h2>
+                    <div class="games-grid" id="gamesGrid"></div>
                 </section>
             </div>
         </main>
-    </div>
 
-    <!-- Sección de Juegos por Categoría (se crea dinámicamente) -->
-    <div id="categoryGamesSection" class="category-games-section" style="display: none;">
-        <!-- El contenido se cargará dinámicamente -->
+        <footer>
+            <div class="container">
+                <div class="footer-content">
+                    <p>&copy; BlueMinds - Plataforma de Educación Inclusiva</p>
+                </div>
+            </div>
+        </footer>
     </div>
 
     <script src="../games/game-list.js"></script>
     <script>
+        // Lista actualizada de todos los juegos por categoría
+        const gamesDatabase = {
+            lenguaje: {
+                name: 'Lenguaje',
+                icon: 'fa-language',
+                color: '#1cb0f6',
+                description: 'Aprende nuevas palabras y mejora tu comunicación',
+                games: [
+                    {
+                        id: 'memoriza-imagen',
+                        title: 'Memoriza y Encuentra',
+                        description: 'Observa la imagen y encuéntrala entre las opciones',
+                        icon: '🎨',
+                        path: '../games/visual-games/memoriza-imagen/index.html',
+                        nivel: '1'
+                    },
+                    {
+                        id: 'detective-errores',
+                        title: 'Detective de Errores',
+                        description: 'Forma oraciones correctas detectando errores visuales',
+                        icon: '🔍',
+                        path: '../games/visual-games/detective-errores/index.html',
+                        nivel: '1'
+                    },
+                    {
+                        id: 'ordena-historia',
+                        title: 'Ordena la Historia',
+                        description: 'Ordena las imágenes en secuencia lógica',
+                        icon: '📖',
+                        path: '../games/visual-games/ordena-historia/index.html',
+                        nivel: '2'
+                    },
+                    {
+                        id: 'completa-escena',
+                        title: 'Completa la Escena',
+                        description: 'Completa oraciones seleccionando la imagen correcta',
+                        icon: '🖼️',
+                        path: '../games/visual-games/completa-escena/index.html',
+                        nivel: '2'
+                    },
+                    {
+                        id: 'asocia-imagen',
+                        title: 'Asocia la Imagen',
+                        description: 'Asocia palabras con las imágenes correctas',
+                        icon: '🎯',
+                        path: '../games/visual-games/asocia-imagen-correcta/index.html',
+                        nivel: '3'
+                    },
+                    {
+                        id: 'clasificacion',
+                        title: 'Clasificación de Grupos',
+                        description: 'Agrupa elementos por categorías',
+                        icon: '📦',
+                        path: '../games/visual-games/clasificacion-grupos/index.html',
+                        nivel: '3'
+                    },
+                    {
+                        id: 'eco-palabras',
+                        title: 'Eco de Palabras',
+                        description: 'Repite las palabras que escuchas',
+                        icon: '🔊',
+                        path: '../games/auditivo/eco-palabras/index.html',
+                        nivel: '1'
+                    },
+                    {
+                        id: 'oracion-colores',
+                        title: 'Arma la Oración',
+                        description: 'Practica la lectura y escritura',
+                        icon: '📝',
+                        path: '../games/lecto-escritor/oracion-colores/index.html',
+                        nivel: '1'
+                    }
+                ]
+            },
+            conducta: {
+                name: 'Conducta',
+                icon: 'fa-smile-beam',
+                color: '#ce82ff',
+                description: 'Desarrolla habilidades sociales y emocionales',
+                games: [
+                    {
+                        id: 'emotion-game',
+                        title: 'Reconoce Emociones',
+                        description: 'Aprende a identificar diferentes emociones',
+                        icon: '😊',
+                        path: '../games/emotion-game/index.html',
+                        nivel: '1'
+                    },
+                    {
+                        id: 'sigue-lider',
+                        title: 'Sigue al Líder',
+                        description: 'Imita movimientos y mejora coordinación',
+                        icon: '🏃',
+                        path: '../games/kinestesico/sigue-lider/index.html',
+                        nivel: '1'
+                    }
+                ]
+            },
+            ocupacional: {
+                name: 'Ocupacional',
+                icon: 'fa-briefcase',
+                color: '#ff9600',
+                description: 'Explora diferentes profesiones y actividades',
+                games: [
+                    {
+                        id: 'profesiones',
+                        title: 'Explora Profesiones',
+                        description: 'Aprende sobre diferentes trabajos',
+                        icon: '💼',
+                        path: '../games/ocupacional/explora-profesiones/index.html',
+                        nivel: '1'
+                    }
+                ]
+            }
+        };
+
         // Verificar el estado del usuario
         function checkUserStatus() {
             const hasCompletedTest = localStorage.getItem('blueminds_test_completed') === 'true';
-            const userType = localStorage.getItem('blueminds_user_type');
             
             if (hasCompletedTest) {
-                // Si ya completó el test, mostrar la pantalla principal
                 showMainScreen();
-                
-                // Personalizar saludo según tipo de usuario
-                if (userType === 'child') {
-                    document.getElementById('userName').textContent = 'Hola, Niño!';
-                } else if (userType === 'parent') {
-                    document.getElementById('userName').textContent = 'Hola, Padre!';
-                }
             } else {
-                // Si no, mostrar la pantalla de bienvenida
-                document.getElementById('welcomeScreen').style.display = 'flex';
-                document.getElementById('mainScreen').style.display = 'none';
+                document.querySelector('main').style.display = 'none';
+                document.querySelector('header').style.display = 'none';
             }
-        }
-
-        // Ir al selector de test
-        function goToTestSelector() {
-            window.location.href = 'test-selector.html';
         }
 
         // Mostrar pantalla principal
         function showMainScreen() {
-            // Ocultar cualquier sección de juegos por categoría
-            const categoryScreen = document.getElementById('categoryGamesScreen');
-            if (categoryScreen) {
-                categoryScreen.remove();
-            }
+            document.getElementById('gamesContainer').classList.remove('show');
+            document.querySelector('main').classList.remove('hide');
+            document.querySelector('header').style.display = 'block';
             
-            document.getElementById('welcomeScreen').style.display = 'none';
-            document.getElementById('mainScreen').style.display = 'block';
-            
-            // Marcar que el usuario ha completado el test (si no lo está ya)
             if (localStorage.getItem('blueminds_test_completed') !== 'true') {
                 localStorage.setItem('blueminds_test_completed', 'true');
             }
             
-            // Animar progreso
             setTimeout(() => {
                 animateMainProgress();
             }, 300);
+        }
+
+        // Mostrar juegos por categoría
+        function showCategoryGames(category) {
+            const categoryData = gamesDatabase[category];
+            const games = categoryData.games;
+
+            // Actualizar encabezado
+            document.getElementById('categoryIconLarge').innerHTML = `<i class="fas ${categoryData.icon}"></i>`;
+            document.getElementById('categoryIconLarge').style.color = categoryData.color;
+            document.getElementById('categoryTitleHeader').textContent = categoryData.name;
+            document.getElementById('categoryTitleHeader').style.color = categoryData.color;
+            document.getElementById('categoryDescHeader').textContent = categoryData.description;
+
+            // Actualizar título de sección
+            document.getElementById('gamesSectionTitle').textContent = `Juegos de ${categoryData.name}`;
+            document.getElementById('gamesSectionTitle').style.color = categoryData.color;
+
+            // Generar grid de juegos
+            const gamesGrid = document.getElementById('gamesGrid');
+            gamesGrid.innerHTML = games.map(game => `
+                <div class="game-card">
+                    <div class="game-thumbnail">${game.icon}</div>
+                    <h3 class="game-title">${game.title}</h3>
+                    <p class="game-description">${game.description}</p>
+                    <div style="text-align: center;">
+                        <span class="game-level-badge">Nivel ${game.nivel}</span>
+                        <br>
+                        <a href="${game.path}" class="game-button">Jugar</a>
+                    </div>
+                </div>
+            `).join('');
+
+            // Mostrar contenedor de juegos
+            document.querySelector('main').classList.add('hide');
+            document.getElementById('gamesContainer').classList.add('show');
+            window.scrollTo(0, 0);
+        }
+
+        // Volver a la pantalla principal
+        function backToMain() {
+            showMainScreen();
         }
 
         // Animaciones de la pantalla principal
@@ -243,7 +637,6 @@
             const progressBar = document.querySelector('.level-path-progress');
             if (progressBar) {
                 progressBar.style.width = '0%';
-                
                 setTimeout(() => {
                     progressBar.style.width = '70%';
                 }, 300);
@@ -257,13 +650,6 @@
                     progress.style.width = targetWidth;
                 }, 500);
             });
-        }
-
-        function animateCard(card) {
-            card.style.transform = 'scale(0.95)';
-            setTimeout(() => {
-                card.style.transform = '';
-            }, 200);
         }
 
         // Inicializar al cargar la página

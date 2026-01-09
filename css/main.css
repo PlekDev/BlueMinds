@@ -1,8 +1,8 @@
 :root {
-    --primary-color: #01B3E1;
-    --secondary-color: #02E2E2;
+    --primary-color: #0066CC;
+    --secondary-color: #00B4D8;
     --accent-color: #ff9600;
-    --blue-color: #1cb0f6;
+    --blue-color: #00B4D8;
     --purple-color: #ce82ff;
     --red-color: #ff4b4b;
     --light-bg: #f7f7f7;
@@ -20,7 +20,7 @@
 
 body {
     font-family: 'Nunito', sans-serif;
-    background: linear-gradient(135deg, #58cc02 0%, #1cb0f6 50%, #ce82ff 100%);
+    background-color: #ffffff;
     color: var(--dark-text);
     line-height: 1.6;
     overflow-x: hidden;
@@ -35,7 +35,7 @@ body {
 
 header {
     background-color: var(--white);
-    box-shadow: var(--shadow);
+    box-shadow: 0 4px 12px rgba(0, 102, 204, 0.1);
     padding: 15px 0;
     position: sticky;
     top: 0;
@@ -174,15 +174,15 @@ footer {
 }
 
 .feature-card.games .feature-icon {
-    background-color: var(--blue-color);
+    background: linear-gradient(135deg, #0066CC, #00B4D8);
 }
 
 .feature-card.test .feature-icon {
-    background-color: var(--purple-color);
+    background: linear-gradient(135deg, #0066CC, #00B4D8);
 }
 
 .feature-card.progress .feature-icon {
-    background-color: var(--accent-color);
+    background: linear-gradient(135deg, #0066CC, #00B4D8);
 }
 
 .feature-title {
@@ -244,17 +244,18 @@ footer {
 
 .game-button {
     display: inline-block;
-    background-color: var(--primary-color);
+    background: linear-gradient(135deg, #0066CC, #00B4D8);
     color: white;
     padding: 8px 16px;
     border-radius: 8px;
     text-decoration: none;
     font-weight: 600;
-    transition: background-color 0.3s ease;
+    transition: all 0.3s ease;
 }
 
 .game-button:hover {
-    background-color: var(--secondary-color);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(0, 102, 204, 0.3);
 }
 
 .section-title {

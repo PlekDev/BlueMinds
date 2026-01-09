@@ -9,11 +9,113 @@
     <link rel="stylesheet" href="../css/main.css">
     <link rel="stylesheet" href="../css/welcome.css">
     <style>
+        :root {
+            --primary-color: #0066CC;
+            --secondary-color: #00B4D8;
+            --blue-color: #00B4D8;
+            --purple-color: #ce82ff;
+            --dark-text: #3c3c3c;
+            --white: #ffffff;
+        }
+
+        /* Header Styles */
+        header {
+            background-color: white;
+            box-shadow: 0 4px 12px rgba(0, 102, 204, 0.1);
+            padding: 15px 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 28px;
+            font-weight: 800;
+            color: #0066CC;
+            text-decoration: none;
+        }
+
+        .logo img {
+            width: 40px;
+            height: 40px;
+        }
+
+        .nav-center {
+            display: flex;
+            gap: 30px;
+            list-style: none;
+        }
+
+        .nav-center a {
+            text-decoration: none;
+            color: #3c3c3c;
+            font-weight: 600;
+            transition: color 0.3s ease;
+        }
+
+        .nav-center a:hover {
+            color: #0066CC;
+        }
+
+        .user-menu {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .user-name {
+            color: #3c3c3c;
+            font-weight: 600;
+        }
+
+        .nav-btn,
+        .logout-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 18px;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            color: #89f0f1;
+        }
+
+        .nav-btn:hover,
+        .logout-btn:hover {
+            background-color: #F0F8FF;
+            color: #00B4D8;
+        }
+
+        .logout-btn {
+            color: #ef4444;
+        }
+
+        .logout-btn:hover {
+            background-color: #FEE2E2;
+        }
+
         .games-container {
             display: none;
             animation: fadeIn 0.5s ease;
             min-height: 100vh;
-            background: linear-gradient(135deg, #58cc02 0%, #1cb0f6 50%, #ce82ff 100%);
+            background-color: #ffffff;
         }
 
         .games-container.show {
@@ -35,7 +137,7 @@
             background-color: var(--white);
             border-radius: 16px;
             padding: 30px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 4px 12px rgba(0, 102, 204, 0.1);
             display: flex;
             align-items: center;
             position: relative;
@@ -50,7 +152,7 @@
             left: 0;
             right: 0;
             height: 5px;
-            background: linear-gradient(90deg, var(--primary-color), var(--blue-color), var(--purple-color));
+            background: linear-gradient(90deg, #0066CC, #00B4D8, #0099FF);
         }
 
         .back-button-container {
@@ -62,8 +164,8 @@
             align-items: center;
             gap: 10px;
             color: var(--dark-text);
-            background-color: rgba(88, 204, 2, 0.1);
-            border: 2px solid var(--primary-color);
+            background-color: rgba(0, 102, 204, 0.1);
+            border: 2px solid #0066CC;
             border-radius: 12px;
             padding: 12px 20px;
             font-weight: 600;
@@ -73,10 +175,10 @@
         }
 
         .back-button-container button:hover {
-            background-color: var(--primary-color);
+            background-color: #0066CC;
             color: white;
             transform: translateY(-2px);
-            box-shadow: 0 6px 12px rgba(88, 204, 2, 0.3);
+            box-shadow: 0 6px 12px rgba(0, 102, 204, 0.3);
         }
 
         .category-info {
@@ -104,10 +206,10 @@
         }
 
         .games-section {
-            background-color: rgba(255, 255, 255, 0.95);
+            background-color: white;
             border-radius: 16px;
             padding: 40px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 4px 12px rgba(0, 102, 204, 0.1);
             margin-bottom: 30px;
         }
 
@@ -127,7 +229,7 @@
             transform: translateX(-50%);
             width: 80px;
             height: 4px;
-            background: linear-gradient(90deg, var(--primary-color), var(--blue-color));
+            background: linear-gradient(90deg, #0066CC, #00B4D8);
             border-radius: 2px;
         }
 
@@ -142,7 +244,7 @@
             background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
             border-radius: 16px;
             padding: 30px;
-            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 8px 25px rgba(0, 102, 204, 0.1);
             transition: all 0.3s ease;
             border: 2px solid transparent;
             position: relative;
@@ -151,8 +253,8 @@
 
         .game-card:hover {
             transform: translateY(-8px);
-            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
-            border-color: var(--primary-color);
+            box-shadow: 0 15px 35px rgba(0, 102, 204, 0.15);
+            border-color: #0066CC;
         }
 
         .game-card::before {
@@ -162,7 +264,7 @@
             left: 0;
             right: 0;
             height: 4px;
-            background: linear-gradient(90deg, var(--primary-color), var(--blue-color));
+            background: linear-gradient(90deg, #0066CC, #00B4D8);
             transform: scaleX(0);
             transition: transform 0.3s ease;
         }
@@ -197,7 +299,7 @@
 
         .game-level-badge {
             display: inline-block;
-            background-color: var(--primary-color);
+            background: linear-gradient(135deg, #0066CC 0%, #00B4D8 100%);
             color: white;
             padding: 6px 12px;
             border-radius: 20px;
@@ -207,10 +309,9 @@
         }
 
         .game-button {
-            display: block;
-            width: 100%;
+            display: inline-block;
             padding: 15px 25px;
-            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            background: linear-gradient(135deg, #0066CC, #00B4D8);
             color: white;
             text-decoration: none;
             border-radius: 12px;
@@ -218,15 +319,14 @@
             font-size: 18px;
             text-align: center;
             transition: all 0.3s ease;
-            box-shadow: 0 4px 15px rgba(88, 204, 2, 0.3);
+            box-shadow: 0 4px 15px rgba(0, 102, 204, 0.3);
             cursor: pointer;
             border: none;
         }
 
         .game-button:hover {
             transform: translateY(-2px);
-            box-shadow: 0 8px 20px rgba(88, 204, 2, 0.4);
-            background: linear-gradient(135deg, var(--secondary-color), var(--primary-color));
+            box-shadow: 0 8px 20px rgba(0, 102, 204, 0.4);
         }
 
         .main-content {
@@ -237,36 +337,73 @@
             display: none;
         }
 
-        .games-footer {
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        main {
+            padding: 40px 0;
+        }
+
+        footer {
+            background-color: #f5f5f5;
+            padding: 20px 0;
             text-align: center;
-            color: white;
-            padding: 20px;
-            background-color: rgba(0, 0, 0, 0.2);
-            border-radius: 8px;
-            margin-bottom: 30px;
+        }
+
+        @media (max-width: 768px) {
+            .nav-center {
+                display: none;
+            }
+
+            .games-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .category-header {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .category-icon-large {
+                margin-right: 0;
+                margin-bottom: 15px;
+            }
+
+            .back-button-container {
+                margin-right: 0;
+                margin-bottom: 20px;
+            }
         }
     </style>
 </head>
 <body>
 
-    <!-- Pantalla Principal -->
+    <!-- Header -->
     <header>
-        <div class="container">
-            <div class="header-content">
-                <div class="logo">
-                    <a href="https://plekdev.github.io/BlueMinds/" style="color: inherit; text-decoration: none; display: flex; align-items: center;">
-                        <img src="../android-chrome-512x512.png" style="width: 2rem; height: 2rem; margin-right: 1rem;" />
-                        <span style="color: #01B3E1;">BlueMinds</span>
-                    </a>
-                </div>
-                <nav>
-                    <ul class="nav-links">
-                        <li><a href="#" onclick="showPage('home')">Inicio</a></li>
-                        <li><a href="#" onclick="showPage('games')">Juegos</a></li>
-                        <li><a href="#" onclick="showPage('test')">Test</a></li>
-                        <li><a href="#" onclick="showPage('about')">Acerca de</a></li>
-                    </ul>
-                </nav>
+        <div class="header-container">
+            <a href="BlueMindsMain.html" class="logo">
+                <img src="../favicon-32x32.png" alt="BlueMinds">
+                <span>BlueMinds</span>
+            </a>
+
+            <ul class="nav-center">
+                <li><a href="BlueMindsMain.html">Inicio</a></li>
+                <li><a href="BlueMindsMain.html#games">Juegos</a></li>
+                <li><a href="test-selector.html">Test</a></li>
+                <li><a href="https://plekdev.github.io/BlueMindsLandingPage/">Acerca de</a></li>
+            </ul>
+
+            <div class="user-menu">
+                <span class="user-name" id="userName">Usuario</span>
+                <a href="perfil.html" class="nav-btn" title="Dashboard">
+                    <i class="fas fa-home"></i>
+                </a>
+                <button class="logout-btn" onclick="logout()" title="Cerrar Sesión">
+                    <i class="fas fa-sign-out-alt"></i>
+                </button>
             </div>
         </div>
     </header>
@@ -397,20 +534,9 @@
         </div>
     </main>
 
-    <!-- Sección de Juegos por Categoría (se despliega dinámicamente) -->
+    <!-- Sección de Juegos por Categoría -->
     <div id="gamesContainer" class="games-container">
-        <header style="background-color: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);">
-            <div class="container">
-                <div class="header-content">
-                    <div class="logo">
-                        <a href="https://plekdev.github.io/BlueMinds/" style="color: inherit; text-decoration: none; display: flex; align-items: center;">
-                            <img src="../android-chrome-512x512.png" style="width: 2rem; height: 2rem; margin-right: 1rem;" />
-                            <span style="color: #01B3E1;">BlueMinds</span>
-                        </a>
-                    </div>
-                </div>
-            </div>
-        </header>
+        
 
         <main style="padding: 40px 0;">
             <div class="container">
@@ -447,12 +573,12 @@
 
     <script src="../games/game-list.js"></script>
     <script>
-        // Lista actualizada de todos los juegos por categoría
+        // Base de datos de juegos
         const gamesDatabase = {
             lenguaje: {
                 name: 'Lenguaje',
                 icon: 'fa-language',
-                color: '#1cb0f6',
+                color: '#0066CC',
                 description: 'Aprende nuevas palabras y mejora tu comunicación',
                 games: [
                     {
@@ -524,7 +650,7 @@
             conducta: {
                 name: 'Conducta',
                 icon: 'fa-smile-beam',
-                color: '#ce82ff',
+                color: '#00B4D8',
                 description: 'Desarrolla habilidades sociales y emocionales',
                 games: [
                     {
@@ -548,7 +674,7 @@
             ocupacional: {
                 name: 'Ocupacional',
                 icon: 'fa-briefcase',
-                color: '#ff9600',
+                color: '#FF6B6B',
                 description: 'Explora diferentes profesiones y actividades',
                 games: [
                     {
@@ -563,50 +689,19 @@
             }
         };
 
-        // Verificar el estado del usuario
-        function checkUserStatus() {
-            const hasCompletedTest = localStorage.getItem('blueminds_test_completed') === 'true';
-            
-            if (hasCompletedTest) {
-                showMainScreen();
-            } else {
-                document.querySelector('main').style.display = 'none';
-                document.querySelector('header').style.display = 'none';
-            }
-        }
-
-        // Mostrar pantalla principal
-        function showMainScreen() {
-            document.getElementById('gamesContainer').classList.remove('show');
-            document.querySelector('main').classList.remove('hide');
-            document.querySelector('header').style.display = 'block';
-            
-            if (localStorage.getItem('blueminds_test_completed') !== 'true') {
-                localStorage.setItem('blueminds_test_completed', 'true');
-            }
-            
-            setTimeout(() => {
-                animateMainProgress();
-            }, 300);
-        }
-
-        // Mostrar juegos por categoría
         function showCategoryGames(category) {
             const categoryData = gamesDatabase[category];
             const games = categoryData.games;
 
-            // Actualizar encabezado
             document.getElementById('categoryIconLarge').innerHTML = `<i class="fas ${categoryData.icon}"></i>`;
             document.getElementById('categoryIconLarge').style.color = categoryData.color;
             document.getElementById('categoryTitleHeader').textContent = categoryData.name;
             document.getElementById('categoryTitleHeader').style.color = categoryData.color;
             document.getElementById('categoryDescHeader').textContent = categoryData.description;
 
-            // Actualizar título de sección
             document.getElementById('gamesSectionTitle').textContent = `Juegos de ${categoryData.name}`;
             document.getElementById('gamesSectionTitle').style.color = categoryData.color;
 
-            // Generar grid de juegos
             const gamesGrid = document.getElementById('gamesGrid');
             gamesGrid.innerHTML = games.map(game => `
                 <div class="game-card">
@@ -621,40 +716,29 @@
                 </div>
             `).join('');
 
-            // Mostrar contenedor de juegos
             document.querySelector('main').classList.add('hide');
             document.getElementById('gamesContainer').classList.add('show');
             window.scrollTo(0, 0);
         }
 
-        // Volver a la pantalla principal
         function backToMain() {
-            showMainScreen();
+            document.querySelector('main').classList.remove('hide');
+            document.getElementById('gamesContainer').classList.remove('show');
         }
 
-        // Animaciones de la pantalla principal
-        function animateMainProgress() {
-            const progressBar = document.querySelector('.level-path-progress');
-            if (progressBar) {
-                progressBar.style.width = '0%';
-                setTimeout(() => {
-                    progressBar.style.width = '70%';
-                }, 300);
+        function logout() {
+            localStorage.removeItem('blueminds_current_user');
+            window.location.href = '../login.html';
+        }
+
+        window.addEventListener('load', () => {
+            const currentUser = localStorage.getItem('blueminds_current_user');
+            if (!currentUser) {
+                window.location.href = '../login.html';
+            } else {
+                const user = JSON.parse(currentUser);
+                document.getElementById('userName').textContent = user.name;
             }
-
-            const categoryProgresses = document.querySelectorAll('.category-level-progress');
-            categoryProgresses.forEach(progress => {
-                const targetWidth = progress.style.width;
-                progress.style.width = '0%';
-                setTimeout(() => {
-                    progress.style.width = targetWidth;
-                }, 500);
-            });
-        }
-
-        // Inicializar al cargar la página
-        document.addEventListener('DOMContentLoaded', () => {
-            checkUserStatus();
         });
     </script>
 </body>

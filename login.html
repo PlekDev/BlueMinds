@@ -1,0 +1,660 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BlueMinds - Iniciar Sesión</title>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Nunito', sans-serif;
+            background: linear-gradient(135deg, #0066CC 0%, #00B4D8 50%, #0099FF 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .login-container {
+            width: 100%;
+            max-width: 500px;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+            animation: slideUp 0.5s ease;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .login-header {
+            background: linear-gradient(135deg, #0066CC 0%, #00B4D8 100%);
+            padding: 40px 20px;
+            text-align: center;
+            color: white;
+        }
+
+        .login-header img {
+            width: 80px;
+            height: 80px;
+            margin-bottom: 15px;
+        }
+
+        .login-header h1 {
+            font-size: 32px;
+            font-weight: 800;
+            margin-bottom: 10px;
+        }
+
+        .login-header p {
+            font-size: 16px;
+            opacity: 0.95;
+        }
+
+        .login-content {
+            padding: 40px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            font-weight: 600;
+            color: #3c3c3c;
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e5e7eb;
+            border-radius: 10px;
+            font-family: 'Nunito', sans-serif;
+            font-size: 16px;
+            transition: all 0.3s ease;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: #0066CC;
+            box-shadow: 0 0 0 3px rgba(0, 102, 204, 0.1);
+        }
+
+        .form-group input::placeholder {
+            color: #999;
+        }
+
+        .btn-login {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, #0066CC 0%, #00B4D8 100%);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-weight: 700;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 10px;
+        }
+
+        .btn-login:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(0, 102, 204, 0.4);
+        }
+
+        .btn-login:active {
+            transform: translateY(0);
+        }
+
+        .divider {
+            text-align: center;
+            margin: 25px 0;
+            position: relative;
+        }
+
+        .divider::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: #e5e7eb;
+        }
+
+        .divider span {
+            background: white;
+            padding: 0 10px;
+            position: relative;
+            color: #999;
+            font-size: 14px;
+        }
+
+        .toggle-form {
+            text-align: center;
+            color: #3c3c3c;
+            font-size: 14px;
+        }
+
+        .toggle-form button {
+            background: none;
+            border: none;
+            color: #0066CC;
+            font-weight: 700;
+            cursor: pointer;
+            margin-left: 5px;
+            transition: color 0.3s ease;
+        }
+
+        .toggle-form button:hover {
+            color: #00B4D8;
+        }
+
+        .form-section {
+            display: none;
+        }
+
+        .form-section.active {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
+        .error-message {
+            color: #ef4444;
+            font-size: 14px;
+            margin-top: 5px;
+            display: none;
+        }
+
+        .error-message.show {
+            display: block;
+        }
+
+        .form-group input.error {
+            border-color: #ef4444;
+        }
+
+        .remember-check {
+            display: flex;
+            align-items: center;
+            margin-top: 15px;
+            font-size: 14px;
+        }
+
+        .remember-check input[type="checkbox"] {
+            width: auto;
+            margin-right: 8px;
+            cursor: pointer;
+        }
+
+        .password-toggle {
+            position: relative;
+        }
+
+        .password-toggle input {
+            padding-right: 40px;
+        }
+
+        .password-toggle button {
+            position: absolute;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: #999;
+            font-size: 18px;
+        }
+
+        .password-toggle button:hover {
+            color: #0066CC;
+        }
+
+        /* Estilos para hacer scroll en form largo */
+        .form-section {
+            max-height: 800px;
+            overflow-y: auto;
+        }
+
+        .form-section::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .form-section::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 10px;
+        }
+
+        .form-section::-webkit-scrollbar-thumb {
+            background: #0066CC;
+            border-radius: 10px;
+        }
+
+        .form-section::-webkit-scrollbar-thumb:hover {
+            background: #00B4D8;
+        }
+
+        @media (max-width: 480px) {
+            .login-header {
+                padding: 30px 15px;
+            }
+
+            .login-header img {
+                width: 60px;
+                height: 60px;
+            }
+
+            .login-header h1 {
+                font-size: 26px;
+            }
+
+            .login-content {
+                padding: 25px;
+            }
+
+            .form-group input {
+                padding: 11px 12px;
+                font-size: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <!-- Header -->
+        <div class="login-header">
+            <img src="favicon-32x32.png" alt="BlueMinds">
+            <h1>BlueMinds</h1>
+            <p>Plataforma de Educación Inclusiva</p>
+        </div>
+
+        <!-- Content -->
+        <div class="login-content">
+            <!-- Login Form -->
+            <div id="loginForm" class="form-section active">
+                <h2 style="color: #3c3c3c; margin-bottom: 25px; font-size: 24px;">Iniciar Sesión</h2>
+                
+                <form onsubmit="handleLogin(event)">
+                    <div class="form-group">
+                        <label for="login-email">Email</label>
+                        <input 
+                            type="email" 
+                            id="login-email" 
+                            placeholder="tu@email.com"
+                            required
+                        >
+                        <span class="error-message" id="loginEmailError"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="login-password">Contraseña</label>
+                        <div class="password-toggle">
+                            <input 
+                                type="password" 
+                                id="login-password" 
+                                placeholder="••••••••"
+                                required
+                            >
+                            <button type="button" onclick="togglePassword('login-password')">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                        </div>
+                        <span class="error-message" id="loginPasswordError"></span>
+                    </div>
+
+                    <div class="remember-check">
+                        <input type="checkbox" id="rememberMe">
+                        <label for="rememberMe" style="margin: 0; cursor: pointer;">Recuérdame</label>
+                    </div>
+
+                    <button type="submit" class="btn-login">
+                        <i class="fas fa-sign-in-alt"></i> Iniciar Sesión
+                    </button>
+                </form>
+
+                <div class="divider">
+                    <span>¿No tienes cuenta?</span>
+                </div>
+
+                <div class="toggle-form">
+                    <button onclick="toggleForms()">Crear una cuenta aquí</button>
+                </div>
+            </div>
+
+            <!-- Register Form -->
+            <div id="registerForm" class="form-section">
+                <h2 style="color: #3c3c3c; margin-bottom: 25px; font-size: 24px;">Crear Cuenta</h2>
+                
+                <form onsubmit="handleRegister(event)">
+                    <div class="form-group">
+                        <label for="register-name">Nombre Completo</label>
+                        <input 
+                            type="text" 
+                            id="register-name" 
+                            placeholder="Tu nombre"
+                            required
+                        >
+                        <span class="error-message" id="registerNameError"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="register-age">Edad</label>
+                        <input 
+                            type="number" 
+                            id="register-age" 
+                            placeholder="Ej: 8"
+                            min="3"
+                            max="18"
+                            required
+                        >
+                        <span class="error-message" id="registerAgeError"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="register-email">Email</label>
+                        <input 
+                            type="email" 
+                            id="register-email" 
+                            placeholder="tu@email.com"
+                            required
+                        >
+                        <span class="error-message" id="registerEmailError"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="register-country">País</label>
+                        <input 
+                            type="text" 
+                            id="register-country" 
+                            placeholder="Tu país"
+                            required
+                        >
+                        <span class="error-message" id="registerCountryError"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="register-password">Contraseña</label>
+                        <div class="password-toggle">
+                            <input 
+                                type="password" 
+                                id="register-password" 
+                                placeholder="••••••••"
+                                required
+                            >
+                            <button type="button" onclick="togglePassword('register-password')">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                        </div>
+                        <span class="error-message" id="registerPasswordError"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="register-confirm">Confirmar Contraseña</label>
+                        <div class="password-toggle">
+                            <input 
+                                type="password" 
+                                id="register-confirm" 
+                                placeholder="••••••••"
+                                required
+                            >
+                            <button type="button" onclick="togglePassword('register-confirm')">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                        </div>
+                        <span class="error-message" id="registerConfirmError"></span>
+                    </div>
+
+                    <button type="submit" class="btn-login">
+                        <i class="fas fa-user-plus"></i> Crear Cuenta
+                    </button>
+                </form>
+
+                <div class="divider">
+                    <span>¿Ya tienes cuenta?</span>
+                </div>
+
+                <div class="toggle-form">
+                    <button onclick="toggleForms()">Inicia sesión aquí</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Detectar si viene desde botón "Crear Cuenta"
+        function initializeForm() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const action = urlParams.get('action');
+            
+            if (action === 'register') {
+                // Mostrar formulario de registro
+                document.getElementById('loginForm').classList.remove('active');
+                document.getElementById('registerForm').classList.add('active');
+            }
+        }
+
+        // Toggle entre formularios
+        function toggleForms() {
+            const loginForm = document.getElementById('loginForm');
+            const registerForm = document.getElementById('registerForm');
+            
+            loginForm.classList.toggle('active');
+            registerForm.classList.toggle('active');
+            
+            // Limpiar errores
+            clearErrors();
+            
+            // Actualizar URL sin recargar
+            const newUrl = loginForm.classList.contains('active') ? 'login.html' : 'login.html?action=register';
+            window.history.replaceState({}, document.title, newUrl);
+        }
+
+        // Toggle visibilidad contraseña
+        function togglePassword(inputId) {
+            const input = document.getElementById(inputId);
+            const button = event.target.closest('button');
+            
+            if (input.type === 'password') {
+                input.type = 'text';
+                button.innerHTML = '<i class="fas fa-eye-slash"></i>';
+            } else {
+                input.type = 'password';
+                button.innerHTML = '<i class="fas fa-eye"></i>';
+            }
+        }
+
+        // Limpiar mensajes de error
+        function clearErrors() {
+            document.querySelectorAll('.error-message').forEach(el => {
+                el.classList.remove('show');
+                el.textContent = '';
+            });
+            document.querySelectorAll('input').forEach(el => {
+                el.classList.remove('error');
+            });
+        }
+
+        // Mostrar error
+        function showError(inputId, message) {
+            const input = document.getElementById(inputId);
+            const errorEl = document.getElementById(inputId + 'Error') || 
+                           document.querySelector(`[id="${inputId}Error"]`);
+            
+            if (input) input.classList.add('error');
+            if (errorEl) {
+                errorEl.textContent = message;
+                errorEl.classList.add('show');
+            }
+        }
+
+        // Manejar login
+        function handleLogin(event) {
+            event.preventDefault();
+            clearErrors();
+
+            const email = document.getElementById('login-email').value.trim();
+            const password = document.getElementById('login-password').value;
+            let isValid = true;
+
+            // Validaciones
+            if (!email) {
+                showError('login-email', 'El email es requerido');
+                isValid = false;
+            }
+
+            if (!password) {
+                showError('login-password', 'La contraseña es requerida');
+                isValid = false;
+            }
+
+            if (!isValid) return;
+
+            // Verificar si el usuario existe en localStorage
+            const users = JSON.parse(localStorage.getItem('blueminds_users') || '[]');
+            const user = users.find(u => u.email === email && u.password === password);
+
+            if (!user) {
+                showError('login-email', 'Email o contraseña incorrectos');
+                return;
+            }
+
+            // Guardar sesión
+            localStorage.setItem('blueminds_current_user', JSON.stringify({
+                id: user.id,
+                name: user.name,
+                email: user.email,
+                age: user.age,
+                country: user.country
+            }));
+
+            // Redirigir a perfil
+            window.location.href = 'pages/perfil.html';
+        }
+
+        // Manejar registro
+        function handleRegister(event) {
+            event.preventDefault();
+            clearErrors();
+
+            const name = document.getElementById('register-name').value.trim();
+            const age = document.getElementById('register-age').value;
+            const email = document.getElementById('register-email').value.trim();
+            const country = document.getElementById('register-country').value.trim();
+            const password = document.getElementById('register-password').value;
+            const confirmPassword = document.getElementById('register-confirm').value;
+
+            let isValid = true;
+
+            // Validaciones
+            if (!name || name.length < 3) {
+                showError('register-name', 'El nombre debe tener al menos 3 caracteres');
+                isValid = false;
+            }
+
+            if (!age || age < 3 || age > 18) {
+                showError('register-age', 'La edad debe estar entre 3 y 18 años');
+                isValid = false;
+            }
+
+            if (!email) {
+                showError('register-email', 'El email es requerido');
+                isValid = false;
+            }
+
+            if (!country || country.length < 3) {
+                showError('register-country', 'El país es requerido');
+                isValid = false;
+            }
+
+            if (!password || password.length < 6) {
+                showError('register-password', 'La contraseña debe tener al menos 6 caracteres');
+                isValid = false;
+            }
+
+            if (password !== confirmPassword) {
+                showError('register-confirm', 'Las contraseñas no coinciden');
+                isValid = false;
+            }
+
+            if (!isValid) return;
+
+            // Verificar si el email ya existe
+            const users = JSON.parse(localStorage.getItem('blueminds_users') || '[]');
+            if (users.find(u => u.email === email)) {
+                showError('register-email', 'Este email ya está registrado');
+                return;
+            }
+
+            // Crear nuevo usuario
+            const newUser = {
+                id: Date.now(),
+                name,
+                age,
+                email,
+                country,
+                password,
+                createdAt: new Date().toLocaleDateString('es-ES'),
+                totalGamesCompleted: 0,
+                progress: 0
+            };
+
+            users.push(newUser);
+            localStorage.setItem('blueminds_users', JSON.stringify(users));
+
+            // Guardar sesión
+            localStorage.setItem('blueminds_current_user', JSON.stringify({
+                id: newUser.id,
+                name: newUser.name,
+                email: newUser.email,
+                age: newUser.age,
+                country: newUser.country
+            }));
+
+            // Redirigir a perfil
+            window.location.href = 'pages/perfil.html';
+        }
+
+        // Verificar si ya hay usuario logeado
+        window.addEventListener('load', () => {
+            const currentUser = localStorage.getItem('blueminds_current_user');
+            if (currentUser) {
+                window.location.href = 'pages/perfil.html';
+            }
+            
+            // Inicializar formulario según parámetros
+            initializeForm();
+        });
+    </script>
+</body>
+</html>

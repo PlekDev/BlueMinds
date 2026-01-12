@@ -1,3 +1,17 @@
+/* style.css - Adivina la Profesión */
+
+:root {
+    --primary-blue: #0066CC;
+    --cyan-light: #00B4D8;
+    --cyan-bright: #0099FF;
+    --red-color: #EF4444;
+    --light-bg: #F0F9FF;
+    --white: #FFFFFF;
+    --dark-text: #1F2937;
+    --shadow: 0 4px 12px rgba(0, 102, 204, 0.15);
+    --border-radius: 16px;
+}
+
 * {
     margin: 0;
     padding: 0;
@@ -6,7 +20,7 @@
 
 body {
     font-family: 'Nunito', sans-serif;
-    background: linear-gradient(135deg, #58cc02 0%, #89e219 100%);
+    background: linear-gradient(135deg, #0066CC 0%, #00B4D8 50%, #0099FF 100%);
     min-height: 100vh;
     display: flex;
     justify-content: center;
@@ -17,14 +31,14 @@ body {
 .game-container {
     width: 100%;
     max-width: 800px;
-    background: #fff;
+    background: var(--white);
     border-radius: 20px;
-    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 20px 40px rgba(0, 102, 204, 0.2);
     overflow: hidden;
 }
 
 .game-header {
-    background: linear-gradient(135deg, #58cc02 0%, #89e219 100%);
+    background: linear-gradient(135deg, #0066CC 0%, #0099FF 100%);
     padding: 20px 30px;
     display: flex;
     justify-content: space-between;
@@ -35,7 +49,7 @@ body {
 .game-header h1 {
     font-size: 28px;
     font-weight: 800;
-    color: #fff;
+    color: var(--white);
     text-align: center;
     flex: 1;
     text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
@@ -52,7 +66,7 @@ body {
     align-items: center;
     cursor: pointer;
     transition: all 0.3s ease;
-    color: #fff;
+    color: var(--white);
 }
 
 .btn-back:hover {
@@ -81,7 +95,7 @@ body {
 .score-value {
     font-size: 20px;
     font-weight: 700;
-    color: #fff;
+    color: var(--white);
 }
 
 .game-main {
@@ -99,7 +113,7 @@ body {
 }
 
 .progress-fill {
-    background: linear-gradient(90deg, #58cc02 0%, #89e219 100%);
+    background: linear-gradient(90deg, #0066CC 0%, #0099FF 100%);
     height: 100%;
     width: 33.33%;
     border-radius: 10px;
@@ -112,7 +126,7 @@ body {
     right: 0;
     font-size: 14px;
     font-weight: 600;
-    color: #58cc02;
+    color: var(--primary-blue);
 }
 
 .question-container {
@@ -133,10 +147,10 @@ body {
 }
 
 .image-frame {
-    background: #fff;
+    background: var(--white);
     border-radius: 20px;
     padding: 15px;
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 8px 20px rgba(0, 102, 204, 0.1);
     display: inline-block;
 }
 
@@ -153,7 +167,7 @@ body {
     font-size: 24px;
     font-weight: 700;
     margin-bottom: 35px;
-    color: #3c3c3c;
+    color: var(--dark-text);
     line-height: 1.4;
 }
 
@@ -165,7 +179,7 @@ body {
 }
 
 .option {
-    background: #fff;
+    background: var(--white);
     border: 3px solid #e5e5e5;
     border-radius: 15px;
     padding: 20px 15px;
@@ -173,35 +187,35 @@ body {
     transition: all 0.3s ease;
     font-size: 18px;
     font-weight: 600;
-    color: #3c3c3c;
+    color: var(--dark-text);
     position: relative;
     overflow: hidden;
 }
 
 .option:hover {
     background: #f7f7f7;
-    border-color: #58cc02;
+    border-color: var(--primary-blue);
     transform: translateY(-3px);
-    box-shadow: 0 6px 15px rgba(88, 204, 2, 0.2);
+    box-shadow: 0 6px 15px rgba(0, 102, 204, 0.2);
 }
 
 .option.selected {
-    background: #e8f5e8;
-    border-color: #58cc02;
-    color: #58cc02;
+    background: rgba(0, 102, 204, 0.1);
+    border-color: var(--primary-blue);
+    color: var(--primary-blue);
 }
 
 .option.correct {
-    background: #e8f5e8;
-    border-color: #58cc02;
-    color: #58cc02;
+    background: rgba(0, 102, 204, 0.1);
+    border-color: var(--primary-blue);
+    color: var(--primary-blue);
     animation: correctPulse 0.6s ease;
 }
 
 .option.incorrect {
-    background: #ffe8e8;
-    border-color: #ff4b4b;
-    color: #ff4b4b;
+    background: rgba(239, 68, 68, 0.1);
+    border-color: var(--red-color);
+    color: var(--red-color);
     animation: shake 0.5s ease;
 }
 
@@ -225,7 +239,7 @@ body {
 }
 
 .feedback-content {
-    background: #fff;
+    background: var(--white);
     border-radius: 25px;
     padding: 12px 24px;
     display: flex;
@@ -243,13 +257,13 @@ body {
 }
 
 .feedback.correct .feedback-content {
-    background: #e8f5e8;
-    color: #58cc02;
+    background: rgba(0, 102, 204, 0.1);
+    color: var(--primary-blue);
 }
 
 .feedback.incorrect .feedback-content {
-    background: #ffe8e8;
-    color: #ff4b4b;
+    background: rgba(239, 68, 68, 0.1);
+    color: var(--red-color);
 }
 
 .feedback-icon {
@@ -269,8 +283,8 @@ body {
 }
 
 .btn {
-    background: linear-gradient(135deg, #58cc02 0%, #89e219 100%);
-    color: #fff;
+    background: linear-gradient(135deg, #0066CC 0%, #0099FF 100%);
+    color: var(--white);
     border: none;
     border-radius: 15px;
     padding: 15px 30px;
@@ -281,12 +295,12 @@ body {
     display: flex;
     align-items: center;
     gap: 8px;
-    box-shadow: 0 4px 10px rgba(88, 204, 2, 0.3);
+    box-shadow: 0 4px 10px rgba(0, 102, 204, 0.3);
 }
 
 .btn:hover {
     transform: translateY(-2px);
-    box-shadow: 0 6px 15px rgba(88, 204, 2, 0.4);
+    box-shadow: 0 6px 15px rgba(0, 102, 204, 0.4);
 }
 
 .btn:active {
@@ -300,21 +314,24 @@ body {
 }
 
 .btn-secondary {
-    background: linear-gradient(135deg, #1cb0f6 0%, #58cc02 100%);
-    box-shadow: 0 4px 10px rgba(28, 176, 246, 0.3);
+    background: var(--white);
+    color: var(--primary-blue);
+    border: 3px solid var(--primary-blue);
+    box-shadow: none;
 }
 
 .btn-secondary:hover {
-    box-shadow: 0 6px 15px rgba(28, 176, 246, 0.4);
+    background: var(--primary-blue);
+    color: var(--white);
 }
 
 .btn-tertiary {
-    background: linear-gradient(135deg, #ff9600 0%, #ffc800 100%);
-    box-shadow: 0 4px 10px rgba(255, 150, 0, 0.3);
+    background: var(--cyan-light);
+    box-shadow: 0 4px 10px rgba(0, 180, 216, 0.3);
 }
 
 .btn-tertiary:hover {
-    box-shadow: 0 6px 15px rgba(255, 150, 0, 0.4);
+    box-shadow: 0 6px 15px rgba(0, 180, 216, 0.4);
 }
 
 .btn-icon {
@@ -340,7 +357,7 @@ body {
 }
 
 .modal-content {
-    background: #fff;
+    background: var(--white);
     border-radius: 25px;
     padding: 40px;
     text-align: center;
@@ -371,7 +388,7 @@ body {
 }
 
 .modal-content h2 {
-    color: #3c3c3c;
+    color: var(--dark-text);
     font-size: 28px;
     font-weight: 800;
 }
@@ -397,7 +414,7 @@ body {
 .score-number {
     font-size: 36px;
     font-weight: 800;
-    color: #58cc02;
+    color: var(--primary-blue);
 }
 
 .score-total {
@@ -408,7 +425,7 @@ body {
 
 .modal-body p {
     font-size: 18px;
-    color: #3c3c3c;
+    color: var(--dark-text);
     margin-bottom: 20px;
     line-height: 1.5;
 }

@@ -68,6 +68,33 @@
             opacity: 0.95;
         }
 
+        .server-status {
+            padding: 15px;
+            margin-bottom: 0;
+            font-size: 14px;
+            font-weight: 600;
+            border-radius: 0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .server-status.online {
+            background-color: #d1fae5;
+            color: #065f46;
+            border-bottom: 1px solid #a7f3d0;
+        }
+
+        .server-status.offline {
+            background-color: #fee2e2;
+            color: #991b1b;
+            border-bottom: 1px solid #fecaca;
+        }
+
+        .server-status i {
+            font-size: 16px;
+        }
+
         .login-content {
             padding: 40px;
         }
@@ -104,6 +131,10 @@
             color: #999;
         }
 
+        .form-group input.error {
+            border-color: #ef4444;
+        }
+
         .btn-login {
             width: 100%;
             padding: 14px;
@@ -116,15 +147,24 @@
             cursor: pointer;
             transition: all 0.3s ease;
             margin-top: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
         }
 
-        .btn-login:hover {
+        .btn-login:hover:not(:disabled) {
             transform: translateY(-2px);
             box-shadow: 0 8px 20px rgba(0, 102, 204, 0.4);
         }
 
-        .btn-login:active {
+        .btn-login:active:not(:disabled) {
             transform: translateY(0);
+        }
+
+        .btn-login:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
         }
 
         .divider {
@@ -200,10 +240,6 @@
             display: block;
         }
 
-        .form-group input.error {
-            border-color: #ef4444;
-        }
-
         .remember-check {
             display: flex;
             align-items: center;
@@ -241,7 +277,6 @@
             color: #0066CC;
         }
 
-        /* Estilos para hacer scroll en form largo */
         .form-section {
             max-height: 800px;
             overflow-y: auto;
@@ -292,6 +327,12 @@
 </head>
 <body>
     <div class="login-container">
+        <!-- Estado del servidor -->
+        <div id="serverStatus" class="server-status offline">
+            <i class="fas fa-wifi"></i>
+            <span id="statusText">Conectando al servidor...</span>
+        </div>
+
         <!-- Header -->
         <div class="login-header">
             <img src="favicon-32x32.png" alt="BlueMinds">
@@ -338,7 +379,7 @@
                         <label for="rememberMe" style="margin: 0; cursor: pointer;">Recuérdame</label>
                     </div>
 
-                    <button type="submit" class="btn-login">
+                    <button type="submit" class="btn-login" id="loginBtn">
                         <i class="fas fa-sign-in-alt"></i> Iniciar Sesión
                     </button>
                 </form>
@@ -435,7 +476,7 @@
                         <span class="error-message" id="registerConfirmError"></span>
                     </div>
 
-                    <button type="submit" class="btn-login">
+                    <button type="submit" class="btn-login" id="registerBtn">
                         <i class="fas fa-user-plus"></i> Crear Cuenta
                     </button>
                 </form>
@@ -451,16 +492,46 @@
         </div>
     </div>
 
+    <!-- Cargar API (IMPORTANTE: copiar api.js en la misma carpeta) -->
+    <script src="api.js"></script>
     <script>
+        // Variables globales
+        let serverOnline = false;
+
         // Detectar si viene desde botón "Crear Cuenta"
         function initializeForm() {
             const urlParams = new URLSearchParams(window.location.search);
             const action = urlParams.get('action');
             
             if (action === 'register') {
-                // Mostrar formulario de registro
                 document.getElementById('loginForm').classList.remove('active');
                 document.getElementById('registerForm').classList.add('active');
+            }
+        }
+
+        // Verificar estado del servidor
+        async function checkServerStatus() {
+            try {
+                const isOnline = await api.checkHealth();
+                serverOnline = isOnline;
+                updateServerStatusUI(isOnline);
+            } catch (error) {
+                updateServerStatusUI(false);
+            }
+        }
+
+        function updateServerStatusUI(isOnline) {
+            const statusEl = document.getElementById('serverStatus');
+            const statusText = document.getElementById('statusText');
+            
+            if (isOnline) {
+                statusEl.classList.remove('offline');
+                statusEl.classList.add('online');
+                statusText.textContent = 'Servidor conectado';
+            } else {
+                statusEl.classList.remove('online');
+                statusEl.classList.add('offline');
+                statusText.textContent = 'Servidor no disponible - Verifica la conexión';
             }
         }
 
@@ -472,10 +543,8 @@
             loginForm.classList.toggle('active');
             registerForm.classList.toggle('active');
             
-            // Limpiar errores
             clearErrors();
             
-            // Actualizar URL sin recargar
             const newUrl = loginForm.classList.contains('active') ? 'login.html' : 'login.html?action=register';
             window.history.replaceState({}, document.title, newUrl);
         }
@@ -508,8 +577,7 @@
         // Mostrar error
         function showError(inputId, message) {
             const input = document.getElementById(inputId);
-            const errorEl = document.getElementById(inputId + 'Error') || 
-                           document.querySelector(`[id="${inputId}Error"]`);
+            const errorEl = document.getElementById(inputId + 'Error');
             
             if (input) input.classList.add('error');
             if (errorEl) {
@@ -519,52 +587,54 @@
         }
 
         // Manejar login
-        function handleLogin(event) {
+        async function handleLogin(event) {
             event.preventDefault();
+            
+            if (!serverOnline) {
+                showError('login-email', 'El servidor no está disponible');
+                return;
+            }
+
             clearErrors();
 
             const email = document.getElementById('login-email').value.trim();
             const password = document.getElementById('login-password').value;
-            let isValid = true;
+            const loginBtn = document.getElementById('loginBtn');
 
-            // Validaciones
-            if (!email) {
-                showError('login-email', 'El email es requerido');
-                isValid = false;
-            }
-
-            if (!password) {
-                showError('login-password', 'La contraseña es requerida');
-                isValid = false;
-            }
-
-            if (!isValid) return;
-
-            // Verificar si el usuario existe en localStorage
-            const users = JSON.parse(localStorage.getItem('blueminds_users') || '[]');
-            const user = users.find(u => u.email === email && u.password === password);
-
-            if (!user) {
-                showError('login-email', 'Email o contraseña incorrectos');
+            if (!email || !password) {
+                if (!email) showError('login-email', 'El email es requerido');
+                if (!password) showError('login-password', 'La contraseña es requerida');
                 return;
             }
 
-            // Guardar sesión
-            localStorage.setItem('blueminds_current_user', JSON.stringify({
-                id: user.id,
-                name: user.name,
-                email: user.email,
-                age: user.age,
-                country: user.country
-            }));
+            // Desabilitar botón
+            loginBtn.disabled = true;
+            loginBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Iniciando...';
 
-            // Redirigir a perfil
-            window.location.href = 'pages/perfil.html';
+            try {
+                const result = await api.login(email, password);
+                
+                // Login exitoso
+                setTimeout(() => {
+                    window.location.href = 'pages/perfil.html';
+                }, 500);
+            } catch (error) {
+                showError('login-email', error.message || 'Error al iniciar sesión');
+            } finally {
+                loginBtn.disabled = false;
+                loginBtn.innerHTML = '<i class="fas fa-sign-in-alt"></i> Iniciar Sesión';
+            }
         }
 
         // Manejar registro
-        function handleRegister(event) {
+        async function handleRegister(event) {
             event.preventDefault();
+            
+            if (!serverOnline) {
+                showError('register-email', 'El servidor no está disponible');
+                return;
+            }
+
             clearErrors();
 
             const name = document.getElementById('register-name').value.trim();
@@ -576,7 +646,6 @@
 
             let isValid = true;
 
-            // Validaciones
             if (!name || name.length < 3) {
                 showError('register-name', 'El nombre debe tener al menos 3 caracteres');
                 isValid = false;
@@ -592,7 +661,7 @@
                 isValid = false;
             }
 
-            if (!country || country.length < 3) {
+            if (!country || country.length < 2) {
                 showError('register-country', 'El país es requerido');
                 isValid = false;
             }
@@ -609,51 +678,37 @@
 
             if (!isValid) return;
 
-            // Verificar si el email ya existe
-            const users = JSON.parse(localStorage.getItem('blueminds_users') || '[]');
-            if (users.find(u => u.email === email)) {
-                showError('register-email', 'Este email ya está registrado');
-                return;
+            const registerBtn = document.getElementById('registerBtn');
+            registerBtn.disabled = true;
+            registerBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Creando...';
+
+            try {
+                const result = await api.register(name, age, email, country, password, confirmPassword);
+                
+                // Registro exitoso
+                setTimeout(() => {
+                    window.location.href = 'pages/perfil.html';
+                }, 500);
+            } catch (error) {
+                showError('register-email', error.message || 'Error al crear cuenta');
+            } finally {
+                registerBtn.disabled = false;
+                registerBtn.innerHTML = '<i class="fas fa-user-plus"></i> Crear Cuenta';
             }
-
-            // Crear nuevo usuario
-            const newUser = {
-                id: Date.now(),
-                name,
-                age,
-                email,
-                country,
-                password,
-                createdAt: new Date().toLocaleDateString('es-ES'),
-                totalGamesCompleted: 0,
-                progress: 0
-            };
-
-            users.push(newUser);
-            localStorage.setItem('blueminds_users', JSON.stringify(users));
-
-            // Guardar sesión
-            localStorage.setItem('blueminds_current_user', JSON.stringify({
-                id: newUser.id,
-                name: newUser.name,
-                email: newUser.email,
-                age: newUser.age,
-                country: newUser.country
-            }));
-
-            // Redirigir a perfil
-            window.location.href = 'pages/perfil.html';
         }
 
-        // Verificar si ya hay usuario logeado
+        // Inicialización
         window.addEventListener('load', () => {
-            const currentUser = localStorage.getItem('blueminds_current_user');
+            const currentUser = api.getCurrentUser();
             if (currentUser) {
                 window.location.href = 'pages/perfil.html';
             }
             
-            // Inicializar formulario según parámetros
             initializeForm();
+            checkServerStatus();
+            
+            // Verificar estado del servidor cada 5 segundos
+            setInterval(checkServerStatus, 5000);
         });
     </script>
 </body>

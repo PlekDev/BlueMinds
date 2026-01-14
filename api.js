@@ -1,117 +1,111 @@
-// api.js
-// Este archivo maneja todas las llamadas a la API del servidor
+/**
+ * BlueMindsAPI Service Provider
+ * Comprehensive handler for Authentication, Therapy Sessions, and Game Analytics.
+ * @author Neuro-BlueMinds Team
+ * @version 2.2.0
+ */
 
-const API_URL = process.env.NODE_ENV === 'production' 
-  ? 'http://tu-ip-servidor:3000/api' 
-  : 'http://localhost:3000/api';
-
-// Configurar la URL del servidor (cambiar según sea necesario)
-const SERVER_URL = 'http://192.168.1.14 :3000'; // Cambiar a la IP de tu servidor por el momento es la lap
+const KOYEB_URL = 'https://crude-sailfish-blueminds-65b642e8.koyeb.app/api'; 
+const LOCAL_URL = 'http://localhost:8000/api';
 
 class BlueMindsAPI {
   constructor() {
-    this.baseURL = `${SERVER_URL}/api`;
-    this.currentUser = this.loadUser();
+    /** @type {string} Dynamic Base URL selection */
+    //this.baseURL = window.location.hostname.includes('github.io') ? KOYEB_URL : LOCAL_URL;
+    this.baseURL = KOYEB_URL ;
+    /** @type {Object|null} Session User Data */
+    this.currentUser = this._loadUser();
+    
+    /** @type {string|null} JWT Security Token */
+    this.token = localStorage.getItem('blueminds_token');
   }
 
-  // ==================== AUTENTICACIÓN ====================
+  /**
+   * Internal helper to generate authorized headers.
+   * @private
+   */
+  _getHeaders() {
+    const headers = { 'Content-Type': 'application/json' };
+    if (this.token) {
+      headers['Authorization'] = `Bearer ${this.token}`;
+    }
+    return headers;
+  }
+
+  // ========================================================================
+  // AUTHENTICATION MODULE
+  // ========================================================================
 
   async register(name, age, email, country, password, confirmPassword) {
-    try {
-      const response = await fetch(`${this.baseURL}/auth/register`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          name,
-          age: parseInt(age),
-          email,
-          country,
-          password,
-          confirmPassword
-        })
-      });
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.error || 'Error al registrar');
-      }
-
-      // Guardar usuario en localStorage
-      this.currentUser = data.user;
-      localStorage.setItem('blueminds_current_user', JSON.stringify(data.user));
-      localStorage.setItem('blueminds_token', JSON.stringify(data.user.id));
-
-      return data;
-    } catch (error) {
-      console.error('Error en registro:', error);
-      throw error;
-    }
+    const response = await fetch(`${this.baseURL}/auth/register`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ name, age: parseInt(age), email, country, password, confirmPassword })
+    });
+    return this._handleAuthResponse(response);
   }
 
   async login(email, password) {
-    try {
-      const response = await fetch(`${this.baseURL}/auth/login`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ email, password })
-      });
+    const response = await fetch(`${this.baseURL}/auth/login`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email, password })
+    });
+    return this._handleAuthResponse(response);
+  }
 
-      const data = await response.json();
+  async loginWithGoogle(googleCredential) {
+    const response = await fetch(`${this.baseURL}/auth/google`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ token: googleCredential })
+    });
+    return this._handleAuthResponse(response);
+  }
 
-      if (!response.ok) {
-        throw new Error(data.error || 'Error al iniciar sesión');
-      }
-
-      // Guardar usuario en localStorage
-      this.currentUser = data.user;
-      localStorage.setItem('blueminds_current_user', JSON.stringify(data.user));
-      localStorage.setItem('blueminds_token', JSON.stringify(data.user.id));
-
-      return data;
-    } catch (error) {
-      console.error('Error en login:', error);
-      throw error;
+  /**
+   * Core logic to process authentication responses and persist session.
+   * @private
+   */
+  async _handleAuthResponse(response) {
+    const data = await response.json();
+    
+    // Improved error handling: capture backend error messages precisely
+    if (!response.ok) {
+      const errorMsg = data.error || `Error ${response.status}: Authentication Failed`;
+      throw new Error(errorMsg);
     }
+
+    this.currentUser = data.user;
+    this.token = data.token;
+    
+    // Persist session to LocalStorage
+    localStorage.setItem('blueminds_current_user', JSON.stringify(data.user));
+    localStorage.setItem('blueminds_token', data.token);
+    
+    return data;
   }
 
   logout() {
     this.currentUser = null;
-    localStorage.removeItem('blueminds_current_user');
-    localStorage.removeItem('blueminds_token');
+    this.token = null;
+    localStorage.clear();
+    window.location.href = '/login.html';
   }
 
-  getCurrentUser() {
-    return this.currentUser;
-  }
-
-  loadUser() {
-    const stored = localStorage.getItem('blueminds_current_user');
-    return stored ? JSON.parse(stored) : null;
-  }
-
-  // ==================== PROGRESO EN JUEGOS ====================
+  // ========================================================================
+  // GAME PROGRESS MODULE
+  // ========================================================================
 
   async getGameProgress(userId) {
     try {
       const response = await fetch(`${this.baseURL}/progress/${userId}`, {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json'
-        }
+        headers: this._getHeaders()
       });
-
-      if (!response.ok) {
-        throw new Error('Error al obtener progreso');
-      }
-
+      if (!response.ok) throw new Error('Failed to fetch progress');
       return await response.json();
     } catch (error) {
-      console.error('Error al obtener progreso:', error);
+      console.error('[API Error]:', error);
       return [];
     }
   }
@@ -119,149 +113,96 @@ class BlueMindsAPI {
   async getGameProgressById(userId, gameId) {
     try {
       const response = await fetch(`${this.baseURL}/progress/${userId}/${gameId}`, {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json'
-        }
+        headers: this._getHeaders()
       });
-
-      if (!response.ok) {
-        throw new Error('Error al obtener progreso del juego');
-      }
-
+      if (!response.ok) throw new Error('Failed to fetch specific game progress');
       return await response.json();
     } catch (error) {
-      console.error('Error al obtener progreso del juego:', error);
+      console.error('[API Error]:', error);
       return null;
     }
   }
 
   async updateGameProgress(userId, gameId, gameTitle, score, level, maxLevel, completionPercentage, timePlayed = 0) {
-    try {
-      const response = await fetch(`${this.baseURL}/progress/update`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          userId,
-          gameId,
-          gameTitle,
-          score: parseInt(score),
-          level: parseInt(level),
-          maxLevel: parseInt(maxLevel),
-          completionPercentage: parseFloat(completionPercentage),
-          timePlayed: parseInt(timePlayed)
-        })
-      });
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.error || 'Error al actualizar progreso');
-      }
-
-      return data;
-    } catch (error) {
-      console.error('Error al actualizar progreso:', error);
-      throw error;
-    }
+    const response = await fetch(`${this.baseURL}/progress/update`, {
+      method: 'POST',
+      headers: this._getHeaders(),
+      body: JSON.stringify({
+        userId, gameId, gameTitle,
+        score: parseInt(score),
+        level: parseInt(level),
+        maxLevel: parseInt(maxLevel),
+        completionPercentage: parseFloat(completionPercentage),
+        timePlayed: parseInt(timePlayed)
+      })
+    });
+    const data = await response.json();
+    if (!response.ok) throw new Error(data.error || 'Failed to update progress');
+    return data;
   }
 
-  // ==================== SESIONES DE TERAPIA ====================
+  // ========================================================================
+  // THERAPY SESSIONS MODULE
+  // ========================================================================
 
   async saveTherapySession(userId, gameId, duration, performance, notes = '') {
-    try {
-      const response = await fetch(`${this.baseURL}/therapy-session`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          userId,
-          gameId,
-          duration: parseInt(duration),
-          performance,
-          notes
-        })
-      });
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.error || 'Error al guardar sesión');
-      }
-
-      return data;
-    } catch (error) {
-      console.error('Error al guardar sesión:', error);
-      throw error;
-    }
+    const response = await fetch(`${this.baseURL}/therapy-session`, {
+      method: 'POST',
+      headers: this._getHeaders(),
+      body: JSON.stringify({
+        userId, gameId,
+        duration: parseInt(duration),
+        performance, notes
+      })
+    });
+    const data = await response.json();
+    if (!response.ok) throw new Error(data.error || 'Failed to save therapy session');
+    return data;
   }
 
   async getTherapySessions(userId) {
     try {
       const response = await fetch(`${this.baseURL}/therapy-sessions/${userId}`, {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json'
-        }
+        headers: this._getHeaders()
       });
-
-      if (!response.ok) {
-        throw new Error('Error al obtener sesiones');
-      }
-
+      if (!response.ok) throw new Error('Failed to fetch therapy sessions');
       return await response.json();
     } catch (error) {
-      console.error('Error al obtener sesiones:', error);
+      console.error('[API Error]:', error);
       return [];
     }
   }
 
-  // ==================== ESTADÍSTICAS ====================
+  // ========================================================================
+  // ANALYTICS & SYSTEM
+  // ========================================================================
 
   async getUserStats(userId) {
     try {
       const response = await fetch(`${this.baseURL}/stats/${userId}`, {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json'
-        }
+        headers: this._getHeaders()
       });
-
-      if (!response.ok) {
-        throw new Error('Error al obtener estadísticas');
-      }
-
+      if (!response.ok) throw new Error('Failed to fetch statistics');
       return await response.json();
     } catch (error) {
-      console.error('Error al obtener estadísticas:', error);
-      return {
-        totalGamesStarted: 0,
-        totalGamesSessions: 0,
-        totalTimeSpent: 0,
-        averageCompletion: 0,
-        maxCompletion: 0
-      };
+      console.error('[API Error]:', error);
+      return { totalGamesStarted: 0, totalGamesSessions: 0, totalTimeSpent: 0, averageCompletion: 0, maxCompletion: 0 };
     }
   }
-
-  // ==================== HEALTH CHECK ====================
 
   async checkHealth() {
     try {
-      const response = await fetch(`${this.baseURL}/health`, {
-        method: 'GET'
-      });
-
+      const response = await fetch(`${this.baseURL}/health`);
       return response.ok;
-    } catch (error) {
-      console.error('Servidor no disponible:', error);
-      return false;
-    }
+    } catch { return false; }
+  }
+
+  getCurrentUser() { return this.currentUser; }
+
+  _loadUser() {
+    const stored = localStorage.getItem('blueminds_current_user');
+    return stored ? JSON.parse(stored) : null;
   }
 }
 
-// Crear instancia global
 const api = new BlueMindsAPI();

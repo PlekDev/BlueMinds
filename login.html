@@ -9,8 +9,18 @@
     <link rel="stylesheet" href="css/login.css">
     <script src="https://accounts.google.com/gsi/client" async defer></script>
     <meta name="referrer" content="strict-origin-when-cross-origin">
+    <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body>
+
+    <div id="globalLoadingOverlay" class="hidden fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center">
+        <div class="bg-white p-8 rounded-2xl shadow-2xl text-center max-w-sm w-full">
+            <i class="fas fa-spinner fa-spin text-blue-600 text-5xl mb-6"></i>
+            <h3 class="text-xl font-bold text-slate-800 mb-2">Conectando con Google</h3>
+            <p class="text-slate-600">Un momento mientras verificamos tu cuenta...</p>
+        </div>
+    </div>
+
     <div class="login-container">
         <!-- Estado del servidor -->
         <div id="serverStatus" class="server-status offline">
@@ -19,16 +29,16 @@
         </div>
 
         <!-- Header -->
-        <div class="login-header">
-            <img src="favicon-32x32.png" alt="BlueMinds">
+        <div class="login-header text-center mx-auto flex justify-center flex-col items-center">
+            <img src="android-chrome-192x192.png" alt="BlueMinds">
             <h1>BlueMinds</h1>
             <p>Plataforma de Educación Inclusiva</p>
         </div>
 
         <!-- Content -->
-        <div class="login-content">
+        <div class="login-content overflow-hidden">
             <!-- Login Form -->
-            <div id="loginForm" class="form-section active">
+            <div id="loginForm" class="form-section active overflow-hidden">
                 <h2>Iniciar Sesión</h2>
                 
                 <form onsubmit="handleLogin(event)">
@@ -67,21 +77,23 @@
                     <button type="submit" class="btn-login" id="loginBtn">
                         <i class="fas fa-sign-in-alt"></i> Iniciar Sesión
                     </button>
-                    <div id="googleBtnContainer" style="margin-top: 15px; display: flex; justify-content: center;">
-                        <div id="g_id_onload"
-                            data-client_id="88404835696-5a92quu3ter0qff5couhl4kk7s0jslqg.apps.googleusercontent.com"
-                            data-callback="handleGoogleLogin"
-                            data-auto_prompt="false"
-                            data-itp_support="true">
-                            
-                        </div>
-                        <div class="g_id_signin"
-                            data-type="standard"
-                            data-size="large"
-                            data-theme="outline"
-                            data-text="sign_in_with"
-                            data-shape="rectangular"
-                            data-logo_alignment="left">
+                    <div class="google-section mt-6 text-center">
+                        <p class="text-sm text-gray-600 py-4">O inicia sesión / regístrate con Google</p>
+                        <div id="googleBtnContainer" style="display: flex; justify-content: center;">
+                            <div id="g_id_onload"
+                                data-client_id="88404835696-5a92quu3ter0qff5couhl4kk7s0jslqg.apps.googleusercontent.com"
+                                data-callback="handleGoogleLogin"
+                                data-auto_prompt="false"
+                                data-itp_support="true">
+                            </div>
+                            <div class="g_id_signin"
+                                data-type="standard"
+                                data-size="large"
+                                data-theme="outline"
+                                data-text="sign_in_with"
+                                data-shape="rectangular"
+                                data-logo_alignment="left">
+                            </div>
                         </div>
                     </div>
                 </form>
@@ -98,6 +110,31 @@
             <!-- Register Form -->
             <div id="registerForm" class="form-section">
                 <h2>Crear Cuenta</h2>
+
+                  <div class="google-section mb-6 text-center">
+                    <div id="googleBtnContainer" class="flex justify-center py-2">
+                        <div id="g_id_onload"
+                            data-client_id="88404835696-5a92quu3ter0qff5couhl4kk7s0jslqg.apps.googleusercontent.com"
+                            data-callback="handleGoogleLogin"
+                            data-auto_prompt="false"
+                            data-itp_support="true">
+                        </div>
+                        <div class="g_id_signin"
+                            data-type="standard"
+                            data-size="large"
+                            data-theme="outline"
+                            data-text="signup_with" 
+                            data-shape="rectangular"
+                            data-logo_alignment="left"
+                            data-width="320"> </div>
+                    </div>
+                    
+                    <div class="relative flex py-5 items-center">
+                        <div class="flex-grow border-t border-gray-200"></div>
+                        <span class="flex-shrink mx-4 text-gray-400 text-xs uppercase tracking-widest">o usa tu correo</span>
+                        <div class="flex-grow border-t border-gray-200"></div>
+                    </div>
+                </div>
                 
                 <form onsubmit="handleRegister(event)">
                     <div class="form-group">
@@ -112,16 +149,13 @@
                     </div>
 
                     <div class="form-group">
-                        <label for="register-age">Edad</label>
-                        <input 
-                            type="number" 
-                            id="register-age" 
-                            placeholder="Ej: 8"
-                            min="3"
-                            max="18"
+                        <label for="register-birth">Fecha de Nacimiento</label>
+                        <input
+                            type="date"
+                            id="register-birth"
                             required
                         >
-                        <span class="error-message" id="registerAgeError"></span>
+                        <span class="error-message" id="registerBirthError"></span>
                     </div>
 
                     <div class="form-group">
@@ -211,6 +245,39 @@
             }
         }
 
+        function disableAllInputs() {
+            document.querySelectorAll('input, button, a').forEach(el => {
+                el.disabled = true;
+                el.style.pointerEvents = 'none';
+                el.classList.add('opacity-50', 'cursor-not-allowed');
+            });
+            // Deshabilitar toggle entre forms
+            document.querySelectorAll('.toggle-form button').forEach(btn => btn.disabled = true);
+        }
+
+        // Función para restaurar (solo en error)
+        function enableAllInputs() {
+            document.querySelectorAll('input, button, a').forEach(el => {
+                el.disabled = false;
+                el.style.pointerEvents = 'auto';
+                el.classList.remove('opacity-50', 'cursor-not-allowed');
+            });
+            document.querySelectorAll('.toggle-form button').forEach(btn => btn.disabled = false);
+        }
+
+        // Mostrar overlay de loading global
+        function showGlobalLoading() {
+            document.getElementById('globalLoadingOverlay').classList.remove('hidden');
+            disableAllInputs();
+        }
+
+        // Ocultar overlay y restaurar
+        function hideGlobalLoading() {
+            document.getElementById('globalLoadingOverlay').classList.add('hidden');
+            enableAllInputs();
+        }
+
+
         // Verificar estado del servidor
         async function checkServerStatus() {
             try {
@@ -223,28 +290,33 @@
         }
         // Manejar respuesta de Google
         async function handleGoogleLogin(response) {
-            const loginBtn = document.getElementById('loginBtn');
-            
-            try {
-                loginBtn.disabled = true;
-                loginBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Conectando con Google...';
+            const googleBtnContainer = document.querySelector('.google-section > div'); // Contenedor activo
+            const originalHTML = googleBtnContainer.innerHTML;
 
-                // 1. Enviamos el token de Google a tu backend en Koyeb
-                const result = await api.loginWithGoogle(response.credential);
-                
-                // 2. Si el backend responde con éxito, el 'api.js' ya debería 
-                // guardar el JWT y el usuario (lo configuraremos en el siguiente paso)
-                
-                setTimeout(() => {
-                    window.location.href = 'pages/perfil.html';
-                }, 500);
-                
+            try {
+                // 1. Mostrar overlay global + deshabilitar todo
+                showGlobalLoading();
+
+                // 2. Spinner local en el botón (por si el overlay falla visualmente)
+                googleBtnContainer.innerHTML = '<div class="text-center"><i class="fas fa-spinner fa-spin text-blue-600 text-2xl"></i><p class="text-sm mt-2">Conectando...</p></div>';
+
+                const result = await api.loginWithGoogle(response.credential);             
+
+                if (result.needsOnboarding) {
+                    localStorage.setItem('blueminds_token_temp', result.token);
+                    window.location.href = 'onboarding.html';
+                } else {
+                    setTimeout(() => {
+                        window.location.href = 'pages/perfil.html';
+                    }, 800);
+                }
             } catch (error) {
-                showError('login-email', 'Error al autenticar con Google');
-                console.error(error);
-            } finally {
-                loginBtn.disabled = false;
-                loginBtn.innerHTML = '<i class="fas fa-sign-in-alt"></i> Iniciar Sesión';
+                console.error('Google Login Error:', error);
+                showError('login-email', error.message || 'Error al conectar con Google. Intenta de nuevo.');
+
+                // Restaurar
+                hideGlobalLoading();
+                googleBtnContainer.innerHTML = originalHTML;
             }
         }
 
@@ -366,7 +438,7 @@
             clearErrors();
 
             const name = document.getElementById('register-name').value.trim();
-            const age = document.getElementById('register-age').value;
+           const birth = document.getElementById('register-birth').value;
             const email = document.getElementById('register-email').value.trim();
             const country = document.getElementById('register-country').value.trim();
             const password = document.getElementById('register-password').value;
@@ -376,6 +448,11 @@
 
             if (!name || name.length < 3) {
                 showError('register-name', 'El nombre debe tener al menos 3 caracteres');
+                isValid = false;
+            }
+            
+            if (!birth) {
+                showError('register-birth', 'La fecha de nacimiento es requerida');
                 isValid = false;
             }
 
@@ -411,7 +488,7 @@
             registerBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Creando...';
 
             try {
-                const result = await api.register(name, age, email, country, password, confirmPassword);
+                const result = await api.register(name, birth, email, country, password, confirmPassword);
                 
                 // Registro exitoso
                 setTimeout(() => {

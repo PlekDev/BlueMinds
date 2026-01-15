@@ -36,14 +36,14 @@ class BlueMindsAPI {
   // AUTHENTICATION MODULE
   // ========================================================================
 
-  async register(name, age, email, country, password, confirmPassword) {
+  async register(name, birth, email, country, password, confirmPassword) {
     const response = await fetch(`${this.baseURL}/auth/register`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ name, age: parseInt(age), email, country, password, confirmPassword })
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name, birth, email, country, password, confirmPassword })
     });
     return this._handleAuthResponse(response);
-  }
+}
 
   async login(email, password) {
     const response = await fetch(`${this.baseURL}/auth/login`, {
@@ -53,6 +53,30 @@ class BlueMindsAPI {
     });
     return this._handleAuthResponse(response);
   }
+
+  // En api.js, agrega este método
+async needsOnboardingCheck() {
+    try {
+        const user = this.getCurrentUser();
+        if (!user) return false;
+
+        // Si ya sabemos que faltan datos del storage
+        if (!user.birth || !user.country) return true;
+
+        // Opcional: consulta al backend para datos frescos (más seguro)
+        const response = await fetch(`${this.baseURL}/user/profile`, {
+            headers: this._getHeaders()
+        });
+
+        if (!response.ok) throw new Error('Error al verificar perfil');
+
+        const profile = await response.json();
+        return !profile.birth || !profile.country;
+    } catch (error) {
+        console.error('Error checking onboarding:', error);
+        return false; // Si falla, deja pasar (mejor no bloquear)
+    }
+}
 
   async loginWithGoogle(googleCredential) {
     const response = await fetch(`${this.baseURL}/auth/google`, {
@@ -171,6 +195,15 @@ class BlueMindsAPI {
       console.error('[API Error]:', error);
       return [];
     }
+  }
+
+  async completeProfile(birth, country) {
+    const response = await fetch(`${this.baseURL}/user/complete-profile`, {
+        method: 'POST',
+        headers: this._getHeaders(),
+        body: JSON.stringify({ birth, country })
+    });
+    return this._handleAuthResponse(response);  // Reutilizamos la misma función
   }
 
   // ========================================================================

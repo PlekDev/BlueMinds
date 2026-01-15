@@ -13,6 +13,11 @@ body {
     align-items: center;
     padding: 20px;
 }
+.py-4{
+    padding-bottom: 1rem;
+    padding-top: 1rem;
+    color: #3c3c3c;
+}
 
 .login-container {
     width: 100%;
@@ -233,7 +238,6 @@ body {
 .password-toggle button { position: absolute; right: 12px; top: 50%; transform: translateY(-50%); background: none; border: none; cursor: pointer; color: #999; font-size: 18px; }
 .password-toggle button:hover { color: #0066CC; }
 
-.form-section { max-height: 800px; overflow-y: auto; }
 .form-section::-webkit-scrollbar { width: 6px; }
 .form-section::-webkit-scrollbar-track { background: #f1f1f1; border-radius: 10px; }
 .form-section::-webkit-scrollbar-thumb { background: #0066CC; border-radius: 10px; }

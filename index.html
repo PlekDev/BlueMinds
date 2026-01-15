@@ -10,10 +10,364 @@
     <title>BlueMinds - Educación Inclusiva</title>
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="css/index.css">
-</head>       
-  
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
+        body {
+            font-family: 'Nunito', sans-serif;
+            background: linear-gradient(135deg, #f5f9ff 0%, #e8f4fd 100%);
+            min-height: 100vh;
+        }
+
+        /* Header */
+        header {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 20px 0;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 40px;
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+            color: #00bcd4;
+            font-weight: 800;
+            font-size: 24px;
+        }
+
+        .logo img {
+            width: 40px;
+            height: 40px;
+        }
+
+        nav ul {
+            list-style: none;
+            display: flex;
+            gap: 30px;
+        }
+
+        nav a {
+            text-decoration: none;
+            color: #333;
+            font-weight: 600;
+            transition: color 0.3s ease;
+            cursor: pointer;
+        }
+
+        nav a:hover {
+            color: #00bcd4;
+        }
+
+        /* Main */
+        main {
+            padding: 80px 0;
+        }
+
+        .landing-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 60px;
+            align-items: center;
+        }
+
+        .left-section {
+            display: flex;
+            flex-direction: column;
+            gap: 40px;
+        }
+
+        .welcome-box h1 {
+            font-size: 56px;
+            font-weight: 800;
+            color: #1a1a1a;
+            margin-bottom: 20px;
+            line-height: 1.2;
+        }
+
+        .welcome-box h1 span {
+            color: #00bcd4;
+        }
+
+        .welcome-box p {
+            font-size: 18px;
+            color: #555;
+            line-height: 1.6;
+            max-width: 500px;
+        }
+
+        /* Platform Badge */
+        .platform-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(0, 188, 212, 0.1);
+            border: 2px solid #00bcd4;
+            border-radius: 25px;
+            padding: 10px 20px;
+            width: fit-content;
+            margin-bottom: 20px;
+        }
+
+        .platform-badge i {
+            color: #00bcd4;
+            font-size: 16px;
+        }
+
+        .platform-badge span {
+            color: #00bcd4;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        /* Stats */
+        .stats {
+            display: flex;
+            gap: 60px;
+            margin-top: 20px;
+        }
+
+        .stat {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .stat-number {
+            font-size: 36px;
+            font-weight: 800;
+            color: #00bcd4;
+        }
+
+        .stat-label {
+            font-size: 14px;
+            color: #999;
+            margin-top: 5px;
+        }
+
+        /* Auth Buttons */
+        .auth-buttons {
+            display: flex;
+            gap: 16px;
+        }
+
+        .btn-register, .btn-login {
+            padding: 14px 32px;
+            border: none;
+            border-radius: 8px;
+            font-weight: 700;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-register {
+            background: linear-gradient(135deg, #00bcd4 0%, #0097a7 100%);
+            color: white;
+            box-shadow: 0 4px 15px rgba(0, 188, 212, 0.3);
+        }
+
+        .btn-register:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 188, 212, 0.4);
+        }
+
+        .btn-login {
+            background: white;
+            color: #00bcd4;
+            border: 2px solid #00bcd4;
+        }
+
+        .btn-login:hover {
+            background: rgba(0, 188, 212, 0.05);
+        }
+
+        /* Right Section - Mascot */
+        .right-section {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: relative;
+        }
+
+        .mascot-container {
+            position: relative;
+            width: 100%;
+            height: 350px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .mascot-container img {
+            width: 280px;
+            height: auto;
+            filter: drop-shadow(0 10px 30px rgba(0, 188, 212, 0.2));
+            animation: float 3s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+        }
+
+        /* Decorative Elements */
+        .decoration-icons {
+            position: absolute;
+            width: 60px;
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 12px;
+            font-size: 28px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .icon-brain {
+            background: linear-gradient(135deg, #9c27b0 0%, #7b1fa2 100%);
+            color: white;
+            top: 20px;
+            right: 30%;
+        }
+
+        .icon-target {
+            background: linear-gradient(135deg, #ff9800 0%, #f57c00 100%);
+            color: white;
+            bottom: 40px;
+            right: 10%;
+        }
+
+        /* Features Section */
+        .features-section {
+            margin-top: 100px;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 30px;
+        }
+
+        .feature-card {
+            background: white;
+            padding: 40px;
+            border-radius: 16px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            transition: all 0.3s ease;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+        }
+
+        .feature-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            margin-bottom: 20px;
+        }
+
+        .feature-icon.cognitive {
+            background: rgba(0, 188, 212, 0.1);
+            color: #00bcd4;
+        }
+
+        .feature-icon.social {
+            background: rgba(33, 150, 243, 0.1);
+            color: #2196f3;
+        }
+
+        .feature-icon.progress {
+            background: rgba(76, 175, 80, 0.1);
+            color: #4caf50;
+        }
+
+        .feature-card h3 {
+            font-size: 20px;
+            font-weight: 700;
+            color: #1a1a1a;
+            margin-bottom: 12px;
+        }
+
+        .feature-card p {
+            color: #666;
+            font-size: 15px;
+            line-height: 1.6;
+        }
+
+        /* Footer */
+        footer {
+            background: rgba(255, 255, 255, 0.8);
+            padding: 30px 0;
+            border-top: 1px solid rgba(0, 0, 0, 0.05);
+            margin-top: 80px;
+        }
+
+        .footer-content {
+            text-align: center;
+            color: #999;
+            font-size: 14px;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .landing-container {
+                grid-template-columns: 1fr;
+                gap: 40px;
+            }
+
+            .welcome-box h1 {
+                font-size: 36px;
+            }
+
+            .features-section {
+                grid-template-columns: 1fr;
+            }
+
+            .stats {
+                gap: 40px;
+            }
+
+            .auth-buttons {
+                flex-direction: column;
+            }
+
+            nav ul {
+                flex-direction: column;
+                gap: 15px;
+            }
+
+            .container {
+                padding: 0 20px;
+            }
+        }
+    </style>
+</head>
 <body>
     <!-- Header -->
     <header>
@@ -25,10 +379,7 @@
                 </a>
                 <nav>
                     <ul class="nav-links">
-                        <li><a href="#">Inicio</a></li>
-                        <li><a href="#">Juegos</a></li>
-                        <li><a href="#">Test</a></li>
-                        <li><a href="#">Acerca de</a></li>
+                        <li><a onclick="goToAbout()">Sobre Nosotros</a></li>
                     </ul>
                 </nav>
             </div>
@@ -41,35 +392,91 @@
             <div class="landing-container">
                 <!-- Left Section -->
                 <div class="left-section">
+                    <div class="platform-badge">
+                        <i class="fas fa-leaf"></i>
+                        <span>Plataforma de Educación Inclusiva</span>
+                    </div>
+
                     <div class="welcome-box">
-                        <h1>Bienvenido a BlueMinds</h1>
+                        <h1>Bienvenido a <span>BlueMinds</span></h1>
                         <p>Una plataforma educativa diseñada para niños con necesidades especiales, con minijuegos interactivos que ayudan en el desarrollo de habilidades cognitivas, sociales y emocionales.</p>
                     </div>
+
+                    <div class="auth-buttons">
+                        <button class="btn-register" onclick="window.location.href='login.html?action=register'">
+                            <i class="fas fa-user-plus"></i> Crear Cuenta
+                        </button>
+                        <button class="btn-login" onclick="goToLogin()">
+                            Iniciar Sesión
+                        </button>
+                    </div>
+
+                    
                 </div>
 
                 <!-- Right Section -->
                 <div class="right-section">
                     <!-- Mascot -->
                     <div class="mascot-container">
-                        <img src="mascota.png" alt="Mascota BlueMinds">
+                        
+                        <img id="mascot-img" src="mascotas/mascota.png" alt="Mascota BlueMinds">
+                        
                     </div>
+                </div>
 
-                    <!-- Auth Buttons -->
-                    <div class="auth-buttons">
-                        <button class="btn-register" onclick="window.location.href='login.html?action=register'">
-                            <i class="fas fa-user-plus"></i> Crear Cuenta
-                        </button>
-                        <button class="btn-login" onclick="goToLogin()">
-                            <i class="fas fa-sign-in-alt"></i> Ya Tengo Cuenta
-                        </button>
+                <script>
+                    // Array de imágenes de mascotas
+                    const mascotImages = [
+                        'mascotas/dino edu.jpeg',
+                        'mascotas/dino feliz.jpeg',
+                        'mascotas/dinoagua.jpeg',
+                        'mascotas/dinoaudi.jpeg',
+                        'mascotas/dinoflor.jpeg',
+                        'mascotas/dinomanta.jpeg',
+                        'mascotas/dinopelota.jpeg',
+                        'mascotas/dinosaludo.jpeg',
+                        'mascotas/dinotable.jpeg',
+                        'mascotas/mascota.png'
+                    ];
+
+                    let currentImageIndex = 0;
+                    const mascotImg = document.getElementById('mascot-img');
+
+                    // Cambiar imagen cada 3 segundos
+                    setInterval(() => {
+                        currentImageIndex = (currentImageIndex + 1) % mascotImages.length;
+                        mascotImg.src = mascotImages[currentImageIndex];
+                    }, 3000);
+                </script>
+            </div>
+
+            <!-- Features Section -->
+            <div class="features-section">
+                <div class="feature-card">
+                    <div class="feature-icon cognitive">
+                        <i class="fas fa-brain"></i>
                     </div>
+                    <h3>Desarrollo Cognitivo</h3>
+                    <p>Actividades diseñadas para estimular el pensamiento y la memoria</p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon social">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <h3>Habilidades Sociales</h3>
+                    <p>Aprende a comunicarte y relacionarte de forma efectiva</p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon progress">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                    <h3>Progreso Personalizado</h3>
+                    <p>Seguimiento de tu avance con reportes detallados</p>
                 </div>
             </div>
         </div>
-
-        <!-- Decorative Elements -->
-        <div class="decoration decoration-1"></div>
-        <div class="decoration decoration-2"></div>
     </main>
 
     <!-- Footer -->
@@ -77,7 +484,6 @@
         <div class="container">
             <div class="footer-content">
                 <p>&copy; 2025 BlueMinds - Plataforma de Educación Inclusiva</p>
-               
             </div>
         </div>
     </footer>
@@ -94,6 +500,11 @@
         // Ir a login
         function goToLogin() {
             window.location.href = 'login.html';
+        }
+
+        // Ir a Sobre Nosotros
+        function goToAbout() {
+            window.location.href = 'https://plekdev.github.io/BlueMindsLandingPage/';
         }
     </script>
 </body>

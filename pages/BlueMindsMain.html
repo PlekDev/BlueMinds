@@ -9,6 +9,312 @@
     <link rel="stylesheet" href="../css/main.css">
     <link rel="stylesheet" href="../css/welcome.css">
     <link rel="stylesheet" href="../css/BlueMindsMain.css">
+    <style>
+        /* Estilos adicionales para el nuevo layout */
+        .main-content {
+            background: linear-gradient(135deg, #0066CC 0%, #00B4D8 50%, #0099FF 100%);
+            padding: 30px 0;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Sección de Progreso */
+        .overall-progress {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 40px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .progress-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+
+        .progress-header h2 {
+            font-size: 24px;
+            font-weight: 700;
+            color: #1F2937;
+            margin: 0;
+        }
+
+        .progress-count {
+            font-size: 16px;
+            font-weight: 600;
+            color: #666;
+        }
+
+        .level-path {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: relative;
+            padding: 20px 0;
+        }
+
+        .level-path-progress {
+            position: absolute;
+            top: 50%;
+            left: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #0066CC 0%, #00B4D8 100%);
+            z-index: 0;
+            transform: translateY(-50%);
+        }
+
+        .flag-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            z-index: 1;
+            position: relative;
+            flex: 1;
+        }
+
+        .flag-circle {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: #E5E7EB;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            color: #999;
+            margin-bottom: 10px;
+            transition: all 0.3s ease;
+        }
+
+        .flag-item.completed .flag-circle {
+            background: #0066CC;
+            color: white;
+        }
+
+        .flag-item.current .flag-circle {
+            background: #00B4D8;
+            color: white;
+            box-shadow: 0 0 20px rgba(0, 180, 216, 0.5);
+        }
+
+        .flag-label {
+            font-size: 12px;
+            font-weight: 600;
+            color: #666;
+            text-align: center;
+        }
+
+        /* Sección de Categorías */
+        .categories-section {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+
+        .category-card {
+            background: white;
+            border-radius: 16px;
+            padding: 25px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border-left: 6px solid;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            min-height: 150px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+        }
+
+        .category-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+        }
+
+        .category-card.auditivo {
+            border-left-color: #0066CC;
+        }
+
+        .category-card.kinestesico {
+            border-left-color: #00B4D8;
+        }
+
+        .category-card.lecto-escritor {
+            border-left-color: #E91E63;
+        }
+
+        .category-card.visual {
+            border-left-color: #F59E0B;
+        }
+
+        .category-content {
+            flex: 1;
+        }
+
+        .category-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            margin-right: 20px;
+            margin-bottom: 0;
+            flex-shrink: 0;
+        }
+
+        .category-card.auditivo .category-icon {
+            background: rgba(0, 102, 204, 0.15);
+            color: #0066CC;
+        }
+
+        .category-card.kinestesico .category-icon {
+            background: rgba(0, 180, 216, 0.15);
+            color: #00B4D8;
+        }
+
+        .category-card.lecto-escritor .category-icon {
+            background: rgba(233, 30, 99, 0.15);
+            color: #E91E63;
+        }
+
+        .category-card.visual .category-icon {
+            background: rgba(245, 158, 11, 0.15);
+            color: #F59E0B;
+        }
+
+        .category-title {
+            font-size: 20px;
+            font-weight: 700;
+            color: #1F2937;
+            margin: 0 0 8px 0;
+        }
+
+        .category-description {
+            font-size: 14px;
+            color: #666;
+            margin: 0 0 15px 0;
+        }
+
+        .category-level-path {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+
+        .category-level-progress {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #0066CC 0%, #00B4D8 100%);
+        }
+
+        .category-flag {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: #E5E7EB;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 11px;
+            color: #999;
+            transition: all 0.3s ease;
+        }
+
+        .category-flag.completed {
+            background: #10B981;
+            color: white;
+        }
+
+        /* Layout con imagen a la derecha */
+        .dashboard-wrapper {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            align-items: start;
+        }
+
+        .dashboard-left {
+            flex: 1;
+        }
+
+        .dashboard-right {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            height: fit-content;
+            text-align: center;
+        }
+
+        .hero-image-placeholder {
+            width: 100%;
+            height: 300px;
+            background: linear-gradient(135deg, #F0F9FF 0%, #E0F2FE 100%);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            color: #0066CC;
+            font-weight: 600;
+        }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .dashboard-wrapper {
+                grid-template-columns: 1fr;
+            }
+
+            .dashboard-right {
+                order: -1;
+            }
+
+            .categories-section {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .category-card {
+                flex-direction: column;
+                text-align: left;
+                min-height: auto;
+            }
+
+            .category-card {
+                display: flex;
+                flex-direction: column;
+            }
+
+            .category-icon {
+                margin-right: 0;
+                margin-bottom: 15px;
+                align-self: flex-start;
+            }
+
+            .level-path {
+                flex-wrap: wrap;
+                gap: 20px;
+            }
+
+            .flag-item {
+                flex: 0 1 auto;
+            }
+        }
+    </style>
 </head> 
 <body>
 
@@ -22,7 +328,6 @@
 
             <ul class="nav-center">
                 <li><a href="BlueMindsMain.html">Inicio</a></li>
-                <li><a href="BlueMindsMain.html#games">Juegos</a></li>
                 <li><a href="test-selector.html">Test</a></li>
                 <li><a href="https://plekdev.github.io/BlueMindsLandingPage/">Acerca de</a></li>
             </ul>
@@ -82,86 +387,93 @@
                 </div>
             </section>
 
-            <!-- Sección de Categorías -->
-            <section class="categories-section">
-                <div class="category-card language" onclick="showCategoryGames('lenguaje')">
-                    <div class="category-icon">
-                        <i class="fas fa-language"></i>
-                    </div>
-                    <h3 class="category-title">Lenguaje</h3>
-                    <p class="category-description">Aprende nuevas palabras y mejora tu comunicación</p>
-                    <div class="category-level-path">
-                        <div class="category-level-progress" style="width: 65%;"></div>
-                        <div class="category-flag completed">
-                            <i class="fas fa-flag"></i>
+            <!-- Dashboard con categorías y imagen -->
+            <div class="dashboard-wrapper">
+                <!-- Sección de Categorías (Izquierda) -->
+                <div class="dashboard-left">
+                    <section class="categories-section">
+                        <div class="category-card auditivo" onclick="showCategoryGames('auditivo')">
+                            <div class="category-icon">
+                                <i class="fas fa-volume-up"></i>
+                            </div>
+                            <div class="category-content">
+                                <h3 class="category-title">Auditivo</h3>
+                                <p class="category-description">Aprende escuchando y a través del sonido</p>
+                                <div class="category-level-path">
+                                    <div class="category-flag completed"></div>
+                                    <div class="category-flag completed"></div>
+                                    <div class="category-flag completed"></div>
+                                    <div class="category-flag"></div>
+                                    <div class="category-flag"></div>
+                                </div>
+                            </div>
+                            
                         </div>
-                        <div class="category-flag completed">
-                            <i class="fas fa-flag"></i>
+
+                        <div class="category-card kinestesico" onclick="showCategoryGames('kinestesico')">
+                            <div class="category-icon">
+                                <i class="fas fa-hand-paper"></i>
+                            </div>
+                            <div class="category-content">
+                                <h3 class="category-title">Kinestésico</h3>
+                                <p class="category-description">Aprende a través del movimiento y la práctica</p>
+                                <div class="category-level-path">
+                                    <div class="category-flag completed"></div>
+                                    <div class="category-flag completed"></div>
+                                    <div class="category-flag completed"></div>
+                                    <div class="category-flag completed"></div>
+                                    <div class="category-flag"></div>
+                                </div>
+                            </div>
+                            
                         </div>
-                        <div class="category-flag completed">
-                            <i class="fas fa-flag"></i>
+
+                        <div class="category-card lecto-escritor" onclick="showCategoryGames('lecto-escritor')">
+                            <div class="category-icon">
+                                <i class="fas fa-book"></i>
+                            </div>
+                            <div class="category-content">
+                                <h3 class="category-title">Lector-Escritor</h3>
+                                <p class="category-description">Aprende leyendo y escribiendo información</p>
+                                <div class="category-level-path">
+                                    <div class="category-flag completed"></div>
+                                    <div class="category-flag completed"></div>
+                                    <div class="category-flag"></div>
+                                    <div class="category-flag"></div>
+                                    <div class="category-flag"></div>
+                                </div>
+                            </div>
+                            
                         </div>
-                        <div class="category-flag">
-                            <i class="fas fa-flag"></i>
+
+                        <div class="category-card visual" onclick="showCategoryGames('visual')">
+                            <div class="category-icon">
+                                <i class="fas fa-eye"></i>
+                            </div>
+                            <div class="category-content">
+                                <h3 class="category-title">Visual</h3>
+                                <p class="category-description">Aprende a través de imágenes y representaciones</p>
+                                <div class="category-level-path">
+                                    <div class="category-flag completed"></div>
+                                    <div class="category-flag completed"></div>
+                                    <div class="category-flag completed"></div>
+                                    <div class="category-flag completed"></div>
+                                    <div class="category-flag completed"></div>
+                                </div>
+                            </div>
+                            
                         </div>
-                        <div class="category-flag">
-                            <i class="fas fa-trophy"></i>
-                        </div>
-                    </div>
+                    </section>
                 </div>
 
-                <div class="category-card behavior" onclick="showCategoryGames('conducta')">
-                    <div class="category-icon">
-                        <i class="fas fa-smile-beam"></i>
-                    </div>
-                    <h3 class="category-title">Conducta</h3>
-                    <p class="category-description">Desarrolla habilidades sociales y emocionales</p>
-                    <div class="category-level-path">
-                        <div class="category-level-progress" style="width: 80%;"></div>
-                        <div class="category-flag completed">
-                            <i class="fas fa-flag"></i>
-                        </div>
-                        <div class="category-flag completed">
-                            <i class="fas fa-flag"></i>
-                        </div>
-                        <div class="category-flag completed">
-                            <i class="fas fa-flag"></i>
-                        </div>
-                        <div class="category-flag completed">
-                            <i class="fas fa-flag"></i>
-                        </div>
-                        <div class="category-flag">
-                            <i class="fas fa-trophy"></i>
-                        </div>
+                <!-- Imagen (Derecha) -->
+                <div class="dashboard-right">
+                    <!-- AQUI PON LA FOTO DEL DINO -->
+                    <div class="hero-image-placeholder">
+                        <img src="../mascotas/dino edu.jpeg" alt="Dino Edu" style="width: 65%; height: auto; object-fit: cover;">
                     </div>
                 </div>
-
-                <div class="category-card occupational" onclick="showCategoryGames('ocupacional')">
-                    <div class="category-icon">
-                        <i class="fas fa-briefcase"></i>
-                    </div>
-                    <h3 class="category-title">Ocupacional</h3>
-                    <p class="category-description">Explora diferentes profesiones y actividades</p>
-                    <div class="category-level-path">
-                        <div class="category-level-progress" style="width: 45%;"></div>
-                        <div class="category-flag completed">
-                            <i class="fas fa-flag"></i>
-                        </div>
-                        <div class="category-flag completed">
-                            <i class="fas fa-flag"></i>
-                        </div>
-                        <div class="category-flag">
-                            <i class="fas fa-flag"></i>
-                        </div>
-                        <div class="category-flag">
-                            <i class="fas fa-flag"></i>
-                        </div>
-                        <div class="category-flag">
-                            <i class="fas fa-trophy"></i>
-                        </div>
-                    </div>
-                </div>
-            </section>
+            </div>
         </div>
     </main>
 
@@ -203,123 +515,145 @@
     </div>
 
     <script src="../games/game-list.js"></script>
-     <script src="../api.js"></script>
+    <script src="../api.js"></script>
     <script src="../js/auth-guard.js"></script>
     <script>
 
-
-
-        // Base de datos de juegos
+        // Base de datos de juegos actualizada con 4 categorías
         const gamesDatabase = {
-            lenguaje: {
-                name: 'Lenguaje',
-                icon: 'fa-language',
+            auditivo: {
+                name: 'Auditivo',
+                icon: 'fa-volume-up',
                 color: '#0066CC',
-                description: 'Aprende nuevas palabras y mejora tu comunicación',
+                description: 'Aprende escuchando y a través del sonido',
                 games: [
                     {
-                        id: 'memoriza-imagen',
-                        title: 'Memoriza y Encuentra',
-                        description: 'Observa la imagen y encuéntrala entre las opciones',
-                        icon: '🎨',
-                        path: '../games/visual-games/memoriza-imagen/index.html',
-                        nivel: '1'
-                    },
-                    {
-                        id: 'detective-errores',
-                        title: 'Detective de Errores',
-                        description: 'Forma oraciones correctas detectando errores visuales',
-                        icon: '🔍',
-                        path: '../games/visual-games/detective-errores/index.html',
-                        nivel: '1'
-                    },
-                    {
-                        id: 'ordena-historia',
-                        title: 'Ordena la Historia',
-                        description: 'Ordena las imágenes en secuencia lógica',
-                        icon: '📖',
-                        path: '../games/visual-games/ordena-historia/index.html',
-                        nivel: '2'
-                    },
-                    {
-                        id: 'completa-escena',
-                        title: 'Completa la Escena',
-                        description: 'Completa oraciones seleccionando la imagen correcta',
-                        icon: '🖼️',
-                        path: '../games/visual-games/completa-escena/index.html',
-                        nivel: '2'
-                    },
-                    {
-                        id: 'asocia-imagen',
-                        title: 'Asocia la Imagen',
-                        description: 'Asocia palabras con las imágenes correctas',
-                        icon: '🎯',
-                        path: '../games/visual-games/asocia-imagen-correcta/index.html',
-                        nivel: '3'
-                    },
-                    {
-                        id: 'clasificacion',
-                        title: 'Clasificación de Grupos',
-                        description: 'Agrupa elementos por categorías',
-                        icon: '📦',
-                        path: '../games/visual-games/clasificacion-grupos/index.html',
-                        nivel: '3'
-                    },
-                    {
                         id: 'eco-palabras',
-                        title: 'Eco de Palabras',
+                        title: 'El Eco de las Palabras',
                         description: 'Repite las palabras que escuchas',
                         icon: '🔊',
-                        path: '../games/auditivo/eco-palabras/index.html',
-                        nivel: '1'
-                    },
-                    {
-                        id: 'oracion-colores',
-                        title: 'Arma la Oración',
-                        description: 'Practica la lectura y escritura',
-                        icon: '📝',
-                        path: '../games/lecto-escritor/oracion-colores/index.html',
+                        path: '../games/auditivo/nivel-1/eco-palabras/index.html',
                         nivel: '1'
                     }
                 ]
             },
-            conducta: {
-                name: 'Conducta',
-                icon: 'fa-smile-beam',
+            kinestesico: {
+                name: 'Kinestésico',
+                icon: 'fa-hand-paper',
                 color: '#00B4D8',
-                description: 'Desarrolla habilidades sociales y emocionales',
+                description: 'Aprende a través del movimiento y la práctica',
                 games: [
                     {
                         id: 'emotion-game',
                         title: 'Reconoce Emociones',
                         description: 'Aprende a identificar diferentes emociones',
                         icon: '😊',
-                        path: '../games/emotion-game/index.html',
+                        path: '../games/kinestesico/nivel-1/emotion-game/index.html',
                         nivel: '1'
                     },
                     {
                         id: 'sigue-lider',
-                        title: 'Sigue al Líder',
+                        title: 'Sigue al Líder de Movimiento',
                         description: 'Imita movimientos y mejora coordinación',
                         icon: '🏃',
-                        path: '../games/kinestesico/sigue-lider/index.html',
+                        path: '../games/kinestesico/nivel-1/sigue-lider/index.html',
                         nivel: '1'
                     }
                 ]
             },
-            ocupacional: {
-                name: 'Ocupacional',
-                icon: 'fa-briefcase',
-                color: '#FF6B6B',
-                description: 'Explora diferentes profesiones y actividades',
+            'lecto-escritor': {
+                name: 'Lector-Escritor',
+                icon: 'fa-book',
+                color: '#E91E63',
+                description: 'Aprende leyendo y escribiendo información',
                 games: [
                     {
-                        id: 'profesiones',
+                        id: 'oracion-colores',
+                        title: 'Arma la Oración con Colores',
+                        description: 'Ordena las palabras para formar oraciones',
+                        icon: '📝',
+                        path: '../games/lecto-escritor/nivel-1/oracion-colores/index.html',
+                        nivel: '1'
+                    }
+                ]
+            },
+            visual: {
+                name: 'Visual',
+                icon: 'fa-eye',
+                color: '#F59E0B',
+                description: 'Aprende a través de imágenes y representaciones',
+                games: [
+                    {
+                        id: 'memory-game',
+                        title: 'Juego de Memoria',
+                        description: 'Repite la secuencia de colores',
+                        icon: '🎮',
+                        path: '../games/visual/nivel-1/memory-game/index.html',
+                        nivel: '1'
+                    },
+                    {
+                        id: 'memoriza-imagen',
+                        title: 'Memoriza y Encuentra',
+                        description: 'Observa la imagen y encuéntrala entre las opciones',
+                        icon: '🎨',
+                        path: '../games/visual/nivel-1/memoriza-imagen/index.html',
+                        nivel: '1'
+                    },
+                    {
+                        id: 'detective-errores',
+                        title: 'Detective de Errores',
+                        description: 'Forma oraciones correctas detectando errores',
+                        icon: '🔍',
+                        path: '../games/visual/nivel-1/detective-errores/index.html',
+                        nivel: '1'
+                    },
+                    {
+                        id: 'completa-escena',
+                        title: 'Completa la Escena',
+                        description: 'Completa oraciones seleccionando la imagen correcta',
+                        icon: '🖼️',
+                        path: '../games/visual/nivel-2/completa-escena/index.html',
+                        nivel: '2'
+                    },
+                    {
+                        id: 'ordena-historia',
+                        title: 'Ordena la Historia',
+                        description: 'Ordena las imágenes en secuencia lógica',
+                        icon: '📖',
+                        path: '../games/visual/nivel-2/ordena-historia/index.html',
+                        nivel: '2'
+                    },
+                    {
+                        id: 'explora-profesiones',
                         title: 'Explora Profesiones',
                         description: 'Aprende sobre diferentes trabajos',
                         icon: '💼',
-                        path: '../games/ocupacional/explora-profesiones/index.html',
-                        nivel: '1'
+                        path: '../games/visual/nivel-2/explora-profesiones/index.html',
+                        nivel: '2'
+                    },
+                    {
+                        id: 'asocia-imagen',
+                        title: 'Asocia la Imagen Correcta',
+                        description: 'Asocia palabras con las imágenes correctas',
+                        icon: '🎯',
+                        path: '../games/visual/nivel-3/asocia-imagen/index.html',
+                        nivel: '3'
+                    },
+                    {
+                        id: 'clasificacion-grupos',
+                        title: 'Clasificación de Grupos',
+                        description: 'Agrupa elementos por categorías',
+                        icon: '📦',
+                        path: '../games/visual/nivel-3/clasificacion-grupos/index.html',
+                        nivel: '3'
+                    },
+                    {
+                        id: 'patterns-game',
+                        title: 'Juego de Patrones',
+                        description: 'Completa los patrones secuenciales',
+                        icon: '🧩',
+                        path: '../games/visual/nivel-3/patterns-game/index.html',
+                        nivel: '3'
                     }
                 ]
             }

@@ -200,5 +200,6 @@ function completeGame() {
 
 // Función para volver a la página principal
 function goToMainPage() {
-    window.location.href = '../../../pages/BlueMindsMain.html';
+    window.location.href = '../../pages/BlueMindsMain.html';
+    
 }

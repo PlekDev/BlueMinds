@@ -188,7 +188,7 @@ class ProfessionsGame {
     
     // Función para volver a la página principal
     goToMainPage() {
-        window.location.href = '../../../pages/BlueMindsMain.html';
+        window.location.href = 'https://plekdev.github.io/BlueMinds/pages/BlueMindsMain.html';
     }
 }
 

@@ -3,322 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ordena la Historia - BlueMinds</title>
+    <title>Ordena la Historia - BlueMinds IA</title>
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <style>
-        :root {
-            --primary-blue: #0066CC;
-            --cyan-light: #00B4D8;
-            --cyan-bright: #0099FF;
-            --red-color: #EF4444;
-            --light-bg: #F0F9FF;
-            --white: #FFFFFF;
-            --dark-text: #1F2937;
-            --shadow: 0 4px 12px rgba(0, 102, 204, 0.15);
-            --border-radius: 16px;
-            --primary-color: #0066CC;
-            --blue-color: #00B4D8;
-        }
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: 'Nunito', sans-serif;
-            background: linear-gradient(135deg, #0066CC 0%, #00B4D8 50%, #0099FF 100%);
-            color: var(--dark-text);
-            line-height: 1.6;
-            overflow-x: hidden;
-            min-height: 100vh;
-        }
-
-        .game-container {
-            max-width: 900px;
-            margin: 0 auto;
-            padding: 20px;
-        }
-
-        .game-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-            background-color: var(--white);
-            border-radius: var(--border-radius);
-            padding: 15px 20px;
-            box-shadow: var(--shadow);
-        }
-
-        .back-button button {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            color: var(--dark-text);
-            background: none;
-            border: none;
-            cursor: pointer;
-            font-weight: 600;
-            font-size: 16px;
-            transition: color 0.3s ease;
-        }
-
-        .back-button button:hover {
-            color: var(--primary-blue);
-        }
-
-        .game-title {
-            font-size: 24px;
-            font-weight: 700;
-            color: var(--primary-blue);
-        }
-
-        .game-info {
-            font-weight: 600;
-            color: var(--primary-blue);
-        }
-
-        .game-content {
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
-        }
-
-        .progress-card {
-            background-color: var(--white);
-            border-radius: var(--border-radius);
-            padding: 15px 20px;
-            box-shadow: var(--shadow);
-            border: 4px solid var(--primary-blue);
-        }
-
-        .progress-header {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 10px;
-            font-weight: 700;
-            color: var(--dark-text);
-        }
-
-        .progress-bar {
-            height: 12px;
-            background-color: #E5E7EB;
-            border-radius: 6px;
-            overflow: hidden;
-        }
-
-        .progress-fill {
-            height: 100%;
-            background: linear-gradient(90deg, var(--primary-blue) 0%, var(--cyan-bright) 100%);
-            transition: width 0.5s ease;
-            width: 20%;
-        }
-
-        .game-card {
-            background-color: var(--white);
-            border-radius: var(--border-radius);
-            padding: 30px;
-            box-shadow: var(--shadow);
-            text-align: center;
-            border: 4px solid var(--primary-blue);
-        }
-
-        .game-card h2 {
-            font-size: 28px;
-            font-weight: 700;
-            margin-bottom: 20px;
-            color: var(--dark-text);
-        }
-
-        .sequence-display {
-            display: flex;
-            gap: 20px;
-            justify-content: center;
-            flex-wrap: wrap;
-            margin-bottom: 30px;
-            min-height: 200px;
-        }
-
-        .sequence-item {
-            width: 150px;
-            height: 150px;
-            border: 3px solid var(--primary-blue);
-            border-radius: 12px;
-            background-color: rgba(0, 102, 204, 0.08);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 60px;
-            cursor: grab;
-            user-select: none;
-            transition: all 0.3s ease;
-            position: relative;
-            padding: 10px;
-        }
-
-        .sequence-item:hover {
-            transform: scale(1.05);
-            box-shadow: 0 6px 20px rgba(0, 102, 204, 0.3);
-        }
-
-        .sequence-item.dragging {
-            opacity: 0.5;
-            cursor: grabbing;
-        }
-
-        .sequence-number {
-            position: absolute;
-            top: 5px;
-            right: 5px;
-            background: linear-gradient(135deg, var(--primary-blue) 0%, var(--cyan-bright) 100%);
-            color: white;
-            width: 30px;
-            height: 30px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 700;
-            font-size: 14px;
-        }
-
-        .options-display {
-            display: flex;
-            gap: 15px;
-            justify-content: center;
-            flex-wrap: wrap;
-            margin-bottom: 20px;
-        }
-
-        .option-item {
-            width: 120px;
-            height: 120px;
-            border: 3px solid #E5E7EB;
-            border-radius: 8px;
-            background-color: white;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 40px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            user-select: none;
-        }
-
-        .option-item:hover {
-            border-color: var(--primary-blue);
-            transform: scale(1.05);
-            box-shadow: 0 4px 12px rgba(0, 102, 204, 0.3);
-        }
-
-        .option-item.used {
-            opacity: 0.3;
-            cursor: not-allowed;
-        }
-
-        .action-buttons {
-            display: flex;
-            gap: 15px;
-            justify-content: center;
-            margin-top: 20px;
-        }
-
-        .action-button {
-            padding: 15px 25px;
-            border-radius: 12px;
-            font-size: 16px;
-            font-weight: 700;
-            border: none;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            color: white;
-        }
-
-        .action-button.primary {
-            background: linear-gradient(135deg, var(--primary-blue) 0%, var(--cyan-bright) 100%);
-            box-shadow: 0 4px 10px rgba(0, 102, 204, 0.3);
-        }
-
-        .action-button.secondary {
-            background-color: var(--cyan-light);
-            box-shadow: 0 4px 10px rgba(0, 180, 216, 0.3);
-        }
-
-        .action-button:hover:not(:disabled) {
-            transform: scale(1.05);
-            box-shadow: 0 6px 15px rgba(0, 102, 204, 0.4);
-        }
-
-        .action-button:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-        }
-
-        .feedback {
-            font-size: 20px;
-            font-weight: 700;
-            padding: 15px;
-            border-radius: 12px;
-            margin-top: 20px;
-            display: none;
-        }
-
-        .feedback.show {
-            display: block;
-        }
-
-        .feedback.correct {
-            background: linear-gradient(135deg, var(--primary-blue) 0%, var(--cyan-bright) 100%);
-            color: white;
-        }
-
-        .feedback.incorrect {
-            background-color: var(--red-color);
-            color: white;
-        }
-
-        .instructions-card {
-            background-color: rgba(0, 102, 204, 0.08);
-            border-radius: var(--border-radius);
-            padding: 15px 20px;
-            border: 2px solid var(--primary-blue);
-            text-align: center;
-            color: var(--dark-text);
-        }
-
-        @media (max-width: 768px) {
-            .game-header {
-                flex-direction: column;
-                gap: 10px;
-                text-align: center;
-            }
-            .sequence-display {
-                min-height: 150px;
-            }
-            .sequence-item {
-                width: 120px;
-                height: 120px;
-                font-size: 50px;
-            }
-            .options-display {
-                gap: 10px;
-            }
-            .option-item {
-                width: 100px;
-                height: 100px;
-                font-size: 35px;
-            }
-            .action-buttons {
-                flex-direction: column;
-            }
-            .action-button {
-                width: 100%;
-            }
-        }
-    </style>
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
     <div class="game-container">
@@ -328,9 +16,12 @@
                     <i class="fas fa-arrow-left"></i> Volver
                 </button>
             </div>
-            <h1 class="game-title">Ordena la Historia</h1>
-            <div class="game-info">
+            <h1 class="game-title"><i class="fas fa-stream"></i> Ordena la Historia IA</h1>
+            <div class="ai-status">
                 <span id="score-display">0 puntos</span>
+                <div class="ai-indicator" title="IA adaptativa activa">
+                    <i class="fas fa-robot"></i>
+                </div>
             </div>
         </header>
 
@@ -346,11 +37,14 @@
             </div>
 
             <div class="game-card">
-                <h2>¡Ordena la secuencia correcta!</h2>
+                <div id="difficulty-indicator" class="difficulty-indicator" style="display: none;"></div>
+                <div id="narrative-hint" class="narrative-hint" style="display: none;"></div>
+
+                <h2 id="sequence-title">¡Ordena la secuencia correcta!</h2>
                 
                 <div class="sequence-display" id="sequence-display"></div>
 
-                <p style="font-size: 16px; margin-bottom: 15px; color: #777;">Haz clic en los emojis en el orden correcto:</p>
+                <p style="font-size: 16px; margin-bottom: 15px; color: #777;">Arrastra o haz clic en las imágenes en el orden correcto:</p>
                 <div class="options-display" id="options-display"></div>
 
                 <div class="action-buttons">
@@ -365,180 +59,18 @@
                 <div id="feedback" class="feedback">
                     <span id="feedback-text"></span>
                 </div>
+
+                <div id="ai-analysis" class="ai-analysis">
+                    <strong>📊 Análisis IA:</strong> <span id="analysis-text"></span>
+                </div>
             </div>
 
             <div class="instructions-card">
-                <p>💡 <strong>Tip:</strong> Ordena los emojis en la secuencia lógica correcta. Haz clic en ellos en el orden que deben aparecer.</p>
+                <p>🤖 <strong>IA Adaptativa:</strong> El sistema ajusta automáticamente la cantidad de imágenes y complejidad según tu comprensión narrativa y secuenciación.</p>
             </div>
         </main>
     </div>
 
-    <script>
-        let currentRound = 0;
-        let score = 0;
-        let currentSequence = null;
-        let selectedSequence = [];
-        let showFeedback = false;
-
-        const sequences = [
-            {
-                emojis: ['🌅', '☀️', '🌙'],
-                correct: ['🌅', '☀️', '🌙'],
-                title: 'El día'
-            },
-            {
-                emojis: ['🍳', '🍞', '🥛'],
-                correct: ['🍳', '🍞', '🥛'],
-                title: 'Desayuno'
-            },
-            {
-                emojis: ['🚶', '🏫', '📚'],
-                correct: ['🚶', '🏫', '📚'],
-                title: 'Ir a la escuela'
-            },
-            {
-                emojis: ['🏃', '⚽', '🎉'],
-                correct: ['🏃', '⚽', '🎉'],
-                title: 'Jugar'
-            },
-            {
-                emojis: ['🛁', '🧴', '🛏️'],
-                correct: ['🛁', '🧴', '🛏️'],
-                title: 'Antes de dormir'
-            }
-        ];
-
-        const totalRounds = 5;
-
-        document.addEventListener('DOMContentLoaded', () => {
-            startNewRound();
-        });
-
-        function startNewRound() {
-            const randomSequence = sequences[Math.floor(Math.random() * sequences.length)];
-            currentSequence = {
-                ...randomSequence,
-                emojis: randomSequence.emojis.sort(() => Math.random() - 0.5)
-            };
-            selectedSequence = [];
-            showFeedback = false;
-
-            updateUI();
-        }
-
-        function updateUI() {
-            document.getElementById('current-round').textContent = currentRound + 1;
-            document.getElementById('total-rounds').textContent = totalRounds;
-            document.getElementById('score').textContent = score + ' puntos';
-            document.getElementById('score-display').textContent = score + ' puntos';
-
-            const progress = ((currentRound + 1) / totalRounds) * 100;
-            document.getElementById('progress-fill').style.width = progress + '%';
-
-            const sequenceDisplay = document.getElementById('sequence-display');
-            sequenceDisplay.innerHTML = '';
-            
-            for (let i = 0; i < currentSequence.correct.length; i++) {
-                const item = document.createElement('div');
-                item.className = 'sequence-item';
-                
-                if (selectedSequence[i]) {
-                    item.textContent = selectedSequence[i];
-                    const number = document.createElement('div');
-                    number.className = 'sequence-number';
-                    number.textContent = i + 1;
-                    item.appendChild(number);
-                } else {
-                    item.textContent = '?';
-                }
-                sequenceDisplay.appendChild(item);
-            }
-
-            const optionsDisplay = document.getElementById('options-display');
-            optionsDisplay.innerHTML = '';
-            
-            currentSequence.emojis.forEach((emoji) => {
-                const button = document.createElement('div');
-                button.className = 'option-item';
-                button.textContent = emoji;
-                button.classList.toggle('used', selectedSequence.includes(emoji));
-                button.onclick = () => selectEmoji(emoji);
-                optionsDisplay.appendChild(button);
-            });
-
-            document.getElementById('feedback').classList.remove('show');
-        }
-
-        function selectEmoji(emoji) {
-            if (!selectedSequence.includes(emoji) && selectedSequence.length < currentSequence.correct.length) {
-                selectedSequence.push(emoji);
-                updateUI();
-            }
-        }
-
-        function resetSequence() {
-            selectedSequence = [];
-            updateUI();
-        }
-
-        function checkSequence() {
-            if (selectedSequence.length !== currentSequence.correct.length) {
-                showFeedback = true;
-                const feedbackElement = document.getElementById('feedback');
-                feedbackElement.textContent = 'Debes completar toda la secuencia';
-                feedbackElement.className = 'feedback incorrect show';
-                return;
-            }
-
-            const isCorrect = JSON.stringify(selectedSequence) === JSON.stringify(currentSequence.correct);
-            const feedbackElement = document.getElementById('feedback');
-            const feedbackText = document.getElementById('feedback-text');
-
-            if (isCorrect) {
-                score += 20;
-                feedbackText.textContent = `¡Correcto! 🎉 "${currentSequence.title}"`;
-                feedbackElement.className = 'feedback correct show';
-            } else {
-                feedbackText.textContent = 'No es correcto. Intenta de nuevo 😊';
-                feedbackElement.className = 'feedback incorrect show';
-            }
-
-            showFeedback = true;
-            document.getElementById('score').textContent = score + ' puntos';
-            document.getElementById('score-display').textContent = score + ' puntos';
-
-            setTimeout(() => {
-                if (currentRound + 1 >= totalRounds) {
-                    completeGame();
-                } else {
-                    currentRound++;
-                    startNewRound();
-                }
-            }, 2000);
-        }
-
-        function completeGame() {
-            const gameCard = document.querySelector('.game-card');
-            gameCard.innerHTML = `
-                <h2>¡Juego Completado!</h2>
-                <div style="font-size: 80px; margin: 30px 0;">🎉</div>
-                <div style="background: linear-gradient(135deg, #0066CC 0%, #0099FF 100%); color: white; padding: 20px; border-radius: 12px; margin: 20px 0; font-size: 24px; font-weight: 700;">
-                    Tu puntaje final: ${score} puntos
-                </div>
-                <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; margin-top: 20px;">
-                    <button style="background: linear-gradient(135deg, #0066CC 0%, #0099FF 100%); color: white; padding: 15px; border: none; border-radius: 12px; font-size: 16px; font-weight: 700; cursor: pointer;" onclick="location.reload()">
-                        Jugar de Nuevo
-                    </button>
-                    <button style="background-color: #00B4D8; color: white; padding: 15px; border: none; border-radius: 12px; font-size: 16px; font-weight: 700; cursor: pointer;" onclick="goToMainPage()">
-                        Volver al Menú
-                    </button>
-                </div>
-            `;
-        }
-
-        function goToMainPage() {
-            window.location.href = 'https://plekdev.github.io/BlueMinds/pages/BlueMindsMain.html';
-        }
-    </script>
+    <script src="script.js"></script>
 </body>
 </html>

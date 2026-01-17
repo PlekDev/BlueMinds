@@ -3,242 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Memoriza y Encuentra - BlueMinds</title>
+    <title>Memoriza y Encuentra - BlueMinds IA</title>
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <style>
-        :root {
-            --primary-blue: #0066CC;
-            --cyan-light: #00B4D8;
-            --cyan-bright: #0099FF;
-            --red-color: #EF4444;
-            --light-bg: #F0F9FF;
-            --white: #FFFFFF;
-            --dark-text: #1F2937;
-            --shadow: 0 4px 12px rgba(0, 102, 204, 0.15);
-            --border-radius: 16px;
-            --primary-color: #0066CC;
-            --blue-color: #00B4D8;
-        }
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: 'Nunito', sans-serif;
-            background: linear-gradient(135deg, #0066CC 0%, #00B4D8 50%, #0099FF 100%);
-            color: var(--dark-text);
-            line-height: 1.6;
-            overflow-x: hidden;
-            min-height: 100vh;
-        }
-
-        .game-container {
-            max-width: 900px;
-            margin: 0 auto;
-            padding: 20px;
-        }
-
-        .game-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-            background-color: var(--white);
-            border-radius: var(--border-radius);
-            padding: 15px 20px;
-            box-shadow: var(--shadow);
-        }
-
-        .back-button button {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            color: var(--dark-text);
-            background: none;
-            border: none;
-            cursor: pointer;
-            font-weight: 600;
-            font-size: 16px;
-            transition: color 0.3s ease;
-        }
-
-        .back-button button:hover {
-            color: var(--primary-blue);
-        }
-
-        .game-title {
-            font-size: 24px;
-            font-weight: 700;
-            color: var(--primary-blue);
-        }
-
-        .game-info {
-            font-weight: 600;
-            color: var(--primary-blue);
-        }
-
-        .game-content {
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
-        }
-
-        .progress-card {
-            background-color: var(--white);
-            border-radius: var(--border-radius);
-            padding: 15px 20px;
-            box-shadow: var(--shadow);
-            border: 4px solid var(--primary-blue);
-        }
-
-        .progress-header {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 10px;
-            font-weight: 700;
-            color: var(--dark-text);
-        }
-
-        .progress-bar {
-            height: 12px;
-            background-color: #E5E7EB;
-            border-radius: 6px;
-            overflow: hidden;
-        }
-
-        .progress-fill {
-            height: 100%;
-            background: linear-gradient(90deg, var(--primary-blue) 0%, var(--cyan-bright) 100%);
-            transition: width 0.5s ease;
-            width: 20%;
-        }
-
-        .game-card {
-            background-color: var(--white);
-            border-radius: var(--border-radius);
-            padding: 30px;
-            box-shadow: var(--shadow);
-            text-align: center;
-            border: 4px solid var(--primary-blue);
-        }
-
-        .game-card h2 {
-            font-size: 28px;
-            font-weight: 700;
-            margin-bottom: 20px;
-            color: var(--dark-text);
-        }
-
-        .image-display {
-            margin-bottom: 30px;
-            display: flex;
-            justify-content: center;
-        }
-
-        .image-display img {
-            max-width: 300px;
-            max-height: 300px;
-            border-radius: 12px;
-            box-shadow: var(--shadow);
-        }
-
-        .image-display.hidden {
-            display: none;
-        }
-
-        .countdown {
-            font-size: 48px;
-            font-weight: 700;
-            color: var(--primary-blue);
-            animation: pulse 1s infinite;
-        }
-
-        @keyframes pulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.5; }
-        }
-
-        .options-container {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-            gap: 15px;
-            margin-top: 20px;
-        }
-
-        .option-button {
-            padding: 15px 20px;
-            border-radius: 12px;
-            font-size: 18px;
-            font-weight: 700;
-            border: none;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            color: white;
-            background: linear-gradient(135deg, var(--primary-blue) 0%, var(--cyan-bright) 100%);
-            box-shadow: 0 4px 10px rgba(0, 102, 204, 0.3);
-        }
-
-        .option-button:hover:not(:disabled) {
-            transform: scale(1.05);
-            box-shadow: 0 6px 15px rgba(0, 102, 204, 0.4);
-        }
-
-        .option-button:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-        }
-
-        .feedback {
-            font-size: 24px;
-            font-weight: 700;
-            padding: 15px;
-            border-radius: 12px;
-            margin-top: 20px;
-            display: none;
-        }
-
-        .feedback.show {
-            display: block;
-        }
-
-        .feedback.correct {
-            background: linear-gradient(135deg, var(--primary-blue) 0%, var(--cyan-bright) 100%);
-            color: white;
-        }
-
-        .feedback.incorrect {
-            background-color: var(--red-color);
-            color: white;
-        }
-
-        .instructions-card {
-            background-color: rgba(0, 102, 204, 0.08);
-            border-radius: var(--border-radius);
-            padding: 15px 20px;
-            border: 2px solid var(--primary-blue);
-            text-align: center;
-            color: var(--dark-text);
-        }
-
-        .hidden-text {
-            display: none;
-        }
-
-        @media (max-width: 768px) {
-            .game-header {
-                flex-direction: column;
-                gap: 10px;
-                text-align: center;
-            }
-            .options-container {
-                grid-template-columns: 1fr;
-            }
-        }
-    </style>
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
     <div class="game-container">
@@ -248,9 +16,13 @@
                     <i class="fas fa-arrow-left"></i> Volver
                 </button>
             </div>
-            <h1 class="game-title">Memoriza y Encuentra</h1>
-            <div class="game-info">
+            <h1 class="game-title">Memoriza y Encuentra IA</h1>
+            <div class="ai-status">
                 <span id="score-display">0 puntos</span>
+                <div class="ai-indicator" title="IA adaptativa activa">
+                    <i class="fas fa-robot"></i>
+                    <span>IA</span>
+                </div>
             </div>
         </header>
 
@@ -266,10 +38,15 @@
             </div>
 
             <div class="game-card">
+                <div id="difficulty-indicator" class="difficulty-indicator" style="display: none;"></div>
+                
                 <h2>¡Memoriza la imagen!</h2>
                 
                 <div id="image-display" class="image-display">
-                    <img id="current-image" src="" alt="Imagen para memorizar">
+                    <div class="image-container">
+                        <img id="current-image" src="" alt="Imagen para memorizar">
+                    </div>
+                    <div id="word-label" class="word-label"></div>
                 </div>
 
                 <div id="countdown-display" class="countdown hidden-text">
@@ -284,158 +61,18 @@
                 <div id="feedback" class="feedback">
                     <span id="feedback-text"></span>
                 </div>
+
+                <div id="ai-analysis" class="ai-analysis">
+                    <strong>📊 Análisis IA:</strong> <span id="analysis-text"></span>
+                </div>
             </div>
 
             <div class="instructions-card">
-                <p>💡 <strong>Tip:</strong> Observa bien la imagen durante los segundos disponibles y luego selecciona la opción correcta.</p>
+                <p>🤖 <strong>IA Adaptativa:</strong> El sistema ajusta automáticamente el tiempo de memorización y dificultad según tu desempeño.</p>
             </div>
         </main>
     </div>
 
-    <script>
-        let currentRound = 0;
-        let score = 0;
-        let currentImage = null;
-        let options = [];
-        let showFeedback = false;
-        let isMemorizingPhase = true;
-        let timeRemaining = 5;
-
-        const images = [
-            { src: "https://img.freepik.com/vector-premium/icono-gato-lindo-dibujos-animados_2345-65.jpg?w=1380", name: "gato" },
-            { src: "https://img.freepik.com/vector-premium/icono-perro-lindo-dibujos-animados_2345-64.jpg?w=1380", name: "perro" },
-            { src: "https://img.freepik.com/vector-premium/casa-dibujos-animados-aislada_1087-156.jpg?w=1380", name: "casa" },
-            { src: "https://img.freepik.com/vector-premium/flor-dibujos-animados_34336-266.jpg?w=1380", name: "flor" },
-            { src: "https://img.freepik.com/vector-premium/arbol-verde-dibujos-animados_1087-80.jpg?w=1380", name: "árbol" },
-            { src: "https://img.freepik.com/vector-premium/sol-dibujos-animados-sonriente_17450-175.jpg?w=1380", name: "sol" }
-        ];
-
-        const totalRounds = 5;
-
-        document.addEventListener('DOMContentLoaded', () => {
-            startNewRound();
-        });
-
-        function startNewRound() {
-            const randomImage = images[Math.floor(Math.random() * images.length)];
-            currentImage = randomImage;
-
-            const wrongOptions = images.filter(img => img.name !== randomImage.name);
-            const shuffled = [
-                randomImage,
-                ...wrongOptions.sort(() => Math.random() - 0.5).slice(0, 2)
-            ].sort(() => Math.random() - 0.5);
-
-            options = shuffled;
-            showFeedback = false;
-            isMemorizingPhase = true;
-            timeRemaining = 5;
-
-            updateUI();
-            startMemorizingPhase();
-        }
-
-        function updateUI() {
-            document.getElementById('current-round').textContent = currentRound + 1;
-            document.getElementById('total-rounds').textContent = totalRounds;
-            document.getElementById('score').textContent = score + ' puntos';
-            document.getElementById('score-display').textContent = score + ' puntos';
-
-            const progress = ((currentRound + 1) / totalRounds) * 100;
-            document.getElementById('progress-fill').style.width = progress + '%';
-
-            document.getElementById('current-image').src = currentImage.src;
-            document.getElementById('image-display').classList.remove('hidden');
-            document.getElementById('options-section').style.display = 'none';
-            document.getElementById('countdown-display').classList.remove('hidden-text');
-            document.getElementById('feedback').classList.remove('show');
-        }
-
-        function startMemorizingPhase() {
-            const countdownDisplay = document.getElementById('countdown-display');
-            const countdownText = document.getElementById('countdown');
-
-            const interval = setInterval(() => {
-                countdownText.textContent = timeRemaining;
-                timeRemaining--;
-
-                if (timeRemaining < 0) {
-                    clearInterval(interval);
-                    document.getElementById('image-display').classList.add('hidden');
-                    document.getElementById('countdown-display').classList.add('hidden-text');
-                    showOptionsPhase();
-                }
-            }, 1000);
-        }
-
-        function showOptionsPhase() {
-            isMemorizingPhase = false;
-            const optionsContainer = document.getElementById('options-container');
-            optionsContainer.innerHTML = '';
-
-            options.forEach((image) => {
-                const button = document.createElement('button');
-                button.className = 'option-button';
-                button.textContent = image.name;
-                button.onclick = () => handleAnswer(image.name);
-                optionsContainer.appendChild(button);
-            });
-
-            document.getElementById('options-section').style.display = 'block';
-        }
-
-        function handleAnswer(selectedName) {
-            if (showFeedback) return;
-
-            const isCorrect = selectedName === currentImage.name;
-            const feedbackElement = document.getElementById('feedback');
-            const feedbackText = document.getElementById('feedback-text');
-
-            if (isCorrect) {
-                score += 20;
-                feedbackText.textContent = "¡Correcto! 🎉";
-                feedbackElement.className = 'feedback correct show';
-            } else {
-                feedbackText.textContent = `No es correcto. Era: ${currentImage.name} 😊`;
-                feedbackElement.className = 'feedback incorrect show';
-            }
-
-            showFeedback = true;
-            document.getElementById('score').textContent = score + ' puntos';
-            document.getElementById('score-display').textContent = score + ' puntos';
-
-            setTimeout(() => {
-                if (currentRound + 1 >= totalRounds) {
-                    completeGame();
-                } else {
-                    currentRound++;
-                    startNewRound();
-                }
-            }, 2000);
-        }
-
-        function completeGame() {
-            const gameCard = document.querySelector('.game-card');
-            gameCard.innerHTML = `
-                <h2>¡Juego Completado!</h2>
-                <div style="font-size: 80px; margin: 30px 0;">🎉</div>
-                <div style="background: linear-gradient(135deg, #0066CC 0%, #0099FF 100%); color: white; padding: 20px; border-radius: 12px; margin: 20px 0; font-size: 24px; font-weight: 700;">
-                    Tu puntaje final: ${score} puntos
-                </div>
-                <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; margin-top: 20px;">
-                    <button style="background: linear-gradient(135deg, #0066CC 0%, #0099FF 100%); color: white; padding: 15px; border: none; border-radius: 12px; font-size: 16px; font-weight: 700; cursor: pointer;" onclick="location.reload()">
-                        Jugar de Nuevo
-                    </button>
-                    <button style="background-color: #00B4D8; color: white; padding: 15px; border: none; border-radius: 12px; font-size: 16px; font-weight: 700; cursor: pointer;" onclick="goToMainPage()">
-                        Volver al Menú
-                    </button>
-                </div>
-            `;
-        }
-
-        function goToMainPage() {
-            window.location.href = 'https://plekdev.github.io/BlueMinds/pages/BlueMindsMain.html';
-        }
-    </script>
+    <script src="script.js"></script>
 </body>
 </html>

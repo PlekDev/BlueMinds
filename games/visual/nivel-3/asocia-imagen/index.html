@@ -3,28 +3,29 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Asocia la Imagen Correcta - Neuro Play World</title>
+    <title>Asocia la Imagen Correcta - BlueMinds IA</title>
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="../../css/main.css">
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
     <div class="game-container">
         <header class="game-header">
-             <div class="back-button">
+            <div class="back-button">
                 <button onclick="goToMainPage()">
-                 <i class="fas fa-arrow-left"></i> Volver
-             </button>
+                    <i class="fas fa-arrow-left"></i> Volver
+                </button>
             </div>
-            <h1 class="game-title">Asocia la Imagen Correcta</h1>
-            <div class="game-info">
+            <h1 class="game-title"><i class="fas fa-link"></i> Asocia la Imagen IA</h1>
+            <div class="ai-status">
                 <span id="score-display">0 puntos</span>
+                <div class="ai-indicator" title="IA adaptativa activa">
+                    <i class="fas fa-robot"></i>
+                </div>
             </div>
         </header>
 
         <main class="game-content">
-            <!-- Progress -->
             <div class="progress-card">
                 <div class="progress-header">
                     <span>Ronda <span id="current-round">1</span> de <span id="total-rounds">5</span></span>
@@ -35,9 +36,12 @@
                 </div>
             </div>
 
-            <!-- Image Display -->
+            <div id="difficulty-indicator" class="difficulty-indicator" style="display: none;"></div>
+            <div id="visual-hint" class="visual-hint" style="display: none;"></div>
+
             <div class="image-card">
-                <h2>¿Cuál es el nombre correcto?</h2>
+                <h2>¿Cuál es la palabra correcta?</h2>
+                
                 <div id="image-display" class="image-display">
                     <img id="current-image" src="" alt="Imagen para asociar">
                 </div>
@@ -46,16 +50,19 @@
                     <span id="feedback-text"></span>
                 </div>
 
+                <p style="font-size: 16px; margin-bottom: 15px; color: #777;">Arrastra o haz clic en la palabra correcta:</p>
+                
                 <div id="options-container" class="options-container">
                     <!-- Las opciones se generarán dinámicamente -->
                 </div>
+
+                <div id="ai-analysis" class="ai-analysis">
+                    <strong>📊 Análisis IA:</strong> <span id="analysis-text"></span>
+                </div>
             </div>
 
-            <!-- Instructions -->
             <div class="instructions-card">
-                <p>
-                    💡 <span class="font-bold">Tip:</span> Observa la imagen y selecciona la palabra correcta que la describe.
-                </p>
+                <p>🤖 <strong>IA Adaptativa:</strong> El sistema ajusta automáticamente palabras, imágenes y número de opciones según tu desempeño en asociación palabra-imagen.</p>
             </div>
         </main>
     </div>

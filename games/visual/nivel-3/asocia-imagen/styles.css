@@ -279,7 +279,6 @@ body {
     background: var(--white);
     box-shadow: 0 2px 8px rgba(0, 102, 204, 0.1);
     user-select: none;
-    draggable: true;
     position: relative;
     overflow: hidden;
 }

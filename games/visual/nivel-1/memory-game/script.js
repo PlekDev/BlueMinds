@@ -16,6 +16,10 @@ class AIMemoryGame {
         this.sequenceSpeed = 800; // milisegundos entre colores
         this.reactionTime = 0;
         
+        // Audio
+        this.synth = window.speechSynthesis;
+        this.audioEnabled = true;
+        
         // Análisis de errores
         this.errorPattern = {
             firstError: false,
@@ -34,6 +38,22 @@ class AIMemoryGame {
         };
     }
 
+    // ===== SÍNTESIS DE VOZ =====
+    speak(text) {
+        if (!this.audioEnabled || !this.synth) return;
+        
+        // Cancelar cualquier audio en curso
+        this.synth.cancel();
+        
+        const utterance = new SpeechSynthesisUtterance(text);
+        utterance.lang = 'es-ES';
+        utterance.rate = 1;
+        utterance.pitch = 1.0;
+        utterance.volume = 1.0;
+        
+        this.synth.speak(utterance);
+    }
+
     // ===== INICIO DEL JUEGO =====
     startNewLevel() {
         const config = this.difficultyConfig[this.difficulty];
@@ -50,8 +70,11 @@ class AIMemoryGame {
         
         // Mostrar secuencia con retraso
         setTimeout(() => {
-            this.showSequence();
-        }, 1000);
+            this.speak(`Sigue el patrón que ves a continuación.`);
+            setTimeout(() => {
+                this.showSequence();
+            }, 2500);
+        }, 500);
     }
 
     // ===== MOSTRAR SECUENCIA DE COLORES =====
@@ -129,6 +152,8 @@ class AIMemoryGame {
         feedbackElement.textContent = '¡Ups! Intenta de nuevo 😊';
         feedbackElement.className = 'feedback incorrect';
         
+        this.speak('¡Ups! Ese no era el patrón correcto. Intenta de nuevo.');
+        
         this.score = Math.max(0, this.score - 5);
         this.adjustDifficulty();
         this.showAIAnalysis();
@@ -149,6 +174,8 @@ class AIMemoryGame {
         const feedbackElement = document.getElementById('feedback');
         feedbackElement.textContent = '¡Excelente! 🎉';
         feedbackElement.className = 'feedback correct';
+        
+        this.speak('¡Excelente! Completaste este nivel correctamente.');
         
         this.adjustDifficulty();
         this.showAIAnalysis();
@@ -261,11 +288,17 @@ class AIMemoryGame {
         const avgAccuracy = ((this.score / (this.maxLevel * 20)) * 100).toFixed(1);
         
         let performanceMessage = '¡Memoria excepcional! 🏆';
+        let audioMessage = '¡Felicidades! Completaste el juego con una memoria excepcional.';
+        
         if (avgAccuracy < 60) {
             performanceMessage = '¡Sigue practicando! Tu memoria mejorará. 💪';
+            audioMessage = 'Juego completado. Sigue practicando para mejorar tu memoria.';
         } else if (avgAccuracy < 80) {
             performanceMessage = '¡Muy buen trabajo! Tu memoria está en desarrollo. 🌟';
+            audioMessage = '¡Muy buen trabajo! Tu memoria está mejorando constantemente.';
         }
+
+        this.speak(audioMessage);
 
         gameCard.innerHTML = `
             <div class="status-message">
@@ -320,5 +353,5 @@ function handleColorClick(color) {
 }
 
 function goToMainPage() {
-    window.location.href = '/pages/BlueMindsMain.html';
+    window.location.href = '/../../selectores/selector-visual.html';
 }

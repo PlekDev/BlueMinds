@@ -19,6 +19,9 @@
             <h1 class="game-title">Completa la Escena IA</h1>
             <div class="ai-status">
                 <span id="score-display">0 puntos</span>
+                <button class="audio-toggle" onclick="toggleAudio()" title="Activar/Desactivar audio">
+                    <i class="fas fa-volume-up"></i>
+                </button>
                 <div class="ai-indicator" title="IA adaptativa activa">
                     <i class="fas fa-robot"></i>
                     <span>IA</span>
@@ -71,6 +74,43 @@
             </div>
         </main>
     </div>
+
+    <script>
+        // ===== AUDIO MANAGER =====
+        class AudioManager {
+            constructor() {
+                this.synth = window.speechSynthesis;
+                this.audioEnabled = true;
+            }
+            speak(text, rate = 1) {
+                if (!this.audioEnabled) return;
+                this.synth.cancel();
+                const utterance = new SpeechSynthesisUtterance(text);
+                utterance.rate = rate;
+                utterance.pitch = 1.0;
+                utterance.volume = 1.0;
+                utterance.lang = 'es-ES';
+                this.synth.speak(utterance);
+            }
+            toggleAudio() {
+                this.audioEnabled = !this.audioEnabled;
+                return this.audioEnabled;
+            }
+        }
+
+        const audioManager = new AudioManager();
+
+        function toggleAudio() {
+            const isEnabled = audioManager.toggleAudio();
+            const button = document.querySelector('.audio-toggle');
+            if (isEnabled) {
+                button.innerHTML = '<i class="fas fa-volume-up"></i>';
+                audioManager.speak('Audio activado');
+            } else {
+                button.innerHTML = '<i class="fas fa-volume-mute"></i>';
+            }
+        }
+    </script>
 
     <script src="script.js"></script>
 </body>

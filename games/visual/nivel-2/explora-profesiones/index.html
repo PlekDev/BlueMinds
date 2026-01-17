@@ -20,6 +20,9 @@
                     <span class="score-icon">⭐</span>
                     <span class="score-value" id="score">0</span>
                 </div>
+                <button class="audio-toggle" id="audioToggle" title="Activar/Desactivar audio">
+                    <i class="fas fa-volume-up"></i>
+                </button>
                 <div class="ai-indicator">
                     <i class="fas fa-robot"></i>
                 </div>
@@ -111,6 +114,42 @@
             </div>
         </div>
     </div>
+
+    <script>
+        // ===== AUDIO MANAGER =====
+        class AudioManager {
+            constructor() {
+                this.synth = window.speechSynthesis;
+                this.audioEnabled = true;
+            }
+            speak(text, rate = 1) {
+                if (!this.audioEnabled) return;
+                this.synth.cancel();
+                const utterance = new SpeechSynthesisUtterance(text);
+                utterance.rate = rate;
+                utterance.pitch = 1.0;
+                utterance.volume = 1.0;
+                utterance.lang = 'es-ES';
+                this.synth.speak(utterance);
+            }
+            toggleAudio() {
+                this.audioEnabled = !this.audioEnabled;
+                return this.audioEnabled;
+            }
+        }
+
+        const audioManager = new AudioManager();
+
+        document.getElementById('audioToggle').addEventListener('click', function() {
+            const isEnabled = audioManager.toggleAudio();
+            if (isEnabled) {
+                this.innerHTML = '<i class="fas fa-volume-up"></i>';
+                audioManager.speak('Audio activado');
+            } else {
+                this.innerHTML = '<i class="fas fa-volume-mute"></i>';
+            }
+        });
+    </script>
 
     <script src="script.js"></script>
 </body>

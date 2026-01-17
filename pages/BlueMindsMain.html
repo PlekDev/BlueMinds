@@ -660,35 +660,18 @@
         };
 
         function showCategoryGames(category) {
-            const categoryData = gamesDatabase[category];
-            const games = categoryData.games;
+        // Mapeo de categorías a archivos selectores
+            const selectorMap = {
+                'auditivo': '../selectores/selector-auditivo.html',
+                'kinestesico': '../selectores/selector-kinestesico.html',
+                'lecto-escritor': '../selectores/selector-lecto-escritor.html',
+                'visual': '../selectores/selector-visual.html'
+            };
 
-            document.getElementById('categoryIconLarge').innerHTML = `<i class="fas ${categoryData.icon}"></i>`;
-            document.getElementById('categoryIconLarge').style.color = categoryData.color;
-            document.getElementById('categoryTitleHeader').textContent = categoryData.name;
-            document.getElementById('categoryTitleHeader').style.color = categoryData.color;
-            document.getElementById('categoryDescHeader').textContent = categoryData.description;
-
-            document.getElementById('gamesSectionTitle').textContent = `Juegos de ${categoryData.name}`;
-            document.getElementById('gamesSectionTitle').style.color = categoryData.color;
-
-            const gamesGrid = document.getElementById('gamesGrid');
-            gamesGrid.innerHTML = games.map(game => `
-                <div class="game-card">
-                    <div class="game-thumbnail">${game.icon}</div>
-                    <h3 class="game-title">${game.title}</h3>
-                    <p class="game-description">${game.description}</p>
-                    <div style="text-align: center;">
-                        <span class="game-level-badge">Nivel ${game.nivel}</span>
-                        <br>
-                        <a href="${game.path}" class="game-button">Jugar</a>
-                    </div>
-                </div>
-            `).join('');
-
-            document.querySelector('main').classList.add('hide');
-            document.getElementById('gamesContainer').classList.add('show');
-            window.scrollTo(0, 0);
+            const selectorPath = selectorMap[category];
+             if (selectorPath) {
+              window.location.href = selectorPath;
+             }
         }
 
         function backToMain() {

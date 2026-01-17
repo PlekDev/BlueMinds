@@ -161,10 +161,8 @@ class AISceneGame {
 
     // ===== ANÁLISIS DE ERRORES =====
     analyzeError(selectedOption, correctOption, sceneCategory) {
-        // Determinar tipo de error
-        let errorType = 'semantic'; // Por defecto error semántico
+        let errorType = 'semantic';
         
-        // Si el error fue visual (similar apariencia pero diferente significado)
         if (this.isVisualDistractor(selectedOption)) {
             this.errorAnalysis.visualErrors++;
             errorType = 'visual';
@@ -173,7 +171,6 @@ class AISceneGame {
             errorType = 'semantic';
         }
         
-        // Registrar distractores seleccionados
         if (!this.errorAnalysis.distractorsSelected[selectedOption]) {
             this.errorAnalysis.distractorsSelected[selectedOption] = 0;
         }
@@ -183,7 +180,6 @@ class AISceneGame {
     }
 
     isVisualDistractor(option) {
-        // Simular análisis de si es error visual (emojis similares)
         const visualSimilarPairs = [
             ['🌳', '🌲'], ['🏠', '🏡'], ['🐕', '🐶'], ['🍎', '🍎']
         ];
@@ -202,20 +198,22 @@ class AISceneGame {
     adjustDifficulty() {
         this.calculateCategorizationScore();
         
-        // Si ha acertado 3 seguidas y tiene >= 75% → aumentar dificultad
         if (this.consecutiveCorrect >= 3 && this.categorizationScore >= 75) {
             if (this.difficulty === 'easy') {
                 this.difficulty = 'medium';
+                audioManager.speak('Aumentando dificultad a nivel medio', 0.9);
             } else if (this.difficulty === 'medium') {
                 this.difficulty = 'hard';
+                audioManager.speak('Aumentando dificultad a nivel difícil', 0.9);
             }
         }
-        // Si está teniendo dificultad → reducir
         else if (this.consecutiveWrong >= 2 || this.categorizationScore < 50) {
             if (this.difficulty === 'hard') {
                 this.difficulty = 'medium';
+                audioManager.speak('Reduciendo dificultad a nivel medio', 0.9);
             } else if (this.difficulty === 'medium') {
                 this.difficulty = 'easy';
+                audioManager.speak('Reduciendo dificultad a nivel fácil', 0.9);
             }
             this.consecutiveWrong = 0;
         }
@@ -239,7 +237,6 @@ class AISceneGame {
     selectNextScene() {
         const scenesForDifficulty = this.allScenes[this.difficulty];
         
-        // Priorizar escenas que causaron errores (para reforzar)
         const errorProneScenes = scenesForDifficulty.filter(scene => {
             const stats = this.sceneStats[scene.sentence];
             return stats && stats.attempts > 0 && stats.correct === 0;
@@ -259,6 +256,7 @@ class AISceneGame {
             const hintText = `💡 Pista: Piensa en la categoría "${this.currentScene.category}"`;
             hintBox.textContent = hintText;
             hintBox.style.display = 'block';
+            audioManager.speak(`Pista: Piensa en la categoría ${this.currentScene.category}`, 0.9);
         } else {
             document.getElementById('hint-box').style.display = 'none';
         }
@@ -272,6 +270,7 @@ class AISceneGame {
         
         this.updateUI();
         this.showHint();
+        audioManager.speak(`Ronda ${this.currentRound + 1}. Completa: ${this.currentScene.sentence}`, 1);
     }
 
     updateUI() {
@@ -283,15 +282,12 @@ class AISceneGame {
         const progress = ((this.currentRound + 1) / this.totalRounds) * 100;
         document.getElementById('progress-fill').style.width = progress + '%';
 
-        // Actualizar display de oración
         const sentenceDisplay = document.getElementById('sentence-display');
         sentenceDisplay.innerHTML = this.currentScene.sentence + ' <span class="blank-space">?</span>';
 
-        // Actualizar opciones
         const optionsDisplay = document.getElementById('options-display');
         optionsDisplay.innerHTML = '';
         
-        // Mezclar opciones
         const shuffledOptions = [...this.currentScene.options].sort(() => Math.random() - 0.5);
         
         shuffledOptions.forEach((option) => {
@@ -325,6 +321,7 @@ class AISceneGame {
             const feedbackElement = document.getElementById('feedback');
             feedbackElement.textContent = 'Debes seleccionar una opción';
             feedbackElement.className = 'feedback incorrect show';
+            audioManager.speak('Debes seleccionar una opción', 0.9);
             return;
         }
 
@@ -343,8 +340,8 @@ class AISceneGame {
             
             feedbackText.textContent = `¡Correcto! Era "${this.currentScene.correctText}" 🎉`;
             feedbackElement.className = 'feedback correct show';
+            audioManager.speak(`¡Correcto! La respuesta correcta es ${this.currentScene.correctText}`, 0.95);
             
-            // Registrar categoría dominada
             if (!this.errorAnalysis.preferredCategories[this.currentScene.category]) {
                 this.errorAnalysis.preferredCategories[this.currentScene.category] = 0;
             }
@@ -361,6 +358,7 @@ class AISceneGame {
             
             feedbackText.textContent = `No es correcto. Era "${this.currentScene.correctText}" 😊`;
             feedbackElement.className = 'feedback incorrect show';
+            audioManager.speak(`No es correcto. La respuesta correcta es ${this.currentScene.correctText}`, 0.95);
         }
 
         this.showFeedback = true;
@@ -387,7 +385,6 @@ class AISceneGame {
         
         let analysis = '';
 
-        // Análisis de tipo de error
         if (this.errorAnalysis.visualErrors > 0 && !this.showFeedback) {
             analysis += `👁️ Errores visuales detectados: ${this.errorAnalysis.visualErrors}. `;
         }
@@ -395,7 +392,6 @@ class AISceneGame {
             analysis += `📝 Errores semánticos: ${this.errorAnalysis.semanticErrors}. `;
         }
 
-        // Análisis de racha
         if (this.consecutiveCorrect > 0) {
             analysis += `✅ ${this.consecutiveCorrect} acierto(s) consecutivo(s). `;
         }
@@ -403,7 +399,6 @@ class AISceneGame {
             analysis += `❌ ${this.consecutiveWrong} error(es) consecutivo(s). `;
         }
 
-        // Cambios de dificultad
         if (this.difficulty === 'hard') {
             analysis += '📈 Nivel: DIFÍCIL (conceptos avanzados). ';
         } else if (this.difficulty === 'easy') {
@@ -422,7 +417,6 @@ class AISceneGame {
         const avgAccuracy = ((this.score / (this.totalRounds * 20)) * 100).toFixed(1);
         const finalScore = this.calculateCategorizationScore().toFixed(0);
         
-        // Encontrar categoría favorita
         let favoriteCategory = 'General';
         let maxAttempts = 0;
         for (const [category, count] of Object.entries(this.errorAnalysis.preferredCategories)) {
@@ -433,11 +427,17 @@ class AISceneGame {
         }
         
         let performanceMessage = '¡Excelente categorización visual! 🏆';
+        let performanceAudio = 'Excelente categorización visual';
+        
         if (avgAccuracy < 60) {
             performanceMessage = '¡Sigue practicando! La categorización mejorará. 💪';
+            performanceAudio = 'Sigue practicando, la categorización mejorará';
         } else if (avgAccuracy < 80) {
             performanceMessage = '¡Muy buen trabajo! Entiendes bien las categorías. 🌟';
+            performanceAudio = 'Muy buen trabajo, entiendes bien las categorías';
         }
+
+        audioManager.speak(`Juego completado. Puntuación: ${this.score} puntos. Precisión: ${avgAccuracy} por ciento. ${performanceAudio}`, 0.95);
 
         gameCard.innerHTML = `
             <h2>¡Juego Completado!</h2>
@@ -498,5 +498,5 @@ function checkAnswer() {
 }
 
 function goToMainPage() {
-    window.location.href = '/pages/BlueMindsMain.html';
+    window.location.href = '/../../selectores/selector-visual.html';
 }

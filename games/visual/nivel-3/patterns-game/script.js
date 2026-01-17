@@ -86,6 +86,9 @@ function startNewRound() {
     
     // Actualizar la interfaz
     updateUI();
+    
+    // Audio: Anunciar la ronda
+    audioManager.speak(`Ronda ${currentRound + 1}. ¿Qué falta en el patrón? Observa la secuencia y elige la opción correcta`, 1);
 }
 
 // Actualizar la interfaz de usuario
@@ -151,12 +154,17 @@ function handleAnswer(selected, buttonElement) {
         score += 20;
         feedbackText.textContent = "¡Correcto! ✅";
         feedbackElement.className = 'feedback correct';
+        audioManager.speak('Correcto. Has identificado el patrón correctamente', 0.95);
         
         // Animar el botón correcto
         buttonElement.classList.add('answer-correct');
+        
+        // Reproducir sonido de éxito
+        playSuccessSound();
     } else {
         feedbackText.innerHTML = `Incorrecto ❌<br>La respuesta correcta era: <strong>${correctAnswer}</strong>`;
         feedbackElement.className = 'feedback incorrect';
+        audioManager.speak(`Incorrecto. La respuesta correcta era ${correctAnswer}`, 0.95);
         
         // Mostrar respuesta correcta
         allButtons.forEach(btn => {
@@ -186,6 +194,29 @@ function handleAnswer(selected, buttonElement) {
     }, 2500);
 }
 
+// Reproducir sonido de éxito
+function playSuccessSound() {
+    const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+    const notes = [523, 659, 784]; // Do, Mi, Sol
+    
+    notes.forEach((freq, idx) => {
+        const oscillator = audioContext.createOscillator();
+        const gainNode = audioContext.createGain();
+        
+        oscillator.connect(gainNode);
+        gainNode.connect(audioContext.destination);
+        
+        oscillator.frequency.value = freq;
+        oscillator.type = 'sine';
+        
+        gainNode.gain.setValueAtTime(0.2, audioContext.currentTime);
+        gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.2);
+        
+        oscillator.start(audioContext.currentTime + idx * 0.1);
+        oscillator.stop(audioContext.currentTime + idx * 0.1 + 0.2);
+    });
+}
+
 // Completar el juego
 function completeGame() {
     // Mostrar mensaje de finalización
@@ -193,11 +224,18 @@ function completeGame() {
     const accuracy = ((score / (totalRounds * 20)) * 100).toFixed(0);
     
     let message = '¡Excelente! 🏆';
+    let audioMessage = 'Excelente';
+    
     if (accuracy < 60) {
         message = '¡Sigue practicando! 💪';
+        audioMessage = 'Sigue practicando';
     } else if (accuracy < 80) {
         message = '¡Muy buen trabajo! 🌟';
+        audioMessage = 'Muy buen trabajo';
     }
+    
+    // Audio: Anunciar finalización
+    audioManager.speak(`Juego completado. Puntuación: ${score} puntos. Precisión: ${accuracy} por ciento. ${audioMessage}`, 0.95);
     
     patternCard.innerHTML = `
         <h2>¡Juego Completado!</h2>
@@ -220,5 +258,5 @@ function completeGame() {
 
 // Función para volver a la página principal
 function goToMainPage() {
-    window.location.href = '/pages/BlueMindsMain.html';
+     window.location.href = '/../../selectores/selector-visual.html';
 }

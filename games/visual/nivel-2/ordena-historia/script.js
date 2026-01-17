@@ -1,3 +1,27 @@
+// ===== AUDIO MANAGER =====
+class AudioManager {
+    constructor() {
+        this.synth = window.speechSynthesis;
+        this.audioEnabled = true;
+    }
+    
+    speak(text, rate = 1) {
+        if (!this.audioEnabled) return;
+        this.synth.cancel();
+        const utterance = new SpeechSynthesisUtterance(text);
+        utterance.rate = rate;
+        utterance.pitch = 1.0;
+        utterance.volume = 1.0;
+        utterance.lang = 'es-ES';
+        this.synth.speak(utterance);
+    }
+    
+    toggleAudio() {
+        this.audioEnabled = !this.audioEnabled;
+        return this.audioEnabled;
+    }
+}
+
 // ===== SISTEMA DE IA ADAPTATIVO PARA SECUENCIACIÓN NARRATIVA =====
 class AISequenceGame {
     constructor() {
@@ -6,6 +30,9 @@ class AISequenceGame {
         this.selectedSequence = [];
         this.showFeedback = false;
         this.draggedElement = null;
+        
+        // Audio Manager
+        this.audioManager = new AudioManager();
         
         // Parámetros de IA
         this.narrativeScore = 0;
@@ -183,6 +210,9 @@ class AISequenceGame {
             const hintBox = document.getElementById('narrative-hint');
             hintBox.innerHTML = `<strong>💡 Pista narrativa:</strong> ${this.currentSequence.narrative}`;
             hintBox.style.display = 'block';
+            
+            // Leer la pista en voz alta
+            this.audioManager.speak(`Pista: ${this.currentSequence.narrative}`);
         } else {
             document.getElementById('narrative-hint').style.display = 'none';
         }
@@ -200,6 +230,9 @@ class AISequenceGame {
         document.getElementById('current-round').textContent = this.currentRound + 1;
         document.getElementById('total-rounds').textContent = this.totalQuestions;
         document.getElementById('sequence-title').textContent = this.currentSequence.title;
+        
+        // Leer el título de la secuencia
+        this.audioManager.speak(this.currentSequence.title);
         
         const progress = ((this.currentRound + 1) / this.totalQuestions) * 100;
         document.getElementById('progress-fill').style.width = progress + '%';
@@ -347,6 +380,7 @@ class AISequenceGame {
     
     resetSequence() {
         this.selectedSequence = [];
+        this.audioManager.speak('Reiniciando secuencia');
         this.loadSequence();
     }
     
@@ -356,6 +390,7 @@ class AISequenceGame {
             const feedbackElement = document.getElementById('feedback');
             feedbackElement.textContent = 'Debes completar toda la secuencia';
             feedbackElement.className = 'feedback incorrect show';
+            this.audioManager.speak('Debes completar toda la secuencia');
             return;
         }
         
@@ -378,6 +413,7 @@ class AISequenceGame {
             
             feedbackText.textContent = `¡Correcto! 🎉 "${this.currentSequence.title}"`;
             feedbackElement.className = 'feedback correct show';
+            this.audioManager.speak('¡Correcto! Excelente trabajo');
         } else {
             this.consecutiveWrong++;
             this.consecutiveCorrect = 0;
@@ -389,6 +425,7 @@ class AISequenceGame {
             
             feedbackText.textContent = `No es correcto. Intenta de nuevo 😊`;
             feedbackElement.className = 'feedback incorrect show';
+            this.audioManager.speak('No es correcto. Intenta de nuevo');
         }
         
         document.getElementById('score').textContent = this.score + ' puntos';
@@ -444,11 +481,17 @@ class AISequenceGame {
         const finalScore = this.narrativeScore.toFixed(0);
         
         let performanceMessage = '¡Excelente secuenciación narrativa! 🏆';
+        let audioMessage = 'Excelente secuenciación narrativa';
+        
         if (avgAccuracy < 60) {
             performanceMessage = '¡Sigue practicando! La narrativa mejorará. 💪';
+            audioMessage = 'Sigue practicando, la narrativa mejorará';
         } else if (avgAccuracy < 80) {
             performanceMessage = '¡Muy buen trabajo! Tu secuenciación mejora. 🌟';
+            audioMessage = 'Muy buen trabajo, tu secuenciación mejora';
         }
+        
+        this.audioManager.speak(audioMessage);
         
         gameCard.innerHTML = `
             <h2>¡Juego Completado!</h2>
@@ -485,7 +528,7 @@ class AISequenceGame {
     }
     
     goToMainPage() {
-        window.location.href = '/pages/BlueMindsMain.html';
+        window.location.href = '/../../selectores/selector-visual.html';
     }
 }
 

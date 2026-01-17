@@ -137,16 +137,20 @@ class AIClassificationGame {
         if (this.consecutiveCorrect >= 3 && this.classificationScore >= 80) {
             if (this.difficulty === 'easy') {
                 this.difficulty = 'medium';
+                audioManager.speak('Aumentando dificultad a nivel medio', 0.9);
             } else if (this.difficulty === 'medium') {
                 this.difficulty = 'hard';
+                audioManager.speak('Aumentando dificultad a nivel difícil', 0.9);
             }
         }
         // Si está teniendo dificultad → reducir
         else if (this.consecutiveWrong >= 2 || this.classificationScore < 50) {
             if (this.difficulty === 'hard') {
                 this.difficulty = 'medium';
+                audioManager.speak('Reduciendo dificultad a nivel medio', 0.9);
             } else if (this.difficulty === 'medium') {
                 this.difficulty = 'easy';
+                audioManager.speak('Reduciendo dificultad a nivel fácil', 0.9);
             }
             this.consecutiveWrong = 0;
         }
@@ -184,30 +188,12 @@ class AIClassificationGame {
             `💡 Pista: Piensa en la función principal de "${confusingItem}"`,
             `💡 Pista: "${confusingItem}" es más similar a elementos del mismo color`
         ];
-        hintBox.textContent = hints[Math.floor(Math.random() * hints.length)];
+        const selectedHint = hints[Math.floor(Math.random() * hints.length)];
+        hintBox.textContent = selectedHint;
         hintBox.style.display = 'block';
         
-        // Reproducir sonido de pista
-        this.playHintSound();
-    }
-    
-    playHintSound() {
-        const audioContext = new (window.AudioContext || window.webkitAudioContext)();
-        const oscillator = audioContext.createOscillator();
-        const gainNode = audioContext.createGain();
-        
-        oscillator.connect(gainNode);
-        gainNode.connect(audioContext.destination);
-        
-        oscillator.frequency.setValueAtTime(600, audioContext.currentTime);
-        oscillator.frequency.linearRampToValueAtTime(800, audioContext.currentTime + 0.2);
-        oscillator.type = 'sine';
-        
-        gainNode.gain.setValueAtTime(0.2, audioContext.currentTime);
-        gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.2);
-        
-        oscillator.start(audioContext.currentTime);
-        oscillator.stop(audioContext.currentTime + 0.2);
+        // Reproducir audio de pista
+        audioManager.speak(selectedHint.replace('💡 Pista: ', ''), 0.9);
     }
     
     loadPuzzle() {
@@ -249,6 +235,9 @@ class AIClassificationGame {
         
         this.adjustDifficulty();
         this.detectConfusion();
+        
+        // Audio: Anunciar la ronda
+        audioManager.speak(`Ronda ${this.currentRound + 1}. Agrupa los emojis por categoría`, 1);
     }
     
     renderCategories() {
@@ -394,6 +383,7 @@ class AIClassificationGame {
             
             feedbackText.textContent = '¡Perfecto! Todas las clasificaciones son correctas 🎉';
             feedbackElement.className = 'feedback correct show';
+            audioManager.speak('Perfecto. Todas las clasificaciones son correctas', 0.95);
             
             // Reproducir sonido
             this.playSuccessSound();
@@ -403,6 +393,7 @@ class AIClassificationGame {
             
             feedbackText.textContent = 'Algunos items no están en la categoría correcta. Intenta de nuevo 😊';
             feedbackElement.className = 'feedback incorrect show';
+            audioManager.speak('Algunos items no están en la categoría correcta. Intenta de nuevo', 0.95);
         }
 
         document.getElementById('score').textContent = this.score + ' puntos';
@@ -482,11 +473,17 @@ class AIClassificationGame {
         const finalScore = this.classificationScore.toFixed(0);
         
         let performanceMessage = '¡Excelente clasificación! 🏆';
+        let performanceAudio = 'Excelente clasificación';
+        
         if (avgAccuracy < 60) {
             performanceMessage = '¡Sigue practicando! La clasificación mejorará. 💪';
+            performanceAudio = 'Sigue practicando, la clasificación mejorará';
         } else if (avgAccuracy < 80) {
             performanceMessage = '¡Muy buen trabajo! Tu clasificación mejora. 🌟';
+            performanceAudio = 'Muy buen trabajo, tu clasificación mejora';
         }
+
+        audioManager.speak(`Juego completado. Puntuación: ${this.score} puntos. Precisión: ${avgAccuracy} por ciento. ${performanceAudio}`, 0.95);
         
         gameCard.innerHTML = `
             <h2>¡Juego Completado!</h2>
@@ -534,7 +531,7 @@ class AIClassificationGame {
     }
     
     goToMainPage() {
-        window.location.href = '/pages/BlueMindsMain.html';
+        window.location.href = '/../../selectores/selector-visual.html';
     }
 }
 

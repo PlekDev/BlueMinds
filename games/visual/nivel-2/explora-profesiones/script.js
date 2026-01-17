@@ -174,7 +174,6 @@ class AIProfessionsGame {
     selectNextQuestion() {
         const questionsForDifficulty = this.allQuestions[this.difficulty];
         
-        // Priorizar profesiones problemáticas para reforzar
         const problematicQuestions = questionsForDifficulty.filter(q => {
             const stats = this.professionStats[q.profession];
             return stats && stats.attempts > 0 && stats.correct === 0;
@@ -190,20 +189,22 @@ class AIProfessionsGame {
     adjustDifficulty() {
         this.professionScore = (this.score / (this.totalQuestions * 10)) * 100;
         
-        // Si 3 aciertos seguidos y >= 80% → aumentar dificultad
         if (this.consecutiveCorrect >= 3 && this.professionScore >= 80) {
             if (this.difficulty === 'easy') {
                 this.difficulty = 'medium';
+                audioManager.speak('Aumentando dificultad a nivel medio', 0.9);
             } else if (this.difficulty === 'medium') {
                 this.difficulty = 'hard';
+                audioManager.speak('Aumentando dificultad a nivel difícil', 0.9);
             }
         }
-        // Si está teniendo dificultad → reducir
         else if (this.consecutiveWrong >= 2 || this.professionScore < 50) {
             if (this.difficulty === 'hard') {
                 this.difficulty = 'medium';
+                audioManager.speak('Reduciendo dificultad a nivel medio', 0.9);
             } else if (this.difficulty === 'medium') {
                 this.difficulty = 'easy';
+                audioManager.speak('Reduciendo dificultad a nivel fácil', 0.9);
             }
             this.consecutiveWrong = 0;
         }
@@ -227,23 +228,18 @@ class AIProfessionsGame {
         this.selectedOption = null;
         this.answered = false;
         
-        // Seleccionar pregunta
         const currentQuestion = this.selectNextQuestion();
         this.currentQuestionData = currentQuestion;
         
-        // Actualizar número de pregunta y progreso
         document.getElementById('questionNumber').textContent = `Pregunta ${this.currentQuestion + 1} de ${this.totalQuestions}`;
         document.getElementById('progressText').textContent = `${this.currentQuestion + 1}/${this.totalQuestions}`;
         document.getElementById('progressFill').style.width = `${((this.currentQuestion + 1) / this.totalQuestions) * 100}%`;
         
-        // Cargar imagen
         document.getElementById('professionImage').src = currentQuestion.image;
         
-        // Generar opciones
         const optionsContainer = document.getElementById('optionsContainer');
         optionsContainer.innerHTML = '';
         
-        // Mezclar opciones
         const shuffledOptions = [...currentQuestion.options].sort(() => Math.random() - 0.5);
         const correctIndex = shuffledOptions.indexOf(currentQuestion.options[currentQuestion.correctAnswer]);
         
@@ -256,28 +252,27 @@ class AIProfessionsGame {
             optionsContainer.appendChild(optionElement);
         });
         
-        // Limpiar feedback
         const feedback = document.getElementById('feedback');
         feedback.classList.remove('show', 'correct', 'incorrect');
         document.getElementById('ai-analysis').classList.remove('show');
         
-        // Resetear botones
         document.getElementById('checkAnswerBtn').style.display = 'inline-flex';
         document.getElementById('checkAnswerBtn').disabled = false;
         document.getElementById('nextQuestionBtn').style.display = 'none';
         
         this.adjustDifficulty();
+        
+        // Audio: Anunciar la pregunta
+        audioManager.speak(`Pregunta ${this.currentQuestion + 1}. ¿Cuál es la profesión que se muestra en la imagen?`, 1);
     }
     
     selectOption(index) {
         if (this.answered) return;
         
-        // Deseleccionar todas las opciones
         document.querySelectorAll('.option').forEach(option => {
             option.classList.remove('selected');
         });
         
-        // Seleccionar la opción actual
         document.querySelectorAll('.option')[index].classList.add('selected');
         this.selectedOption = index;
     }
@@ -285,12 +280,12 @@ class AIProfessionsGame {
     checkAnswer() {
         if (this.selectedOption === null) {
             this.showFeedback('Por favor, selecciona una opción', false);
+            audioManager.speak('Debes seleccionar una opción', 0.9);
             return;
         }
         
         this.answered = true;
         
-        // Obtener la opción correcta
         const options = document.querySelectorAll('.option');
         const correctOptionIndex = Array.from(options).findIndex(o => o.dataset.correct === 'true');
         
@@ -307,24 +302,24 @@ class AIProfessionsGame {
             this.consecutiveWrong = 0;
             this.professionStats[profession].correct++;
             
-            // Registrar profesión dominada
             if (!this.masteredProfessions.includes(profession) && 
                 this.professionStats[profession].correct >= 1) {
                 this.masteredProfessions.push(profession);
             }
             
             this.showFeedback('¡Correcto! ¡Bien hecho!', true);
+            audioManager.speak(`Correcto. La respuesta es ${profession}`, 0.95);
         } else {
             options[this.selectedOption].classList.add('incorrect');
             this.consecutiveWrong++;
             this.consecutiveCorrect = 0;
             
-            // Registrar como problemática
             if (!this.problematicProfessions.includes(profession)) {
                 this.problematicProfessions.push(profession);
             }
             
             this.showFeedback('¡Incorrecto! Intenta con otra opción', false);
+            audioManager.speak(`Incorrecto. La respuesta correcta es ${profession}`, 0.95);
         }
         
         document.getElementById('score').textContent = this.score;
@@ -332,7 +327,6 @@ class AIProfessionsGame {
         
         this.showAIAnalysis();
         
-        // Mostrar botón de siguiente pregunta o terminar juego
         if (this.currentQuestion < this.totalQuestions - 1) {
             setTimeout(() => {
                 document.getElementById('nextQuestionBtn').style.display = 'inline-flex';
@@ -392,28 +386,32 @@ class AIProfessionsGame {
         
         finalScore.textContent = this.score;
         
-        // Calcular estrellas
         const percentage = (this.score / (this.totalQuestions * 10)) * 100;
         let stars = 0;
         let message = '';
+        let audioMessage = '';
         
         if (percentage === 100) {
             stars = 3;
             message = '¡Perfecto! ¡Eres un experto en profesiones! 🏆';
+            audioMessage = 'Perfecto. Eres un experto en profesiones';
         } else if (percentage >= 70) {
             stars = 2;
             message = '¡Muy bien! ¡Tienes una buena comprensión de profesiones! 🌟';
+            audioMessage = 'Muy bien. Tienes una buena comprensión de profesiones';
         } else if (percentage >= 50) {
             stars = 1;
             message = '¡Buen intento! ¡Sigue practicando! 💪';
+            audioMessage = 'Buen intento. Sigue practicando';
         } else {
             stars = 0;
             message = '¡No te rindas! ¡La próxima vez será mejor! 📚';
+            audioMessage = 'No te rindas. La próxima vez será mejor';
         }
         
         resultMessage.textContent = message;
+        audioManager.speak(`Juego completado. Puntuación: ${this.score} puntos. Porcentaje: ${percentage.toFixed(0)} por ciento. ${audioMessage}`, 0.95);
         
-        // Mostrar estrellas
         starsContainer.innerHTML = '';
         for (let i = 0; i < 3; i++) {
             const star = document.createElement('span');
@@ -421,7 +419,6 @@ class AIProfessionsGame {
             starsContainer.appendChild(star);
         }
         
-        // Llenar reporte de IA
         document.getElementById('reportScore').textContent = percentage.toFixed(0);
         document.getElementById('reportMastered').textContent = this.masteredProfessions.length;
         document.getElementById('reportImprove').textContent = this.problematicProfessions.length > 0 
@@ -450,7 +447,7 @@ class AIProfessionsGame {
     }
     
     goToMainPage() {
-        window.location.href = '/pages/BlueMindsMain.html';
+       window.location.href = '/../../selectores/selector-visual.html';
     }
 }
 

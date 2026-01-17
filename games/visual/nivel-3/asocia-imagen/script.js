@@ -95,16 +95,20 @@ class AIAssociationGame {
         if (this.consecutiveCorrect >= 3 && this.associationScore >= 80) {
             if (this.difficulty === 'easy') {
                 this.difficulty = 'medium';
+                audioManager.speak('Aumentando dificultad a nivel medio', 0.9);
             } else if (this.difficulty === 'medium') {
                 this.difficulty = 'hard';
+                audioManager.speak('Aumentando dificultad a nivel difícil', 0.9);
             }
         }
         // Si está teniendo dificultad → reducir
         else if (this.consecutiveWrong >= 2 || this.associationScore < 50) {
             if (this.difficulty === 'hard') {
                 this.difficulty = 'medium';
+                audioManager.speak('Reduciendo dificultad a nivel medio', 0.9);
             } else if (this.difficulty === 'medium') {
                 this.difficulty = 'easy';
+                audioManager.speak('Reduciendo dificultad a nivel fácil', 0.9);
             }
             this.consecutiveWrong = 0;
         }
@@ -168,6 +172,7 @@ class AIAssociationGame {
             };
             hintBox.textContent = hints[this.difficulty];
             hintBox.style.display = 'block';
+            audioManager.speak(hints[this.difficulty].replace('💡 Pista: ', ''), 0.9);
         } else {
             document.getElementById('visual-hint').style.display = 'none';
         }
@@ -227,6 +232,9 @@ class AIAssociationGame {
         
         this.adjustDifficulty();
         this.detectSensitivity();
+        
+        // Audio: Anunciar la ronda
+        audioManager.speak(`Ronda ${this.currentRound + 1}. Selecciona la palabra correcta para la imagen`, 1);
     }
     
     handleDragStart(e, element) {
@@ -280,6 +288,7 @@ class AIAssociationGame {
             
             feedbackText.textContent = `¡Correcto! 🎉 "${this.currentImage.name}"`;
             feedbackElement.className = 'feedback correct show';
+            audioManager.speak(`Correcto. La palabra es ${this.currentImage.name}`, 0.95);
             
             // Reproducir sonido
             this.playSound();
@@ -301,6 +310,7 @@ class AIAssociationGame {
             
             feedbackText.textContent = `No es correcto. Era: "${this.currentImage.name}" 😊`;
             feedbackElement.className = 'feedback incorrect show';
+            audioManager.speak(`Incorrecto. La palabra correcta es ${this.currentImage.name}`, 0.95);
         }
         
         document.getElementById('score').textContent = this.score + ' puntos';
@@ -400,11 +410,17 @@ class AIAssociationGame {
         const finalScore = this.associationScore.toFixed(0);
         
         let performanceMessage = '¡Excelente asociación palabra-imagen! 🏆';
+        let performanceAudio = 'Excelente asociación palabra imagen';
+        
         if (avgAccuracy < 60) {
             performanceMessage = '¡Sigue practicando! La asociación mejorará. 💪';
+            performanceAudio = 'Sigue practicando, la asociación mejorará';
         } else if (avgAccuracy < 80) {
             performanceMessage = '¡Muy buen trabajo! Tu asociación mejora. 🌟';
+            performanceAudio = 'Muy buen trabajo, tu asociación mejora';
         }
+
+        audioManager.speak(`Juego completado. Puntuación: ${this.score} puntos. Precisión: ${avgAccuracy} por ciento. ${performanceAudio}`, 0.95);
         
         gameCard.innerHTML = `
             <h2>¡Juego Completado!</h2>
@@ -443,7 +459,7 @@ class AIAssociationGame {
     }
     
     goToMainPage() {
-        window.location.href = '/pages/BlueMindsMain.html';
+        window.location.href = '/../../selectores/selector-visual.html';
     }
 }
 

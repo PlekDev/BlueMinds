@@ -353,5 +353,6 @@ function handleColorClick(color) {
 }
 
 function goToMainPage() {
-    window.location.href = '/../../selectores/selector-visual.html';
+    window.location.href = '/../BlueMinds/selectores/selector-visual.html';
+    
 }

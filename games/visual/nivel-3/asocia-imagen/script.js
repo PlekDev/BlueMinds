@@ -459,7 +459,7 @@ class AIAssociationGame {
     }
     
     goToMainPage() {
-        window.location.href = '/../../selectores/selector-visual.html';
+        window.location.href = 'https://plekdev.github.io/BlueMinds/selectores/selector-visual.html';
     }
 }
 

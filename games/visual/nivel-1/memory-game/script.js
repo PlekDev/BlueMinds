@@ -353,6 +353,6 @@ function handleColorClick(color) {
 }
 
 function goToMainPage() {
-    window.location.href = '/../BlueMinds/selectores/selector-visual.html';
+    window.location.href = 'https://plekdev.github.io/BlueMinds/selectores/selector-visual.html';
     
 }

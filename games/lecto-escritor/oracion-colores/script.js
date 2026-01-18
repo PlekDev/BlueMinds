@@ -299,5 +299,5 @@ function completeGame() {
 
 // Función para volver a la página principal
 function goToMainPage() {
-    window.location.href = '/selectores/selector-lecto-escritor.html';
+    window.location.href = 'https://plekdev.github.io/BlueMinds/selectores/selector-lecto-escritor.html';
 }

@@ -258,5 +258,5 @@ function completeGame() {
 
 // Función para volver a la página principal
 function goToMainPage() {
-     window.location.href = '/../../selectores/selector-visual.html';
+     window.location.href = 'https://plekdev.github.io/BlueMinds/selectores/selector-visual.html';
 }

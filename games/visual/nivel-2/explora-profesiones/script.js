@@ -447,7 +447,7 @@ class AIProfessionsGame {
     }
     
     goToMainPage() {
-       window.location.href = '/../Blueminds/selectores/selector-visual.html';
+       window.location.href = 'https://plekdev.github.io/BlueMinds/selectores/selector-visual.html';
     }
 }
 

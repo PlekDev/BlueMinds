@@ -1,52 +1,153 @@
+// ========================
+// EL ECO DE LAS PALABRAS - SCRIPT COMPLETO
+// Con análisis de pronunciación avanzado
+// ========================
+
 // Variables globales
 let currentRound = 0;
 let score = 0;
 let currentWord = null;
 let isRecording = false;
 let hasPlayed = false;
+let difficulty = 'normal';
+let recognitionActive = false;
+let analyzer = null;
 
 const words = [
-    { src: "https://tse1.mm.bing.net/th/id/OIP.z589HEF6wuRZZR-B9C49RQHaFK?rs=1&pid=ImgDetMain&o=7&rm=3", name: "sol", audio: "sol", color: "primary" },
-    { src: "https://img.freepik.com/vector-premium/icono-luna-lindo-estilo-dibujos-animados_74102-7166.jpg?w=2000", name: "luna", audio: "luna", color: "blue" },
-    { src: "https://img.freepik.com/vector-premium/estrella-dibujada-mano-plana-elegante-mascota-personaje-dibujos-animados-dibujo-pegatina-icono-concepto-aislado_730620-302755.jpg", name: "estrella", audio: "estrella", color: "red" },
-    { src: "https://static.vecteezy.com/system/resources/previews/024/190/108/non_2x/cute-cartoon-cloud-kawaii-weather-illustrations-for-kids-free-png.png", name: "nube", audio: "nube", color: "purple" },
-    { src: "https://img.freepik.com/fotos-premium/estilo-ilustracion-vectorial-lluvia-dibujos-animados_750724-13162.jpg", name: "lluvia", audio: "lluvia", color: "accent" },
-    { src: "https://static.vecteezy.com/system/resources/previews/008/132/083/non_2x/green-tree-cartoon-isolated-on-white-background-illustration-of-green-tree-cartoon-free-vector.jpg", name: "árbol", audio: "arbol", color: "primary" },
+    { src: "https://tse1.mm.bing.net/th/id/OIP.z589HEF6wuRZZR-B9C49RQHaFK?rs=1&pid=ImgDetMain&o=7&rm=3", name: "sol", audio: "sol", color: "primary", difficulty: 'easy' },
+    { src: "https://img.freepik.com/vector-premium/icono-luna-lindo-estilo-dibujos-animados_74102-7166.jpg?w=2000", name: "luna", audio: "luna", color: "blue", difficulty: 'easy' },
+    { src: "https://img.freepik.com/vector-premium/estrella-dibujada-mano-plana-elegante-mascota-personaje-dibujos-animados-dibujo-pegatina-icono-concepto-aislado_730620-302755.jpg", name: "estrella", audio: "estrella", color: "red", difficulty: 'medium' },
+    { src: "https://static.vecteezy.com/system/resources/previews/024/190/108/non_2x/cute-cartoon-cloud-kawaii-weather-illustrations-for-kids-free-png.png", name: "nube", audio: "nube", color: "purple", difficulty: 'easy' },
+    { src: "https://img.freepik.com/fotos-premium/estilo-ilustracion-vectorial-lluvia-dibujos-animados_750724-13162.jpg", name: "lluvia", audio: "lluvia", color: "accent", difficulty: 'hard' },
+    { src: "https://static.vecteezy.com/system/resources/previews/008/132/083/non_2x/green-tree-cartoon-isolated-on-white-background-illustration-of-green-tree-cartoon-free-vector.jpg", name: "árbol", audio: "arbol", color: "primary", difficulty: 'medium' },
 ];
 
 const totalRounds = 5;
+let recognition;
 
-// Inicializar el juego
-document.addEventListener('DOMContentLoaded', () => {
+// ========================
+// INICIALIZACIÓN DEL JUEGO
+// ========================
+
+document.addEventListener('DOMContentLoaded', function() {
+    setupSpeechRecognition();
     setupEventListeners();
+    initializeAnalyzer();
     startNewRound();
 });
 
-// Configurar event listeners
-function setupEventListeners() {
-    document.getElementById('play-button').addEventListener('click', playWord);
-    document.getElementById('record-button').addEventListener('click', toggleRecording);
+// ========================
+// CONFIGURAR RECONOCIMIENTO DE VOZ
+// ========================
+
+function setupSpeechRecognition() {
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    
+    if (SpeechRecognition) {
+        recognition = new SpeechRecognition();
+        recognition.lang = 'es-ES';
+        recognition.continuous = false;
+        recognition.interimResults = false;
+
+        recognition.onstart = function() {
+            recognitionActive = true;
+            console.log('Reconocimiento de voz iniciado');
+        };
+
+        recognition.onresult = function(event) {
+            const transcript = event.results[0][0].transcript.toLowerCase().trim();
+            console.log('Transcript:', transcript);
+            analyzePronounciation(transcript);
+        };
+
+        recognition.onerror = function(event) {
+            console.error('Error en reconocimiento de voz:', event.error);
+            showFeedback('Error al grabar. Intenta de nuevo.', false);
+            stopRecording();
+        };
+
+        recognition.onend = function() {
+            recognitionActive = false;
+            console.log('Reconocimiento de voz finalizado');
+        };
+    } else {
+        console.warn('Web Speech API no soportada en este navegador');
+        alert('Tu navegador no soporta reconocimiento de voz. Por favor usa Chrome, Edge o Safari.');
+    }
 }
 
-// Iniciar una nueva ronda
+// ========================
+// INICIALIZAR ANALIZADOR
+// ========================
+
+function initializeAnalyzer() {
+    if (typeof PronunciationAnalyzer !== 'undefined') {
+        analyzer = new PronunciationAnalyzer();
+        console.log('Analizador de pronunciación inicializado');
+    } else {
+        console.error('PronunciationAnalyzer no está disponible. Asegúrate de cargar pronunciation-analyzer.js');
+    }
+}
+
+// ========================
+// CONFIGURAR EVENT LISTENERS
+// ========================
+
+function setupEventListeners() {
+    const playButton = document.getElementById('play-button');
+    const recordButton = document.getElementById('record-button');
+    
+    if (playButton) {
+        playButton.addEventListener('click', playWord);
+    }
+    
+    if (recordButton) {
+        recordButton.addEventListener('click', toggleRecording);
+    }
+}
+
+// ========================
+// INICIAR NUEVA RONDA
+// ========================
+
 function startNewRound() {
-    const randomWord = words[Math.floor(Math.random() * words.length)];
+    let filteredWords = words;
+    
+    // Filtrar palabras por dificultad
+    if (difficulty === 'easy') {
+        filteredWords = words.filter(function(w) {
+            return w.difficulty === 'easy';
+        });
+    } else if (difficulty === 'hard') {
+        filteredWords = words.filter(function(w) {
+            return w.difficulty === 'hard';
+        });
+    }
+
+    // Seleccionar palabra aleatoria
+    const randomWord = filteredWords[Math.floor(Math.random() * filteredWords.length)];
     currentWord = randomWord;
     hasPlayed = false;
     isRecording = false;
     
-    // Actualizar la interfaz
     updateUI();
     
-    // Reproducir automáticamente la palabra
-    setTimeout(() => playWord(), 1000);
+    // Reproducir palabra automáticamente después de 1 segundo
+    setTimeout(function() {
+        playWord();
+    }, 1000);
 }
 
-// Actualizar la interfaz de usuario
+// ========================
+// ACTUALIZAR INTERFAZ
+// ========================
+
 function updateUI() {
-    // Actualizar progreso
+    // Actualizar número de ronda
     document.getElementById('current-round').textContent = currentRound + 1;
     document.getElementById('total-rounds').textContent = totalRounds;
+    
+    // Actualizar puntaje
     document.getElementById('score').textContent = score + ' puntos';
     document.getElementById('score-display').textContent = score + ' puntos';
     
@@ -57,34 +158,59 @@ function updateUI() {
     // Actualizar imagen
     document.getElementById('current-image').src = currentWord.src;
     
-    // Resetear medidor de similitud
+    // Actualizar badge de dificultad
+    const badgeElement = document.getElementById('difficulty-badge');
+    let diffText = 'Normal';
+    if (difficulty === 'easy') {
+        diffText = 'Fácil';
+    } else if (difficulty === 'hard') {
+        diffText = 'Difícil';
+    }
+    badgeElement.textContent = 'Dificultad: ' + diffText;
+    badgeElement.className = 'difficulty-badge ' + difficulty;
+    
+    // Limpiar medidor de similitud
+    document.getElementById('similarity-meter').style.display = 'none';
     document.getElementById('similarity-fill').style.width = '0%';
     document.getElementById('similarity-text').textContent = '0%';
+    document.getElementById('similarity-fill').className = 'similarity-fill';
     
     // Resetear botón de grabación
     const recordButton = document.getElementById('record-button');
     recordButton.innerHTML = '<i class="fas fa-microphone"></i> Grabar mi voz';
     recordButton.className = 'audio-button red';
     
-    // Ocultar feedback
-    document.getElementById('feedback').classList.add('hidden');
+    // Limpiar feedback
+    document.getElementById('feedback').classList.remove('show');
+    document.getElementById('recorded-text').classList.remove('show');
 }
 
-// Reproducir la palabra
+// ========================
+// REPRODUCIR PALABRA
+// ========================
+
 function playWord() {
     if (!currentWord) return;
     
-    // Simular reproducción de audio
     const playButton = document.getElementById('play-button');
     playButton.innerHTML = '<i class="fas fa-volume-up"></i> Reproduciendo...';
     playButton.disabled = true;
     
-    // Usar Speech Synthesis API para simular el audio
+    // Crear utterance para síntesis de voz
     const utterance = new SpeechSynthesisUtterance(currentWord.name);
     utterance.lang = 'es-ES';
-    utterance.rate = 0.8;
+    utterance.rate = difficulty === 'hard' ? 0.6 : 0.8;
+    utterance.pitch = 1;
+    utterance.volume = 1;
     
-    utterance.onend = () => {
+    utterance.onend = function() {
+        playButton.innerHTML = '<i class="fas fa-volume-up"></i> Escuchar palabra';
+        playButton.disabled = false;
+        hasPlayed = true;
+    };
+    
+    utterance.onerror = function(event) {
+        console.error('Error en síntesis de voz:', event.error);
         playButton.innerHTML = '<i class="fas fa-volume-up"></i> Escuchar palabra';
         playButton.disabled = false;
         hasPlayed = true;
@@ -93,10 +219,13 @@ function playWord() {
     speechSynthesis.speak(utterance);
 }
 
-// Iniciar/detener grabación
+// ========================
+// GRABAR VOZ
+// ========================
+
 function toggleRecording() {
     if (!hasPlayed) {
-        showFeedback("Primero escucha la palabra", false);
+        showFeedback('Primero escucha la palabra', false);
         return;
     }
     
@@ -108,98 +237,212 @@ function toggleRecording() {
         recordButton.innerHTML = '<i class="fas fa-stop"></i> Detener grabación';
         recordButton.className = 'audio-button red recording';
         
-        // Simular grabación
-        setTimeout(() => {
-            if (isRecording) {
-                stopRecording();
-            }
-        }, 3000);
+        if (recognition) {
+            recognition.start();
+        } else {
+            showFeedback('Error: Reconocimiento de voz no disponible', false);
+            stopRecording();
+        }
     } else {
         // Detener grabación
         stopRecording();
     }
 }
 
-// Detener grabación y analizar
+// ========================
+// DETENER GRABACIÓN
+// ========================
+
 function stopRecording() {
     isRecording = false;
     const recordButton = document.getElementById('record-button');
     recordButton.innerHTML = '<i class="fas fa-microphone"></i> Analizando...';
     recordButton.className = 'audio-button red';
     
-    // Simular análisis de voz
-    setTimeout(() => {
-        // Generar similitud aleatoria (en una implementación real, se usaría reconocimiento de voz)
-        const similarity = Math.floor(Math.random() * 40) + 60; // Entre 60% y 100%
-        
-        // Actualizar medidor de similitud
-        document.getElementById('similarity-fill').style.width = similarity + '%';
-        document.getElementById('similarity-text').textContent = similarity + '%';
-        
-        // Determinar si es correcto
-        const isCorrect = similarity >= 75;
-        
-        if (isCorrect) {
-            score += 20;
-            showFeedback("¡Excelente repetición! 🎉", true);
-        } else {
-            showFeedback("Intenta de nuevo, no fue muy parecido", false);
-        }
-        
-        // Actualizar puntaje
-        document.getElementById('score').textContent = score + ' puntos';
-        document.getElementById('score-display').textContent = score + ' puntos';
-        
-        // Resetear botón de grabación
-        recordButton.innerHTML = '<i class="fas fa-microphone"></i> Grabar mi voz';
-        
-        // Avanzar a la siguiente ronda o finalizar el juego
-        setTimeout(() => {
-            if (currentRound + 1 >= totalRounds) {
-                completeGame();
-            } else {
-                currentRound++;
-                startNewRound();
-            }
-        }, 2000);
-    }, 1500);
+    if (recognition) {
+        recognition.stop();
+    }
 }
 
-// Mostrar feedback
+// ========================
+// ANALIZAR PRONUNCIACIÓN
+// ========================
+
+function analyzePronounciation(transcript) {
+    // Inicializar analizador si no existe
+    if (!analyzer) {
+        analyzer = new PronunciationAnalyzer();
+    }
+    
+    // Analizar usando la clase PronunciationAnalyzer
+    const result = analyzer.analyze(currentWord.name, transcript);
+    const similarity = result.score;
+    
+    // Mostrar texto grabado
+    const recordedTextElement = document.getElementById('recorded-text');
+    document.getElementById('recorded-text-content').textContent = '"' + transcript + '"';
+    recordedTextElement.classList.add('show');
+    
+    // Actualizar medidor de similitud
+    document.getElementById('similarity-meter').style.display = 'block';
+    document.getElementById('similarity-fill').style.width = similarity + '%';
+    document.getElementById('similarity-text').textContent = similarity + '%';
+    
+    // Cambiar color del medidor según resultado
+    const fillElement = document.getElementById('similarity-fill');
+    fillElement.className = 'similarity-fill';
+    if (similarity >= 70) {
+        fillElement.classList.add('success');
+    } else if (similarity >= 50) {
+        fillElement.classList.add('warning');
+    } else {
+        fillElement.classList.add('error');
+    }
+
+    // Determinar si es correcto
+    const isCorrect = similarity >= 70;
+    const pointsEarned = Math.floor(similarity / 10);
+
+    // Mostrar feedback
+    if (isCorrect) {
+        score += pointsEarned;
+        const feedbackMsg = result.feedback.emoji + ' ' + result.feedback.messages[0];
+        showFeedback(feedbackMsg, true);
+        
+        // Ajustar dificultad si es muy bueno
+        if (similarity >= 90 && difficulty !== 'hard') {
+            difficulty = 'hard';
+        }
+    } else {
+        const feedbackMsg = result.feedback.emoji + ' ' + result.feedback.messages[0];
+        showFeedback(feedbackMsg, false);
+        
+        // Reducir dificultad si va mal
+        if (similarity < 50 && difficulty !== 'easy') {
+            difficulty = 'easy';
+        }
+    }
+
+    // Actualizar puntaje en pantalla
+    document.getElementById('score').textContent = score + ' puntos';
+    document.getElementById('score-display').textContent = score + ' puntos';
+
+    // Log para debug
+    console.log('Resultado:', {
+        palabra: currentWord.name,
+        grabado: transcript,
+        similitud: similarity,
+        puntos: pointsEarned,
+        errores: result.errors,
+        feedback: result.feedback
+    });
+
+    // Avanzar a siguiente ronda después de 2.5 segundos
+    setTimeout(function() {
+        if (currentRound + 1 >= totalRounds) {
+            completeGame();
+        } else {
+            currentRound++;
+            startNewRound();
+        }
+    }, 2500);
+}
+
+// ========================
+// MOSTRAR FEEDBACK
+// ========================
+
 function showFeedback(message, isCorrect) {
     const feedbackElement = document.getElementById('feedback');
     const feedbackText = document.getElementById('feedback-text');
     
     feedbackText.textContent = message;
-    feedbackElement.className = isCorrect ? 'feedback correct' : 'feedback incorrect';
-    feedbackElement.classList.remove('hidden');
+    
+    if (isCorrect) {
+        feedbackElement.className = 'feedback correct show';
+    } else {
+        feedbackElement.className = 'feedback incorrect show';
+    }
 }
 
-// Completar el juego
+// ========================
+// COMPLETAR JUEGO
+// ========================
+
 function completeGame() {
-    // Mostrar mensaje de finalización
-    const audioCard = document.querySelector('.audio-card');
-    audioCard.innerHTML = `
-        <h2>¡Juego Completado!</h2>
-        <div class="image-display">
-            <img src="https://img.freepik.com/vector-gratis/personaje-feliz-dibujos-animados-ganando-premio_23-2147880844.jpg?w=1380&t=st=1664713364~exp=1664713964~hmac=0fdd3e22a937b74843cf341e4f575247c075c0495a5e4f7ac7983f37a3e1d9ed" alt="Juego completado">
-        </div>
-        <div class="feedback correct">
-            <p>Tu puntaje final: ${score} puntos</p>
-        </div>
-        <div class="options-container">
-            <button class="option-button primary" onclick="location.reload()">
-                Jugar de Nuevo
-            </button>
-            <button class="option-button blue" onclick="goToMainPage()">
-                Volver al Menú
-            </button>
-        </div>
-    `;
+    const audioCard = document.getElementById('audio-card');
+    const promedio = Math.round(score / totalRounds);
+    
+    // Obtener reporte si el analizador está disponible
+    let reporteExtra = '';
+    if (analyzer) {
+        const report = analyzer.getProgressReport();
+        if (report.weakPhonemes.length > 0) {
+            reporteExtra = '<p style="color: #6B7280; font-size: 14px; margin-top: 15px;">Sonidos a practicar: ' + report.weakPhonemes.join(', ') + '</p>';
+        }
+    }
+    
+    let html = '<div class="game-completed">';
+    html += '<h2 style="margin-bottom: 20px; color: #0066CC;">¡Juego Completado!</h2>';
+    html += '<div class="final-score">';
+    html += '<h2>Tu puntaje final:</h2>';
+    html += '<div class="score-number">' + score + '</div>';
+    html += '<p>puntos</p>';
+    html += '</div>';
+    html += '<p style="color: #6B7280; margin-bottom: 20px;">Promedio: ' + promedio + '% por ronda</p>';
+    html += reporteExtra;
+    html += '<div class="options-container">';
+    html += '<button class="option-button primary" onclick="location.reload()">';
+    html += '<i class="fas fa-redo"></i> Jugar de Nuevo';
+    html += '</button>';
+    html += '<button class="option-button blue" onclick="goToMainPage()">';
+    html += '<i class="fas fa-arrow-left"></i> Volver al Menú';
+    html += '</button>';
+    html += '</div>';
+    html += '</div>';
+    
+    audioCard.innerHTML = html;
 }
 
-// Función para volver a la página principal
+// ========================
+// VOLVER A PÁGINA PRINCIPAL
+// ========================
+
 function goToMainPage() {
     window.location.href = 'https://plekdev.github.io/BlueMinds/selectores/selector-auditivo.html';
+}
+
+// ========================
+// FUNCIONES AUXILIARES
+// ========================
+
+/**
+ * Obtener reporte de progreso del jugador
+ * Útil para mostrar al padre o terapeuta
+ */
+function getPlayerReport() {
+    if (!analyzer) {
+        return null;
+    }
     
+    const report = analyzer.getProgressReport();
+    
+    return {
+        totalAttempts: report.totalAttempts,
+        averageScore: report.averageScore,
+        strongPhonemes: report.strongPhonemes,
+        weakPhonemes: report.weakPhonemes,
+        recommendedFocus: report.recommendedFocus,
+        totalScore: score,
+        currentDifficulty: difficulty
+    };
+}
+
+/**
+ * Mostrar reporte en consola (para debug)
+ */
+function logReport() {
+    const report = getPlayerReport();
+    console.table(report);
+    console.log('Historial completo:', analyzer.userHistory.attempts);
 }

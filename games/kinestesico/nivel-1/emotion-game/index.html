@@ -6,18 +6,17 @@
     <title>Juego de Emociones - Neuro Play World</title>
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="../../css/main.css">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <div class="game-container">
         <header class="game-header">
-             <div class="back-button">
+            <div class="back-button">
                 <button onclick="goToMainPage()">
-                 <i class="fas fa-arrow-left"></i> Volver
-             </button>
+                    <i class="fas fa-arrow-left"></i> Volver
+                </button>
             </div>
-            <h1 class="game-title">Juego de Emociones</h1>
+            <h1 class="game-title">Narración Emocional Interactiva</h1>
             <div class="game-info">
                 <span id="score-display">0 puntos</span>
             </div>
@@ -35,24 +34,92 @@
                 </div>
             </div>
 
-            <!-- Emotion Display -->
+            <!-- Main Game Card -->
             <div class="emotion-card">
-                <h2>¿Qué emoción es esta?</h2>
-                <div id="emotion-display" class="emotion-display">😊</div>
-                
-                <div id="feedback" class="feedback hidden">
-                    <span id="feedback-text"></span>
+                <h2>Observa la Escena 🎬</h2>
+
+                <!-- Video Section -->
+                <div class="video-section">
+                    <div class="video-container">
+                        <div class="video-placeholder">
+                            <div>
+                                <p>📹 GIF DE EMOCIÓN</p>
+                                <p style="font-size: 12px; margin-top: 10px;">
+                                    Los GIFs se cargarán aquí automáticamente
+                                </p>
+                                <video id="emotionVideo" style="display: none; width: 100%; height: 100%;">
+                                    <source src="" type="video/mp4">
+                                    Tu navegador no soporta videos HTML5.
+                                </video>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="feedback" class="feedback hidden">
+                        <span id="feedback-text"></span>
+                    </div>
                 </div>
 
-                <div id="options-container" class="options-container">
-                    <!-- Las opciones se generarán dinámicamente -->
+                <!-- Imitation Section -->
+                <div class="imitation-section">
+                    <h3>🎭 Ahora te toca a ti - ¡Imita la emoción!</h3>
+                    
+                    <div class="camera-controls">
+                        <button class="camera-btn start" id="startCameraBtn" onclick="startCamera()">
+                            <i class="fas fa-video"></i> Iniciar Cámara
+                        </button>
+                        <button class="camera-btn stop" id="stopCameraBtn" onclick="stopCamera()" style="display: none;">
+                            <i class="fas fa-stop"></i> Detener
+                        </button>
+                    </div>
+
+                    <div class="camera-container">
+                        <div class="camera-feed" id="cameraFeedContainer">
+                            <video id="cameraFeed" style="display: none;"></video>
+                            <span id="cameraPlaceholder">La cámara se abrirá aquí</span>
+                        </div>
+                    </div>
+
+                    <!-- AI Analysis -->
+                    <div class="ai-analysis" id="aiAnalysis" style="display: none;">
+                        <h4 style="margin-bottom: 12px; color: var(--primary-blue);">📊 Análisis de IA</h4>
+                        <div class="analysis-item">
+                            <span class="analysis-label">Imitación Corporal:</span>
+                            <span class="analysis-value" id="bodyImitation">--%</span>
+                        </div>
+                        <div class="analysis-item">
+                            <span class="analysis-label">Expresión Facial:</span>
+                            <span class="analysis-value" id="facialExpression">--%</span>
+                        </div>
+                        <div class="analysis-item">
+                            <span class="analysis-label">Nivel de Energía:</span>
+                            <span class="analysis-value" id="energyLevel">Neutral</span>
+                        </div>
+                        <div class="analysis-item">
+                            <span class="analysis-label">Comprensión Emocional:</span>
+                            <span class="analysis-value" id="emotionalUnderstanding">--%</span>
+                        </div>
+                    </div>
+
+                    <!-- Adaptation Notice -->
+                    <div id="adaptationNotice" class="adaptation-notice hidden">
+                        <i class="fas fa-lightbulb"></i>
+                        <span id="adaptationText"></span>
+                    </div>
+                </div>
+
+                <!-- Options for Emotion Selection -->
+                <div style="margin-top: 25px; text-align: center;">
+                    <h3 style="margin-bottom: 15px; font-size: 20px;">¿Cuál era la emoción? 👇</h3>
+                    <div id="options-container" class="options-container">
+                        <!-- Las opciones se generarán dinámicamente -->
+                    </div>
                 </div>
             </div>
 
             <!-- Instructions -->
             <div class="instructions-card">
                 <p>
-                    💡 <span class="font-bold">Tip:</span> Observa bien la expresión y piensa en cómo te sentirías tú.
+                    💡 <span class="font-bold">Tip:</span> Mira el video, intenta imitar la emoción con tu cara y cuerpo, y luego selecciona la emoción que viste.
                 </p>
             </div>
         </main>

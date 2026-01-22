@@ -4,24 +4,16 @@ let score = 0;
 let currentEmotion = null;
 let options = [];
 let showFeedback = false;
-let videoSpeed = 1;
 let cameraActive = false;
-let movementAnalysisData = {
-    bodyImitation: 0,
-    facialExpression: 0,
-    energyLevel: 'Neutral',
-    emotionalUnderstanding: 0
-};
+let emotionDetected = '';
 
 const emotions = [
-    { name: "Feliz", color: "primary", videoUrl: "https://i.pinimg.com/originals/20/57/74/2057740a1b96ddb0b0a306b20cf4d666.gif" },
-    { name: "Triste", color: "blue", videoUrl: "https://cdnl.iconscout.com/lottie/premium/thumb/nina-llorando-a-fuerza-5105643-4277861.gif" },
-    { name: "Enojado", color: "red", videoUrl: "https://media.tenor.com/WYkqpAQVImkAAAAM/euphoria-boy.gif" },
-    { name: "Asustado", color: "purple", videoUrl: "https://media.tenor.com/azK-UXf7o5cAAAAM/anime-scream.gif" },
-    { name: "Sorprendido", color: "accent", videoUrl: "https://cdn-icons-gif.flaticon.com/11175/11175756.gif" },
+    { name: "Feliz", color: "primary", gifUrl: "https://i.pinimg.com/originals/20/57/74/2057740a1b96ddb0b0a306b20cf4d666.gif" },
+    { name: "Triste", color: "blue", gifUrl: "https://cdnl.iconscout.com/lottie/premium/thumb/nina-llorando-a-fuerza-5105643-4277861.gif" },
+    { name: "Enojado", color: "red", gifUrl: "https://media.tenor.com/WYkqpAQVImkAAAAM/euphoria-boy.gif" },
 ];
 
-const totalRounds = 5;
+const totalRounds = 3;
 
 // ================== INICIALIZACIÓN ==================
 document.addEventListener('DOMContentLoaded', () => {
@@ -34,26 +26,25 @@ function startNewRound() {
     currentEmotion = randomEmotion;
     
     const wrongOptions = emotions.filter(e => e.name !== randomEmotion.name)
-        .sort(() => Math.random() - 0.5)
-        .slice(0, 2);
+        .sort(() => Math.random() - 0.5);
     
     options = [randomEmotion, ...wrongOptions].sort(() => Math.random() - 0.5);
     showFeedback = false;
-    videoSpeed = 1;
-    resetAnalysis();
+    emotionDetected = '';
+    cameraActive = false;
     
     updateUI();
-    loadEmotionVideo();
+    loadGif();
 }
 
 function completeGame() {
     const emotionCard = document.querySelector('.emotion-card');
     emotionCard.innerHTML = `
-        <h2>¡Juego Completado!</h2>
-        <div style="font-size: 80px; margin: 20px 0;">🎉</div>
+        <h2>¡Juego Completado! 🎉</h2>
+        <div style="font-size: 80px; margin: 30px 0;">😊</div>
         <div class="feedback correct">
             <p>Tu puntaje final: ${score} puntos</p>
-            <p style="font-size: 16px; margin-top: 10px;">¡Excelente trabajo en comprensión y expresión emocional!</p>
+            <p style="font-size: 16px; margin-top: 10px;">¡Excelente trabajo en comprensión emocional!</p>
         </div>
         <div class="options-container" style="margin-top: 30px;">
             <button class="option-button primary" onclick="location.reload()">
@@ -66,19 +57,10 @@ function completeGame() {
     `;
 }
 
-// ================== VIDEO ==================
-function loadEmotionVideo() {
-    const placeholder = document.querySelector('.video-placeholder');
-    
-    const gifImage = document.createElement('img');
-    gifImage.src = currentEmotion.videoUrl;
-    gifImage.style.width = '100%';
-    gifImage.style.height = 'auto';
-    gifImage.style.maxHeight = '300px';
-    gifImage.style.objectFit = 'contain';
-    
-    placeholder.innerHTML = '';
-    placeholder.appendChild(gifImage);
+// ================== GIF ==================
+function loadGif() {
+    const gifImg = document.getElementById('emotionGif');
+    gifImg.src = currentEmotion.gifUrl;
 }
 
 // ================== INTERFAZ ==================
@@ -91,6 +73,7 @@ function updateUI() {
     const progress = ((currentRound + 1) / totalRounds) * 100;
     document.getElementById('progress-fill').style.width = progress + '%';
     
+    // Crear opciones
     const optionsContainer = document.getElementById('options-container');
     optionsContainer.innerHTML = '';
     
@@ -102,8 +85,13 @@ function updateUI() {
         optionsContainer.appendChild(button);
     });
     
+    // Resetear secciones
     document.getElementById('feedback').classList.add('hidden');
-    document.getElementById('aiAnalysis').style.display = 'none';
+    document.getElementById('simpleAnalysis').style.display = 'none';
+    
+    // Resetear cámara
+    const startBtn = document.getElementById('startCameraBtn');
+    startBtn.style.display = 'inline-block';
 }
 
 // ================== CÁMARA ==================
@@ -123,8 +111,11 @@ async function startCamera() {
         cameraActive = true;
         video.play();
         
-        analyzeMovement();
-        document.getElementById('aiAnalysis').style.display = 'block';
+        // Mostrar análisis
+        document.getElementById('simpleAnalysis').style.display = 'block';
+        
+        // Iniciar detección
+        detectEmotion();
     } catch (err) {
         alert('No se pudo acceder a la cámara: ' + err.message);
     }
@@ -142,57 +133,19 @@ function stopCamera() {
     cameraActive = false;
 }
 
-// ================== ANÁLISIS DE MOVIMIENTO ==================
-function analyzeMovement() {
+// ================== DETECCIÓN DE EMOCIÓN ==================
+function detectEmotion() {
     if (!cameraActive) return;
     
-    const simulatedAnalysis = {
-        bodyImitation: Math.floor(Math.random() * 100),
-        facialExpression: Math.floor(Math.random() * 100),
-        energyLevel: ['Bajo', 'Medio', 'Alto'][Math.floor(Math.random() * 3)],
-        emotionalUnderstanding: Math.floor(Math.random() * 100)
-    };
+    // Simulación de detección emocional
+    const emotionsList = ['Feliz', 'Triste', 'Enojado'];
+    const randomEmotion = emotionsList[Math.floor(Math.random() * emotionsList.length)];
+    emotionDetected = randomEmotion;
     
-    movementAnalysisData = simulatedAnalysis;
+    document.getElementById('emotionStatus').textContent = randomEmotion;
     
-    document.getElementById('bodyImitation').textContent = simulatedAnalysis.bodyImitation + '%';
-    document.getElementById('facialExpression').textContent = simulatedAnalysis.facialExpression + '%';
-    document.getElementById('energyLevel').textContent = simulatedAnalysis.energyLevel;
-    document.getElementById('emotionalUnderstanding').textContent = simulatedAnalysis.emotionalUnderstanding + '%';
-    
-    checkAdaptation();
-    
-    setTimeout(analyzeMovement, 1000);
-}
-
-function checkAdaptation() {
-    const notice = document.getElementById('adaptationNotice');
-    const text = document.getElementById('adaptationText');
-    
-    if (movementAnalysisData.bodyImitation < 40) {
-        notice.classList.remove('hidden');
-        text.textContent = '¡Muévete un poco más! Trata de imitar los movimientos del video.';
-        reduceVideoSpeed();
-    } else if (movementAnalysisData.emotionalUnderstanding < 50) {
-        notice.classList.remove('hidden');
-        text.textContent = 'Parece que la emoción es un poco compleja. Aquí te muestro una versión más simple...';
-    } else {
-        notice.classList.add('hidden');
-    }
-}
-
-function reduceVideoSpeed() {
-    // Los GIFs no se pueden ralentizar directamente, pero podemos mostrar una notificación
-    // En una implementación real, podrías usar una librería para controlar GIFs
-}
-
-function resetAnalysis() {
-    movementAnalysisData = {
-        bodyImitation: 0,
-        facialExpression: 0,
-        energyLevel: 'Neutral',
-        emotionalUnderstanding: 0
-    };
+    // Continuar detectando cada segundo
+    setTimeout(detectEmotion, 1000);
 }
 
 // ================== RESPUESTAS ==================
@@ -207,10 +160,10 @@ function handleAnswer(selectedName) {
     
     if (isCorrect) {
         score += 20;
-        feedbackText.textContent = "¡Correcto! 🎉 Excelente imitación emocional";
+        feedbackText.textContent = "¡Correcto! 🎉";
         feedbackElement.className = 'feedback correct';
     } else {
-        feedbackText.textContent = `No es correcto. Era: ${currentEmotion.name}`;
+        feedbackText.textContent = `Era: ${currentEmotion.name}`;
         feedbackElement.className = 'feedback incorrect';
     }
     
@@ -220,6 +173,10 @@ function handleAnswer(selectedName) {
     document.getElementById('score').textContent = score + ' puntos';
     document.getElementById('score-display').textContent = score + ' puntos';
     
+    // Desabilitar botones
+    const buttons = document.querySelectorAll('.option-button');
+    buttons.forEach(btn => btn.disabled = true);
+    
     setTimeout(() => {
         if (currentRound + 1 >= totalRounds) {
             completeGame();
@@ -227,10 +184,11 @@ function handleAnswer(selectedName) {
             currentRound++;
             startNewRound();
         }
-    }, 2500);
+    }, 2000);
 }
 
 // ================== NAVEGACIÓN ==================
 function goToMainPage() {
+    if (cameraActive) stopCamera();
     window.location.href = 'https://plekdev.github.io/BlueMinds/selectores/selector-kinestesico.html';
 }

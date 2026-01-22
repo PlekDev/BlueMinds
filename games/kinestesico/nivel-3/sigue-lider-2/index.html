@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sigue al Líder de Movimiento - Neuro Play World</title>
+    <title>Sigue al Líder Simple - Neuro Play World</title>
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="style.css">
@@ -16,7 +16,7 @@
                     <i class="fas fa-arrow-left"></i> Volver
                 </button>
             </div>
-            <h1 class="game-title">Sigue al Líder de Movimiento</h1>
+            <h1 class="game-title">Sigue al Líder</h1>
             <div class="game-info">
                 <span id="score-display">0 puntos</span>
             </div>
@@ -26,7 +26,7 @@
             <!-- Progress -->
             <div class="progress-card">
                 <div class="progress-header">
-                    <span>Ronda <span id="current-round">1</span> de <span id="total-rounds">5</span></span>
+                    <span>Ronda <span id="current-round">1</span> de <span id="total-rounds">3</span></span>
                     <span id="score">0 puntos</span>
                 </div>
                 <div class="progress-bar">
@@ -57,42 +57,10 @@
                     </div>
                 </div>
 
-                <!-- Visual Guide -->
-                <div id="visual-guide" class="visual-guide hidden">
-                    <h4>📍 Puntos de Referencia</h4>
-                    <div class="guide-points">
-                        <div class="guide-point">
-                            <i class="fas fa-hand-paper"></i>
-                            <span id="guide-hands">Brazos</span>
-                        </div>
-                        <div class="guide-point">
-                            <i class="fas fa-person"></i>
-                            <span id="guide-body">Cuerpo</span>
-                        </div>
-                        <div class="guide-point">
-                            <i class="fas fa-running"></i>
-                            <span id="guide-movement">Movimiento</span>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Difficulty Indicator -->
-                <div class="difficulty-indicator">
-                    <span>Dificultad:</span>
-                    <div id="difficulty-stars" class="stars">
-                        <span class="star active">★</span>
-                        <span class="star">★</span>
-                        <span class="star">★</span>
-                    </div>
-                </div>
-
                 <!-- Controls -->
                 <div class="action-controls">
                     <button id="play-button" class="action-button primary">
                         <i class="fas fa-play"></i> Mostrar Movimiento
-                    </button>
-                    <button id="repeat-button" class="action-button secondary" style="display: none;">
-                        <i class="fas fa-redo"></i> Repetir
                     </button>
                     <button id="done-button" class="action-button blue" disabled>
                         <i class="fas fa-check"></i> ¡Lo Hice!
@@ -117,31 +85,13 @@
                         </div>
                     </div>
 
-                    <!-- AI Analysis -->
-                    <div class="ai-analysis" id="aiAnalysis" style="display: none;">
-                        <h4 style="margin-bottom: 12px; color: var(--primary-blue);">📊 Análisis de Movimiento</h4>
+                    <!-- Simple Analysis -->
+                    <div class="simple-analysis" id="simpleAnalysis" style="display: none;">
+                        <h4>✨ Detección de Movimiento</h4>
                         <div class="analysis-item">
-                            <span class="analysis-label">Calidad del Movimiento:</span>
-                            <span class="analysis-value" id="movementQuality">--%</span>
+                            <span class="analysis-label">Movimiento Detectado:</span>
+                            <span class="analysis-value" id="movementDetected">--%</span>
                         </div>
-                        <div class="analysis-item">
-                            <span class="analysis-label">Amplitud de Brazos:</span>
-                            <span class="analysis-value" id="armAmplitude">--%</span>
-                        </div>
-                        <div class="analysis-item">
-                            <span class="analysis-label">Latencia (ms):</span>
-                            <span class="analysis-value" id="latency">--</span>
-                        </div>
-                        <div class="analysis-item">
-                            <span class="analysis-label">Coordinación General:</span>
-                            <span class="analysis-value" id="coordination">--%</span>
-                        </div>
-                    </div>
-
-                    <!-- Adaptation Notice -->
-                    <div id="adaptationNotice" class="adaptation-notice hidden">
-                        <i class="fas fa-lightbulb"></i>
-                        <span id="adaptationText"></span>
                     </div>
                 </div>
 
@@ -154,7 +104,7 @@
             <!-- Instructions -->
             <div class="instructions-card">
                 <p>
-                    💡 <span class="font-bold">Tip:</span> Mira al avatar, escucha la instrucción y después imita el movimiento con tu cuerpo. La cámara analizará qué tan bien lo haces.
+                    💡 <span class="font-bold">Cómo jugar:</span> Mira al avatar y realiza el movimiento que ves. Abre la cámara para que podamos ver tu movimiento.
                 </p>
             </div>
         </main>

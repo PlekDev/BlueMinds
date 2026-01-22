@@ -1,4 +1,4 @@
-/* style.css - Juego de Emociones */
+/* style.css - Narración Emocional Simple */
 
 :root {
     --primary-blue: #0066CC;
@@ -30,7 +30,7 @@ body {
 }
 
 .game-container {
-    max-width: 1000px;
+    max-width: 900px;
     margin: 0 auto;
     padding: 20px;
 }
@@ -106,7 +106,6 @@ body {
     height: 100%;
     background: linear-gradient(90deg, var(--primary-blue) 0%, var(--cyan-bright) 100%);
     transition: width 0.5s ease;
-    width: 20%;
 }
 
 .emotion-card {
@@ -122,19 +121,17 @@ body {
     font-size: 28px;
     font-weight: 700;
     margin-bottom: 20px;
+    color: var(--dark-text);
 }
 
-/* Video Section */
-.video-section {
+/* GIF Section */
+.gif-section {
     margin-bottom: 25px;
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
 }
 
-.video-container {
+.gif-container {
     width: 100%;
-    max-width: 500px;
+    max-width: 400px;
     margin: 0 auto;
     background: #000;
     border-radius: 12px;
@@ -142,13 +139,7 @@ body {
     box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
 }
 
-.video-container video {
-    width: 100%;
-    height: auto;
-    display: block;
-}
-
-.video-placeholder {
+.gif-placeholder {
     width: 100%;
     height: 300px;
     background: linear-gradient(135deg, #0066CC 0%, #00B4D8 100%);
@@ -157,51 +148,21 @@ body {
     justify-content: center;
     color: white;
     font-size: 16px;
-    text-align: center;
-    padding: 20px;
-    font-weight: 600;
 }
 
-/* Imitation Section */
-.imitation-section {
+/* Camera Section */
+.camera-section {
     background: rgba(16, 185, 129, 0.1);
     border: 2px dashed var(--green-color);
     border-radius: 12px;
     padding: 20px;
-    margin-bottom: 20px;
+    margin-bottom: 25px;
 }
 
-.imitation-section h3 {
+.camera-section h3 {
     color: var(--green-color);
-    margin-bottom: 10px;
+    margin-bottom: 15px;
     font-size: 18px;
-}
-
-.camera-container {
-    width: 100%;
-    max-width: 400px;
-    margin: 0 auto 15px;
-    background: #000;
-    border-radius: 12px;
-    overflow: hidden;
-    position: relative;
-}
-
-.camera-feed {
-    width: 100%;
-    height: 300px;
-    background: #1a1a1a;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: white;
-    font-size: 14px;
-}
-
-video#cameraFeed {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
 }
 
 .camera-controls {
@@ -219,6 +180,9 @@ video#cameraFeed {
     cursor: pointer;
     font-size: 14px;
     transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 8px;
 }
 
 .camera-btn.start {
@@ -241,12 +205,44 @@ video#cameraFeed {
     box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
 }
 
-.ai-analysis {
+.camera-container {
+    width: 100%;
+    max-width: 350px;
+    margin: 0 auto 15px;
+    background: #000;
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+.camera-feed {
+    width: 100%;
+    height: 250px;
+    background: #1a1a1a;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 14px;
+}
+
+video#cameraFeed {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* Simple Analysis */
+.simple-analysis {
     background: var(--light-bg);
     border-radius: 8px;
     padding: 15px;
-    margin-bottom: 15px;
-    text-align: left;
+    border-left: 4px solid var(--green-color);
+}
+
+.simple-analysis h4 {
+    color: var(--primary-blue);
+    margin-bottom: 10px;
+    font-size: 16px;
 }
 
 .analysis-item {
@@ -254,26 +250,23 @@ video#cameraFeed {
     justify-content: space-between;
     align-items: center;
     padding: 8px 0;
-    border-bottom: 1px solid #e5e7eb;
-}
-
-.analysis-item:last-child {
-    border-bottom: none;
 }
 
 .analysis-label {
     font-weight: 600;
     color: var(--dark-text);
+    font-size: 14px;
 }
 
 .analysis-value {
     color: var(--primary-blue);
     font-weight: 700;
-    font-size: 16px;
+    font-size: 14px;
 }
 
+/* Feedback */
 .feedback {
-    font-size: 20px;
+    font-size: 18px;
     font-weight: 700;
     padding: 15px;
     border-radius: 12px;
@@ -290,23 +283,27 @@ video#cameraFeed {
     color: white;
 }
 
-.feedback.info {
-    background: rgba(100, 116, 139, 0.1);
+/* Options Section */
+.options-section {
+    margin-top: 25px;
+}
+
+.options-section h3 {
+    font-size: 18px;
+    margin-bottom: 15px;
     color: var(--dark-text);
-    border: 2px solid #64748b;
 }
 
 .options-container {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-    gap: 15px;
-    margin-top: 20px;
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    gap: 12px;
 }
 
 .option-button {
-    padding: 15px 20px;
-    border-radius: 12px;
-    font-size: 18px;
+    padding: 12px 18px;
+    border-radius: 10px;
+    font-size: 16px;
     font-weight: 700;
     border: none;
     cursor: pointer;
@@ -315,22 +312,21 @@ video#cameraFeed {
 }
 
 .option-button:hover:not(:disabled) {
-    transform: scale(1.05);
+    transform: translateY(-2px);
 }
 
 .option-button:disabled {
-    opacity: 0.6;
+    opacity: 0.5;
     cursor: not-allowed;
 }
 
 .option-button.primary {
     background: linear-gradient(135deg, var(--primary-blue) 0%, var(--cyan-bright) 100%);
-    box-shadow: 0 4px 15px rgba(0, 102, 204, 0.3);
+    box-shadow: 0 4px 12px rgba(0, 102, 204, 0.3);
 }
 
 .option-button.primary:hover:not(:disabled) {
-    box-shadow: 0 8px 25px rgba(0, 102, 204, 0.4);
-    transform: translateY(-3px);
+    box-shadow: 0 6px 20px rgba(0, 102, 204, 0.4);
 }
 
 .option-button.blue {
@@ -356,6 +352,7 @@ video#cameraFeed {
     background: linear-gradient(135deg, var(--cyan-light) 0%, var(--cyan-bright) 100%);
 }
 
+/* Instructions */
 .instructions-card {
     background-color: rgba(0, 102, 204, 0.08);
     border-radius: var(--border-radius);
@@ -372,16 +369,6 @@ video#cameraFeed {
     display: none !important;
 }
 
-.adaptation-notice {
-    background: rgba(251, 146, 60, 0.1);
-    border: 2px solid #f97316;
-    border-radius: 8px;
-    padding: 15px;
-    margin-bottom: 15px;
-    color: #92400e;
-    font-weight: 600;
-}
-
 @media (max-width: 768px) {
     .game-header {
         flex-direction: column;
@@ -389,12 +376,12 @@ video#cameraFeed {
         text-align: center;
     }
 
-    .video-container, .camera-container {
+    .gif-container, .camera-container {
         max-width: 100%;
     }
 
     .options-container {
-        grid-template-columns: 1fr;
+        grid-template-columns: repeat(2, 1fr);
     }
 
     .emotion-card {

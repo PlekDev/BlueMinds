@@ -285,26 +285,6 @@
             box-shadow: 0 6px 20px rgba(233, 30, 99, 0.3);
         }
 
-        /* Status Badge */
-        .status-badge {
-            display: inline-block;
-            padding: 4px 10px;
-            border-radius: 12px;
-            font-size: 11px;
-            font-weight: 700;
-            margin-left: 8px;
-        }
-
-        .status-new {
-            background: #10B981;
-            color: white;
-        }
-
-        .status-improved {
-            background: #F59E0B;
-            color: white;
-        }
-
         /* Empty State */
         .empty-state {
             text-align: center;
@@ -432,7 +412,7 @@
     </footer>
 
     <script>
-        // Base de datos de juegos para LECTOR-ESCRITOR (JUEGOS CREADOS)
+        // Base de datos de juegos para LECTOR-ESCRITOR
         const gamesData = {
             nivel1: [
                 {
@@ -441,9 +421,7 @@
                     description: 'Identifica y corrige errores de verbo, género y número.',
                     icon: '🔤',
                     path: '../games/lecto-escritor/nivel-1/encuentra-error/index.html',
-                    nivel: '1',
-                    status: 'new',
-                    statusText: 'Nuevo'
+                    nivel: '1'
                 },
                 {
                     id: 'lee-asocia',
@@ -451,9 +429,7 @@
                     description: 'Lee oraciones y selecciona la imagen correcta. Análisis IA avanzado.',
                     icon: '🖼️',
                     path: '../games/lecto-escritor/nivel-1/leeyasocia/index.html',
-                    nivel: '1',
-                    status: 'improved',
-                    statusText: 'Mejorado'
+                    nivel: '1'
                 },
                 {
                     id: 'oracion-colores',
@@ -461,9 +437,7 @@
                     description: 'Arrastra palabras en orden correcto. Sistema de pistas progresivo.',
                     icon: '📚',
                     path: '../games/lecto-escritor/nivel-1/oracion-colores/index.html',
-                    nivel: '1',
-                    status: 'improved',
-                    statusText: 'Mejorado'
+                    nivel: '1'
                 }
             ],
             nivel2: [
@@ -473,9 +447,7 @@
                     description: 'Completa oraciones observando imágenes. Análisis de comprensión.',
                     icon: '✍️',
                     path: '../games/lecto-escritor/nivel-2/completa-oracion/index.html',
-                    nivel: '2',
-                    status: 'new',
-                    statusText: 'Nuevo'
+                    nivel: '2'
                 },
                 {
                     id: 'escribe-palabra',
@@ -483,9 +455,7 @@
                     description: 'Memoriza y escribe palabras. Sistema de dos fases con countdown.',
                     icon: '💭',
                     path: '../games/lecto-escritor/nivel-2/escribe-palabra/index.html',
-                    nivel: '2',
-                    status: 'new',
-                    statusText: 'Nuevo'
+                    nivel: '2'
                 }
             ],
             nivel3: [
@@ -495,9 +465,7 @@
                     description: 'Versión avanzada con vocabulario complejo y análisis profundo.',
                     icon: '📖',
                     path: '../games/lecto-escritor/nivel-3/leeyasocia2/index.html',
-                    nivel: '3',
-                    status: 'new',
-                    statusText: 'Nuevo'
+                    nivel: '3'
                 }
             ]
         };
@@ -555,10 +523,7 @@
                             ${gamesByLevel[nivel].map(game => `
                                 <div class="game-card">
                                     <div class="game-icon">${game.icon}</div>
-                                    <h3 class="game-title">
-                                        ${game.title}
-                                        <span class="status-badge status-${game.status}">${game.statusText}</span>
-                                    </h3>
+                                    <h3 class="game-title">${game.title}</h3>
                                     <p class="game-description">${game.description}</p>
                                     <a href="${game.path}" class="game-button">
                                         <i class="fas fa-play"></i> Jugar

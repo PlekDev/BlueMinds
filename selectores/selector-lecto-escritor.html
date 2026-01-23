@@ -6,7 +6,6 @@
     <title>Lector-Escritor - BlueMinds</title>
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="../css/main.css">
     <style>
         * {
             margin: 0;
@@ -286,6 +285,26 @@
             box-shadow: 0 6px 20px rgba(233, 30, 99, 0.3);
         }
 
+        /* Status Badge */
+        .status-badge {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 700;
+            margin-left: 8px;
+        }
+
+        .status-new {
+            background: #10B981;
+            color: white;
+        }
+
+        .status-improved {
+            background: #F59E0B;
+            color: white;
+        }
+
         /* Empty State */
         .empty-state {
             text-align: center;
@@ -413,76 +432,72 @@
     </footer>
 
     <script>
-        // Base de datos de juegos para LECTOR-ESCRITOR
+        // Base de datos de juegos para LECTOR-ESCRITOR (JUEGOS CREADOS)
         const gamesData = {
             nivel1: [
                 {
-                    id: 'oracion-colores',
-                    title: 'Arma la Oración con Colores',
-                    description: 'Ordena las palabras para formar oraciones',
-                    icon: '📝',
-                    path: '../games/lecto-escritor/nivel-1/oracion-colores/index.html',
-                    nivel: '1'
+                    id: 'error-gramatical',
+                    title: 'Encuentra el Error Gramatical',
+                    description: 'Identifica y corrige errores de verbo, género y número.',
+                    icon: '🔤',
+                    path: '../games/lecto-escritor/nivel-1/encuentra-error/index.html',
+                    nivel: '1',
+                    status: 'new',
+                    statusText: 'Nuevo'
                 },
                 {
-                    id: 'asocia-palabras',
-                    title: 'Asocia Palabras',
-                    description: 'Une palabras con sus definiciones correctas',
-                    icon: '🔤',
-                    path: '../games/lecto-escritor/nivel-1/asocia-palabras/index.html',
-                    nivel: '1'
+                    id: 'lee-asocia',
+                    title: 'Lee y Asocia',
+                    description: 'Lee oraciones y selecciona la imagen correcta. Análisis IA avanzado.',
+                    icon: '🖼️',
+                    path: '../games/lecto-escritor/nivel-1/lee-asocia/index.html',
+                    nivel: '1',
+                    status: 'improved',
+                    statusText: 'Mejorado'
+                },
+                {
+                    id: 'oracion-colores',
+                    title: 'Arma la Oración con Colores',
+                    description: 'Arrastra palabras en orden correcto. Sistema de pistas progresivo.',
+                    icon: '📚',
+                    path: '../games/lecto-escritor/nivel-1/oracion-colores/index.html',
+                    nivel: '1',
+                    status: 'improved',
+                    statusText: 'Mejorado'
                 }
             ],
             nivel2: [
                 {
-                    id: 'completar-oracion',
-                    title: 'Completa la Oración',
-                    description: 'Escribe la palabra que falta en la oración',
+                    id: 'completa-oracion',
+                    title: 'Completa la Oración Escrita',
+                    description: 'Completa oraciones observando imágenes. Análisis de comprensión.',
                     icon: '✍️',
-                    path: '../games/lecto-escritor/nivel-2/completar-oracion/index.html',
-                    nivel: '2'
+                    path: '../games/lecto-escritor/nivel-2/completa-oracion/index.html',
+                    nivel: '2',
+                    status: 'new',
+                    statusText: 'Nuevo'
                 },
                 {
-                    id: 'lectura-comprension',
-                    title: 'Lectura y Comprensión',
-                    description: 'Lee el texto y responde preguntas sobre él',
-                    icon: '📖',
-                    path: '../games/lecto-escritor/nivel-2/lectura-comprension/index.html',
-                    nivel: '2'
-                },
-                {
-                    id: 'sinónimos-antónimos',
-                    title: 'Sinónimos y Antónimos',
-                    description: 'Identifica palabras con significados similares y opuestos',
-                    icon: '📚',
-                    path: '../games/lecto-escritor/nivel-2/sinónimos-antónimos/index.html',
-                    nivel: '2'
+                    id: 'escribe-palabra',
+                    title: 'Escribe la Palabra de la Imagen',
+                    description: 'Memoriza y escribe palabras. Sistema de dos fases con countdown.',
+                    icon: '💭',
+                    path: '../games/lecto-escritor/nivel-2/escribe-palabra/index.html',
+                    nivel: '2',
+                    status: 'new',
+                    statusText: 'Nuevo'
                 }
             ],
             nivel3: [
                 {
-                    id: 'redaccion-creativa',
-                    title: 'Redacción Creativa',
-                    description: 'Escribe historias cortas con palabras dadas',
-                    icon: '✒️',
-                    path: '../games/lecto-escritor/nivel-3/redaccion-creativa/index.html',
-                    nivel: '3'
-                },
-                {
-                    id: 'analisis-textos',
-                    title: 'Análisis de Textos',
-                    description: 'Analiza y responde preguntas complejas sobre textos',
-                    icon: '🔍',
-                    path: '../games/lecto-escritor/nivel-3/analisis-textos/index.html',
-                    nivel: '3'
-                },
-                {
-                    id: 'gramatica-avanzada',
-                    title: 'Gramática Avanzada',
-                    description: 'Aprende reglas gramaticales complejas y aplícalas',
-                    icon: '📋',
-                    path: '../games/lecto-escritor/nivel-3/gramatica-avanzada/index.html',
-                    nivel: '3'
+                    id: 'lee-asocia-2',
+                    title: 'Lee y Asocia 2',
+                    description: 'Versión avanzada con vocabulario complejo y análisis profundo.',
+                    icon: '📖',
+                    path: '../games/lecto-escritor/nivel-3/lee-asocia-2/index.html',
+                    nivel: '3',
+                    status: 'new',
+                    statusText: 'Nuevo'
                 }
             ]
         };
@@ -540,7 +555,10 @@
                             ${gamesByLevel[nivel].map(game => `
                                 <div class="game-card">
                                     <div class="game-icon">${game.icon}</div>
-                                    <h3 class="game-title">${game.title}</h3>
+                                    <h3 class="game-title">
+                                        ${game.title}
+                                        <span class="status-badge status-${game.status}">${game.statusText}</span>
+                                    </h3>
                                     <p class="game-description">${game.description}</p>
                                     <a href="${game.path}" class="game-button">
                                         <i class="fas fa-play"></i> Jugar

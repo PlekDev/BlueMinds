@@ -110,7 +110,7 @@ body {
     transition: width 0.5s ease;
 }
 
-.error-card {
+.completa-card {
     background-color: var(--white);
     border-radius: var(--border-radius);
     padding: 30px;
@@ -119,11 +119,24 @@ body {
     margin-bottom: 20px;
 }
 
-.error-card h2 {
+.completa-card h2 {
     font-size: 28px;
     font-weight: 700;
     margin-bottom: 25px;
     color: var(--dark-text);
+}
+
+.image-section {
+    margin-bottom: 30px;
+    display: flex;
+    justify-content: center;
+}
+
+#exercise-image {
+    max-width: 100%;
+    max-height: 280px;
+    border-radius: 12px;
+    box-shadow: var(--shadow);
 }
 
 .sentence-section {
@@ -137,115 +150,148 @@ body {
     font-size: 16px;
 }
 
-.sentence-display {
+.sentence-wrapper {
     background: linear-gradient(135deg, rgba(0, 102, 204, 0.08), rgba(0, 180, 216, 0.08));
     border: 2px solid var(--primary-blue);
     border-radius: 12px;
-    padding: 25px;
-    font-size: 24px;
+    padding: 20px;
+    font-size: 18px;
     font-weight: 600;
     text-align: center;
-    color: var(--dark-text);
     line-height: 1.8;
-    min-height: 80px;
+    min-height: 70px;
     display: flex;
     align-items: center;
     justify-content: center;
+    flex-wrap: wrap;
+    gap: 8px;
 }
 
-.error-word {
-    background-color: rgba(239, 68, 68, 0.2);
-    color: var(--red-color);
-    padding: 4px 8px;
-    border-radius: 6px;
-    border-bottom: 3px solid var(--red-color);
+#sentence-before,
+#sentence-after {
+    color: var(--dark-text);
+}
+
+.answer-input {
+    padding: 12px 16px;
+    border: 2px solid var(--primary-blue);
+    border-radius: 8px;
+    font-size: 18px;
+    font-weight: 600;
+    min-width: 150px;
+    text-align: center;
+    color: var(--dark-text);
+    transition: all 0.3s ease;
+}
+
+.answer-input:focus {
+    outline: none;
+    border-color: var(--cyan-bright);
+    box-shadow: 0 0 0 3px rgba(0, 102, 204, 0.1);
+}
+
+.answer-input::placeholder {
+    color: #999;
+}
+
+.answer-input.correct {
+    background-color: rgba(16, 185, 129, 0.1);
+    border-color: var(--green-color);
+}
+
+.answer-input.incorrect {
+    background-color: rgba(239, 68, 68, 0.1);
+    border-color: var(--red-color);
+}
+
+.word-suggestions {
+    background: linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(59, 130, 246, 0.05));
+    border-left: 4px solid #3B82F6;
+    border-radius: 8px;
+    padding: 15px;
+    margin-bottom: 20px;
+}
+
+.suggestions-header {
     font-weight: 700;
+    color: #1E40AF;
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
 }
 
-.error-hint {
+.suggestions-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.suggestion-button {
+    background-color: white;
+    border: 2px solid #3B82F6;
+    color: #1E40AF;
+    padding: 8px 12px;
+    border-radius: 8px;
+    font-weight: 700;
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.suggestion-button:hover {
+    background-color: #3B82F6;
+    color: white;
+}
+
+.spelling-hint {
     background: linear-gradient(135deg, rgba(245, 158, 11, 0.1), rgba(245, 158, 11, 0.05));
     border-left: 4px solid var(--yellow-color);
     border-radius: 8px;
     padding: 15px;
-    margin-bottom: 25px;
+    margin-bottom: 20px;
     display: flex;
-    align-items: flex-start;
+    align-items: center;
     gap: 12px;
     font-size: 16px;
+    color: #92400E;
 }
 
-.error-hint i {
+.spelling-hint i {
     color: var(--yellow-color);
     font-size: 20px;
-    flex-shrink: 0;
-    margin-top: 2px;
 }
 
-.correction-section {
-    margin-bottom: 25px;
-}
-
-.correction-label {
-    font-weight: 700;
-    margin-bottom: 15px;
-    color: var(--dark-text);
-    font-size: 16px;
-}
-
-.options-container {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-    gap: 12px;
-    margin-bottom: 15px;
-}
-
-.option-button {
+.analysis-info {
+    background: linear-gradient(135deg, rgba(168, 85, 247, 0.1), rgba(168, 85, 247, 0.05));
+    border: 2px solid #A855F7;
+    border-radius: 8px;
     padding: 15px;
-    border: 2px solid #ddd;
-    border-radius: 10px;
-    background-color: var(--white);
-    color: var(--dark-text);
+    margin-bottom: 20px;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 15px;
+}
+
+.info-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.info-label {
     font-weight: 700;
-    font-size: 16px;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    text-align: center;
+    color: #6B21A8;
 }
 
-.option-button:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(0, 102, 204, 0.2);
-    border-color: var(--primary-blue);
-}
-
-.option-button.selected {
-    background: linear-gradient(135deg, var(--primary-blue) 0%, var(--cyan-bright) 100%);
-    color: white;
-    border-color: var(--primary-blue);
-}
-
-.option-button.correct {
-    background-color: var(--green-color);
-    color: white;
-    border-color: var(--green-color);
-}
-
-.option-button.incorrect {
-    background-color: var(--red-color);
-    color: white;
-    border-color: var(--red-color);
-}
-
-.word-type-badge {
-    display: inline-block;
-    background: rgba(168, 85, 247, 0.1);
-    border-left: 4px solid #A855F7;
-    padding: 10px 15px;
+#comprehension-level,
+#visual-memory {
+    background: white;
+    padding: 4px 10px;
     border-radius: 6px;
     font-weight: 700;
     color: #6B21A8;
     font-size: 14px;
-    margin-bottom: 20px;
 }
 
 .action-controls {
@@ -315,15 +361,15 @@ body {
 }
 
 .explanation {
-    background: rgba(168, 85, 247, 0.08);
-    border-left: 4px solid #A855F7;
+    background: rgba(59, 130, 246, 0.08);
+    border-left: 4px solid #3B82F6;
     border-radius: 10px;
     padding: 20px;
     margin-top: 20px;
 }
 
 .explanation h3 {
-    color: #6B21A8;
+    color: #1E40AF;
     margin-bottom: 10px;
     font-size: 18px;
 }
@@ -358,11 +404,15 @@ body {
         gap: 5px;
     }
 
-    .sentence-display {
-        font-size: 20px;
+    .sentence-wrapper {
+        flex-direction: column;
     }
 
-    .options-container {
+    .answer-input {
+        min-width: 100%;
+    }
+
+    .analysis-info {
         grid-template-columns: 1fr;
     }
 

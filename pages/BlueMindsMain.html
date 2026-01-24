@@ -9,334 +9,34 @@
     <link rel="stylesheet" href="../css/main.css">
     <link rel="stylesheet" href="../css/welcome.css">
     <link rel="stylesheet" href="../css/BlueMindsMain.css">
+    <link rel="stylesheet" href="../css/NewStylesMain.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
-        /* Estilos adicionales para el nuevo layout */
-        .main-content {
-            background: linear-gradient(135deg, #0066CC 0%, #00B4D8 50%, #0099FF 100%);
-            padding: 30px 0;
-            min-height: 100vh;
-        }
-
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 20px;
-        }
-
-        /* Sección de Progreso */
-        .overall-progress {
-            background: white;
-            border-radius: 20px;
-            padding: 30px;
-            margin-bottom: 40px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-        }
-
-        .progress-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 30px;
-        }
-
-        .progress-header h2 {
-            font-size: 24px;
-            font-weight: 700;
-            color: #1F2937;
-            margin: 0;
-        }
-
-        .progress-count {
-            font-size: 16px;
-            font-weight: 600;
-            color: #666;
-        }
-
-        .level-path {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            position: relative;
-            padding: 20px 0;
-        }
-
-        .level-path-progress {
-            position: absolute;
-            top: 50%;
-            left: 0;
-            height: 4px;
-            background: linear-gradient(90deg, #0066CC 0%, #00B4D8 100%);
-            z-index: 0;
-            transform: translateY(-50%);
-        }
-
-        .flag-item {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            z-index: 1;
-            position: relative;
-            flex: 1;
-        }
-
-        .flag-circle {
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-            background: #E5E7EB;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 24px;
-            color: #999;
-            margin-bottom: 10px;
-            transition: all 0.3s ease;
-        }
-
-        .flag-item.completed .flag-circle {
-            background: #0066CC;
-            color: white;
-        }
-
-        .flag-item.current .flag-circle {
-            background: #00B4D8;
-            color: white;
-            box-shadow: 0 0 20px rgba(0, 180, 216, 0.5);
-        }
-
-        .flag-label {
-            font-size: 12px;
-            font-weight: 600;
-            color: #666;
-            text-align: center;
-        }
-
-        /* Sección de Categorías */
-        .categories-section {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 20px;
-            margin-bottom: 40px;
-        }
-
-        .category-card {
-            background: white;
-            border-radius: 16px;
-            padding: 25px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            border-left: 6px solid;
-            position: relative;
-            overflow: hidden;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            min-height: 150px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
-        }
-
-        .category-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
-        }
-
-        .category-card.auditivo {
-            border-left-color: #0066CC;
-        }
-
-        .category-card.kinestesico {
-            border-left-color: #00B4D8;
-        }
-
-        .category-card.lecto-escritor {
-            border-left-color: #E91E63;
-        }
-
-        .category-card.visual {
-            border-left-color: #F59E0B;
-        }
-
-        .category-content {
-            flex: 1;
-        }
-
-        .category-icon {
-            width: 60px;
-            height: 60px;
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 28px;
-            margin-right: 20px;
-            margin-bottom: 0;
-            flex-shrink: 0;
-        }
-
-        .category-card.auditivo .category-icon {
-            background: rgba(0, 102, 204, 0.15);
-            color: #0066CC;
-        }
-
-        .category-card.kinestesico .category-icon {
-            background: rgba(0, 180, 216, 0.15);
-            color: #00B4D8;
-        }
-
-        .category-card.lecto-escritor .category-icon {
-            background: rgba(233, 30, 99, 0.15);
-            color: #E91E63;
-        }
-
-        .category-card.visual .category-icon {
-            background: rgba(245, 158, 11, 0.15);
-            color: #F59E0B;
-        }
-
-        .category-title {
-            font-size: 20px;
-            font-weight: 700;
-            color: #1F2937;
-            margin: 0 0 8px 0;
-        }
-
-        .category-description {
-            font-size: 14px;
-            color: #666;
-            margin: 0 0 15px 0;
-        }
-
-        .category-level-path {
-            display: flex;
-            gap: 8px;
-            align-items: center;
-        }
-
-        .category-level-progress {
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            height: 4px;
-            background: linear-gradient(90deg, #0066CC 0%, #00B4D8 100%);
-        }
-
-        .category-flag {
-            width: 20px;
-            height: 20px;
-            border-radius: 50%;
-            background: #E5E7EB;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 11px;
-            color: #999;
-            transition: all 0.3s ease;
-        }
-
-        .category-flag.completed {
-            background: #10B981;
-            color: white;
-        }
-
-        /* Layout con imagen a la derecha */
-        .dashboard-wrapper {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 30px;
-            align-items: start;
-        }
-
-        .dashboard-left {
-            flex: 1;
-        }
-
-        .dashboard-right {
-            background: white;
-            border-radius: 20px;
-            padding: 30px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-            height: fit-content;
-            text-align: center;
-        }
-
-        .hero-image-placeholder {
-            width: 100%;
-            height: 300px;
-            background: linear-gradient(135deg, #F0F9FF 0%, #E0F2FE 100%);
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 18px;
-            color: #0066CC;
-            font-weight: 600;
-        }
-
-        /* Responsive */
-        @media (max-width: 1024px) {
-            .dashboard-wrapper {
-                grid-template-columns: 1fr;
-            }
-
-            .dashboard-right {
-                order: -1;
-            }
-
-            .categories-section {
-                grid-template-columns: 1fr;
-            }
-        }
-
-        @media (max-width: 768px) {
-            .category-card {
-                flex-direction: column;
-                text-align: left;
-                min-height: auto;
-            }
-
-            .category-card {
-                display: flex;
-                flex-direction: column;
-            }
-
-            .category-icon {
-                margin-right: 0;
-                margin-bottom: 15px;
-                align-self: flex-start;
-            }
-
-            .level-path {
-                flex-wrap: wrap;
-                gap: 20px;
-            }
-
-            .flag-item {
-                flex: 0 1 auto;
-            }
-        }
+        /* Ajustes para integrar los nuevos elementos sin romper el estilo original */
+        .stats-container { margin-top: 40px; display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+        .chart-card, .history-card { background: white; padding: 20px; border-radius: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
+        .full-width { grid-column: 1 / -1; }
+        table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+        th { text-align: left; color: var(--primary-color); padding: 10px; border-bottom: 2px solid #f0f4f8; }
+        td { padding: 10px; border-bottom: 1px solid #f0f4f8; font-size: 0.9em; }
+        .recommendation-item { display: flex; align-items: center; gap: 10px; background: #e0f2fe; padding: 15px; border-radius: 12px; margin-bottom: 10px; }
     </style>
-</head> 
+</head>
 <body>
 
-    <!-- Header -->
     <header>
         <div class="header-container">
             <a href="BlueMindsMain.html" class="logo">
                 <img src="../favicon-32x32.png" alt="BlueMinds">
                 <span>BlueMinds</span>
             </a>
-
             <ul class="nav-center">
                 <li><a href="BlueMindsMain.html">Inicio</a></li>
                 <li><a href="test-selector.html">Test</a></li>
                 <li><a href="https://plekdev.github.io/BlueMindsLandingPage/">Acerca de</a></li>
             </ul>
-
             <div class="user-menu">
                 <span class="user-name" id="userName">Usuario</span>
-                <a href="perfil.html" class="nav-btn" title="Dashboard">
-                    <i class="fas fa-home"></i>
-                </a>
                 <button class="logout-btn" onclick="logout()" title="Cerrar Sesión">
                     <i class="fas fa-sign-out-alt"></i>
                 </button>
@@ -346,354 +46,298 @@
 
     <main class="main-content">
         <div class="container">
-            <!-- Sección de Progreso General -->
             <section class="overall-progress">
                 <div class="progress-header">
-                    <h2>Progreso del día</h2>
-                    <span class="progress-count">7 / 10 tareas</span>
+                    <h2>Tu Camino de Aprendizaje</h2>
+                    <span class="progress-count" id="lastScoreLabel">Cargando progreso...</span>
                 </div>
                 <div class="level-path">
-                    <div class="level-path-progress" style="width: 70%;"></div>
-                    <div class="flag-item completed">
-                        <div class="flag-circle">
-                            <i class="fas fa-flag-checkered"></i>
-                        </div>
-                        <span class="flag-label">Inicio</span>
-                    </div>
-                    <div class="flag-item completed">
-                        <div class="flag-circle">
-                            <i class="fas fa-flag"></i>
-                        </div>
-                        <span class="flag-label">Nivel 1</span>
-                    </div>
-                    <div class="flag-item completed">
-                        <div class="flag-circle">
-                            <i class="fas fa-flag"></i>
-                        </div>
-                        <span class="flag-label">Nivel 2</span>
-                    </div>
-                    <div class="flag-item current">
-                        <div class="flag-circle">
-                            <i class="fas fa-flag"></i>
-                        </div>
-                        <span class="flag-label">Nivel 3</span>
-                    </div>
-                    <div class="flag-item">
-                        <div class="flag-circle">
-                            <i class="fas fa-trophy"></i>
-                        </div>
-                        <span class="flag-label">Meta</span>
-                    </div>
+                    <div class="level-path-progress" id="progressBar" style="width: 0%;"></div>
+                    <div class="flag-item completed"><div class="flag-circle"><i class="fas fa-flag-checkered"></i></div><span class="flag-label">Inicio</span></div>
+                    <div class="flag-item" id="flag-lvl1"><div class="flag-circle"><i class="fas fa-flag"></i></div><span class="flag-label">Nivel 1</span></div>
+                    <div class="flag-item" id="flag-lvl2"><div class="flag-circle"><i class="fas fa-flag"></i></div><span class="flag-label">Nivel 2</span></div>
+                    <div class="flag-item" id="flag-lvl3"><div class="flag-circle"><i class="fas fa-flag"></i></div><span class="flag-label">Nivel 3</span></div>
                 </div>
             </section>
 
-            <!-- Dashboard con categorías y imagen -->
             <div class="dashboard-wrapper">
-                <!-- Sección de Categorías (Izquierda) -->
                 <div class="dashboard-left">
                     <section class="categories-section">
                         <div class="category-card auditivo" onclick="showCategoryGames('auditivo')">
-                            <div class="category-icon">
-                                <i class="fas fa-volume-up"></i>
-                            </div>
+                            <div class="category-icon"><i class="fas fa-volume-up"></i></div>
                             <div class="category-content">
                                 <h3 class="category-title">Auditivo</h3>
-                                <p class="category-description">Aprende escuchando y a través del sonido</p>
-                                <div class="category-level-path">
-                                    <div class="category-flag completed"></div>
-                                    <div class="category-flag completed"></div>
-                                    <div class="category-flag completed"></div>
-                                    <div class="category-flag"></div>
-                                    <div class="category-flag"></div>
+                                <p class="category-description">Aprende escuchando</p>
+                                <div class="category-level-path" id="path-auditivo">
+                                    <div class="category-flag"></div><div class="category-flag"></div><div class="category-flag"></div>
                                 </div>
                             </div>
-                            
                         </div>
-
                         <div class="category-card kinestesico" onclick="showCategoryGames('kinestesico')">
-                            <div class="category-icon">
-                                <i class="fas fa-hand-paper"></i>
-                            </div>
+                            <div class="category-icon"><i class="fas fa-hand-paper"></i></div>
                             <div class="category-content">
                                 <h3 class="category-title">Kinestésico</h3>
-                                <p class="category-description">Aprende a través del movimiento y la práctica</p>
-                                <div class="category-level-path">
-                                    <div class="category-flag completed"></div>
-                                    <div class="category-flag completed"></div>
-                                    <div class="category-flag completed"></div>
-                                    <div class="category-flag completed"></div>
-                                    <div class="category-flag"></div>
+                                <p class="category-description">Aprende haciendo</p>
+                                <div class="category-level-path" id="path-kinestesico">
+                                    <div class="category-flag"></div><div class="category-flag"></div><div class="category-flag"></div>
                                 </div>
                             </div>
-                            
                         </div>
-
-                        <div class="category-card lecto-escritor" onclick="showCategoryGames('lecto-escritor')">
-                            <div class="category-icon">
-                                <i class="fas fa-book"></i>
-                            </div>
-                            <div class="category-content">
-                                <h3 class="category-title">Lector-Escritor</h3>
-                                <p class="category-description">Aprende leyendo y escribiendo información</p>
-                                <div class="category-level-path">
-                                    <div class="category-flag completed"></div>
-                                    <div class="category-flag completed"></div>
-                                    <div class="category-flag"></div>
-                                    <div class="category-flag"></div>
-                                    <div class="category-flag"></div>
-                                </div>
-                            </div>
-                            
-                        </div>
-
                         <div class="category-card visual" onclick="showCategoryGames('visual')">
-                            <div class="category-icon">
-                                <i class="fas fa-eye"></i>
-                            </div>
+                            <div class="category-icon"><i class="fas fa-eye"></i></div>
                             <div class="category-content">
                                 <h3 class="category-title">Visual</h3>
-                                <p class="category-description">Aprende a través de imágenes y representaciones</p>
-                                <div class="category-level-path">
-                                    <div class="category-flag completed"></div>
-                                    <div class="category-flag completed"></div>
-                                    <div class="category-flag completed"></div>
-                                    <div class="category-flag completed"></div>
-                                    <div class="category-flag completed"></div>
+                                <p class="category-description">Aprende viendo</p>
+                                <div class="category-level-path" id="path-visual">
+                                    <div class="category-flag"></div><div class="category-flag"></div><div class="category-flag"></div>
                                 </div>
                             </div>
-                            
+                        </div>
+                        <div class="category-card lectoescritura" onclick="showCategoryGames('lecto-escritor')">
+                            <div class="category-icon"><i class="fas fa-book-open"></i></div>
+                            <div class="category-content">
+                                <h3 class="category-title">Lecto-escritor</h3>
+                                <p class="category-description">Aprende leyendo y escribiendo</p>
+                                <div class="category-level-path" id="path-lecto-escritor">
+                                    <div class="category-flag"></div><div class="category-flag"></div><div class="category-flag"></div>
+                                </div>
+                            </div>
                         </div>
                     </section>
                 </div>
 
-                <!-- Imagen (Derecha) -->
                 <div class="dashboard-right">
-                    <!-- AQUI PON LA FOTO DEL DINO -->
                     <div class="hero-image-placeholder">
-                        <img src="../mascotas/dino edu.jpeg" alt="Dino Edu" style="width: 65%; height: auto; object-fit: cover;">
+                        <img src="../mascotas/dino edu.jpeg" alt="Dino Edu" style="width: 75%; height: auto; border-radius: 30px;">
+                        <div id="quick-tip" style="margin-top: 15px; font-style: italic; color: #555; text-align: center; padding: 0 20px;">
+                            "¡Sigue así! Cada juego te hace más fuerte."
+                        </div>
                     </div>
+                </div>
+            </div>
+
+            <div class="stats-container">
+                <div class="chart-card">
+                    <h3>Tu Evolución (Score)</h3>
+                    <canvas id="scoreChart"></canvas>
+                </div>
+                <div class="chart-card">
+                    <h3>Estilos Dominantes</h3>
+                    <canvas id="styleChart"></canvas>
+                </div>
+                
+                <div class="history-card full-width">
+                    <h3>Historial de Evaluaciones</h3>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Fecha</th>
+                                <th>Tipo</th>
+                                <th>Mejor Estilo</th>
+                                <th>Nivel</th>
+                                <th>Puntos</th>
+                            </tr>
+                        </thead>
+                        <tbody id="history-body">
+                            <tr><td colspan="5">Cargando tu historia...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="history-card full-width" id="recs-section">
+                    <h3>Recomendaciones para ti</h3>
+                    <div id="recommendations-list"></div>
                 </div>
             </div>
         </div>
     </main>
 
-    <!-- Sección de Juegos por Categoría -->
-    <div id="gamesContainer" class="games-container">
-        
+    <footer>
+        <div class="container">
+            <p>© BlueMinds - Plataforma de Educación Inclusiva</p>
+        </div>
+    </footer>
 
-        <main style="padding: 40px 0;">
-            <div class="container">
-                <section class="category-header">
-                    <div class="back-button-container">
-                        <button onclick="backToMain()">
-                            <i class="fas fa-arrow-left"></i> Volver
-                        </button>
-                    </div>
-                    <div class="category-info">
-                        <div class="category-icon-large" id="categoryIconLarge"></div>
-                        <div>
-                            <h1 class="category-title-header" id="categoryTitleHeader"></h1>
-                            <p id="categoryDescHeader" style="font-size: 16px; color: #777;"></p>
-                        </div>
-                    </div>
-                </section>
-
-                <section class="games-section">
-                    <h2 class="games-section-title" id="gamesSectionTitle"></h2>
-                    <div class="games-grid" id="gamesGrid"></div>
-                </section>
-            </div>
-        </main>
-
-        <footer>
-            <div class="container">
-                <div class="footer-content">
-                    <p>&copy; BlueMinds - Plataforma de Educación Inclusiva</p>
-                </div>
-            </div>
-        </footer>
-    </div>
-
-    <script src="../games/game-list.js"></script>
     <script src="../api.js"></script>
     <script src="../js/auth-guard.js"></script>
     <script>
-
-        // Base de datos de juegos actualizada con 4 categorías
-        const gamesDatabase = {
-            auditivo: {
-                name: 'Auditivo',
-                icon: 'fa-volume-up',
-                color: '#0066CC',
-                description: 'Aprende escuchando y a través del sonido',
-                games: [
-                    {
-                        id: 'eco-palabras',
-                        title: 'El Eco de las Palabras',
-                        description: 'Repite las palabras que escuchas',
-                        icon: '🔊',
-                        path: '../games/auditivo/nivel-1/eco-palabras/index.html',
-                        nivel: '1'
-                    }
-                ]
-            },
-            kinestesico: {
-                name: 'Kinestésico',
-                icon: 'fa-hand-paper',
-                color: '#00B4D8',
-                description: 'Aprende a través del movimiento y la práctica',
-                games: [
-                    {
-                        id: 'emotion-game',
-                        title: 'Reconoce Emociones',
-                        description: 'Aprende a identificar diferentes emociones',
-                        icon: '😊',
-                        path: '../games/kinestesico/nivel-1/emotion-game/index.html',
-                        nivel: '1'
-                    },
-                    {
-                        id: 'sigue-lider',
-                        title: 'Sigue al Líder de Movimiento',
-                        description: 'Imita movimientos y mejora coordinación',
-                        icon: '🏃',
-                        path: '../games/kinestesico/nivel-1/sigue-lider/index.html',
-                        nivel: '1'
-                    }
-                ]
-            },
-            'lecto-escritor': {
-                name: 'Lector-Escritor',
-                icon: 'fa-book',
-                color: '#E91E63',
-                description: 'Aprende leyendo y escribiendo información',
-                games: [
-                    {
-                        id: 'oracion-colores',
-                        title: 'Arma la Oración con Colores',
-                        description: 'Ordena las palabras para formar oraciones',
-                        icon: '📝',
-                        path: '../games/lecto-escritor/nivel-1/oracion-colores/index.html',
-                        nivel: '1'
-                    }
-                ]
-            },
-            visual: {
-                name: 'Visual',
-                icon: 'fa-eye',
-                color: '#F59E0B',
-                description: 'Aprende a través de imágenes y representaciones',
-                games: [
-                    {
-                        id: 'memory-game',
-                        title: 'Juego de Memoria',
-                        description: 'Repite la secuencia de colores',
-                        icon: '🎮',
-                        path: '../games/visual/nivel-1/memory-game/index.html',
-                        nivel: '1'
-                    },
-                    {
-                        id: 'memoriza-imagen',
-                        title: 'Memoriza y Encuentra',
-                        description: 'Observa la imagen y encuéntrala entre las opciones',
-                        icon: '🎨',
-                        path: '../games/visual/nivel-1/memoriza-imagen/index.html',
-                        nivel: '1'
-                    },
-                    {
-                        id: 'detective-errores',
-                        title: 'Detective de Errores',
-                        description: 'Forma oraciones correctas detectando errores',
-                        icon: '🔍',
-                        path: '../games/visual/nivel-1/detective-errores/index.html',
-                        nivel: '1'
-                    },
-                    {
-                        id: 'completa-escena',
-                        title: 'Completa la Escena',
-                        description: 'Completa oraciones seleccionando la imagen correcta',
-                        icon: '🖼️',
-                        path: '../games/visual/nivel-2/completa-escena/index.html',
-                        nivel: '2'
-                    },
-                    {
-                        id: 'ordena-historia',
-                        title: 'Ordena la Historia',
-                        description: 'Ordena las imágenes en secuencia lógica',
-                        icon: '📖',
-                        path: '../games/visual/nivel-2/ordena-historia/index.html',
-                        nivel: '2'
-                    },
-                    {
-                        id: 'explora-profesiones',
-                        title: 'Explora Profesiones',
-                        description: 'Aprende sobre diferentes trabajos',
-                        icon: '💼',
-                        path: '../games/visual/nivel-2/explora-profesiones/index.html',
-                        nivel: '2'
-                    },
-                    {
-                        id: 'asocia-imagen',
-                        title: 'Asocia la Imagen Correcta',
-                        description: 'Asocia palabras con las imágenes correctas',
-                        icon: '🎯',
-                        path: '../games/visual/nivel-3/asocia-imagen/index.html',
-                        nivel: '3'
-                    },
-                    {
-                        id: 'clasificacion-grupos',
-                        title: 'Clasificación de Grupos',
-                        description: 'Agrupa elementos por categorías',
-                        icon: '📦',
-                        path: '../games/visual/nivel-3/clasificacion-grupos/index.html',
-                        nivel: '3'
-                    },
-                    {
-                        id: 'patterns-game',
-                        title: 'Juego de Patrones',
-                        description: 'Completa los patrones secuenciales',
-                        icon: '🧩',
-                        path: '../games/visual/nivel-3/patterns-game/index.html',
-                        nivel: '3'
-                    }
-                ]
-            }
-        };
-
-        function showCategoryGames(category) {
-        // Mapeo de categorías a archivos selectores
-            const selectorMap = {
-                'auditivo': '../selectores/selector-auditivo.html',
-                'kinestesico': '../selectores/selector-kinestesico.html',
-                'lecto-escritor': '../selectores/selector-lecto-escritor.html',
-                'visual': '../selectores/selector-visual.html'
-            };
-
-            const selectorPath = selectorMap[category];
-             if (selectorPath) {
-              window.location.href = selectorPath;
-             }
-        }
-
-        function backToMain() {
-            document.querySelector('main').classList.remove('hide');
-            document.getElementById('gamesContainer').classList.remove('show');
-        }
-
         function logout() {
             localStorage.removeItem('blueminds_current_user');
             window.location.href = '../login.html';
         }
 
-        window.addEventListener('load', () => {
-            const currentUser = localStorage.getItem('blueminds_current_user');
-            if (!currentUser) {
-                window.location.href = '../login.html';
-            } else {
-                const user = JSON.parse(currentUser);
-                document.getElementById('userName').textContent = user.name;
-            }
-        });
-    </script>
+        function showCategoryGames(category) {
+            const selectorMap = {
+                'auditivo': '../selectores/selector-auditivo.html',
+                'kinestesico': '../selectores/selector-kinestesico.html',
+                'visual': '../selectores/selector-visual.html',
+                'lecto-escritor': '../selectores/selector-lecto-escritor.html'
+            };
+            if (selectorMap[category]) window.location.href = selectorMap[category];
+        }
 
+        window.addEventListener('load', async () => {
+            const currentUser = localStorage.getItem('blueminds_current_user');
+            if (!currentUser) return window.location.href = '../login.html';
+
+            const user = JSON.parse(currentUser);
+            document.getElementById('userName').textContent = user.name || 'Explorador';
+
+            await loadDashboardData();
+            await highlightBestCategory();
+        });
+        async function highlightBestCategory() {
+            try {
+                const response = await fetch(`${api.baseURL}/user/deep-analysis`, {
+                    headers: api._getHeaders()
+                });
+                const data = await response.json();
+                console.log(data);
+
+                if (data && data.analysis) {
+                    const { dominantStyle, suggestedLevel, trend } = data.analysis;
+
+                    // 1. Resaltar la tarjeta del estilo dominante
+                    // Nota: El backend devuelve 'lecto-escritor', asegurate que la clase sea igual
+                    const card = document.querySelector(`.category-card.${dominantStyle}`);
+                    
+                    if (card) {
+                        card.classList.add('is-recommended');
+                        
+                        // Badge con mensaje dinámico según la tendencia
+                        let message = '✨ Tu mejor estilo';
+                        if (trend === 'mejorando') message = '🚀 ¡Estás mejorando mucho!';
+                        
+                        const badge = document.createElement('div');
+                        badge.className = 'rec-badge';
+                        badge.innerHTML = message;
+                        card.appendChild(badge);
+                        
+                        // Palpitación suave para llamar la atención
+                        card.style.animation = "pulse-soft 2s infinite";
+                    }
+
+                    // 2. Actualizar las banderas de nivel
+                    const flags = document.querySelectorAll(`#path-${dominantStyle} .category-flag`);
+                    flags.forEach((flag, index) => {
+                        if (index < suggestedLevel) flag.classList.add('completed');
+                    });
+                }
+            } catch (err) {
+                console.error("Error aplicando Deep Analysis al UI:", err);
+            }
+        }
+
+        function updateLevelFlags(style, level) {
+            const flags = document.querySelectorAll(`#path-${style} .category-flag`);
+            flags.forEach((flag, index) => {
+                if (index < level) {
+                    flag.classList.add('completed'); // Estilo CSS para bandera iluminada
+                }
+            });
+        }
+
+        async function loadDashboardData() {
+            try {
+                const [childRes, historyRes, recsRes] = await Promise.all([
+                    fetch(`${api.baseURL}/quiz/last?type=child`, { headers: api._getHeaders() }),
+                    fetch(`${api.baseURL}/quiz/history`, { headers: api._getHeaders() }),
+                    fetch(`${api.baseURL}/quiz/recommendations`, { headers: api._getHeaders() })
+                ]);
+
+                const childData = await childRes.json();
+                const historyData = await historyRes.json();
+                const recsData = await recsRes.json();
+
+                console.log(historyData);
+                // 1. Actualizar Barra de Progreso Superior
+                if (childData.result) {
+                    const score = childData.result.score || 0;
+                    const pct = Math.min((score / 20) * 100, 100);
+                    document.getElementById('progressBar').style.width = `${pct}%`;
+                    document.getElementById('lastScoreLabel').textContent = `Último puntaje: ${score} / 20`;
+                    
+                    if(score >= 5) document.getElementById('flag-lvl1').classList.add('completed');
+                    if(score >= 12) document.getElementById('flag-lvl2').classList.add('completed');
+                    if(score >= 18) document.getElementById('flag-lvl3').classList.add('completed');
+                }
+
+                // 2. Llenar Historial
+                const historyBody = document.getElementById('history-body');
+                historyBody.innerHTML = '';
+                historyData.sessions.slice(0, 5).forEach(s => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>${new Date(s.created_at).toLocaleDateString()}</td>
+                        <td>${s.type === 'Niños' ? 'Niño' : 'Padre'}</td>
+                        <td><strong>${s.beststyle || 'Sin definirse'}</strong></td>
+                        <td>${s.suggestedlevel || 'Sin definirse'}</td>
+                        <td>${s.score || 0}</td>
+                    `;
+                    historyBody.appendChild(row);
+                });
+
+                // 3. Recomendaciones
+                const recsList = document.getElementById('recommendations-list');
+                recsList.innerHTML = recsData.recommendations.map(r => `
+                    <div class="recommendation-item">
+                        <i class="fas fa-star" style="color: #f59e0b"></i>
+                        <span>${r}</span>
+                    </div>
+                `).join('');
+
+                // 4. Renderizar Gráficos
+                renderCharts(historyData.sessions);
+
+            } catch (err) {
+                console.error('Error:', err);
+            }
+        }
+
+        function renderCharts(sessions) {
+            if (sessions.length === 0) return;
+
+            const labels = sessions.map(s => new Date(s.created_at).toLocaleDateString()).reverse();
+            const scores = sessions.map(s => s.score || 0).reverse();
+
+            new Chart(document.getElementById('scoreChart'), {
+                type: 'line',
+                data: {
+                    labels,
+                    datasets: [{
+                        label: 'Puntos',
+                        data: scores,
+                        borderColor: '#0066CC',
+                        backgroundColor: 'rgba(0, 102, 204, 0.1)',
+                        fill: true,
+                        tension: 0.4
+                    }]
+                }
+            });
+
+            const styleCounts = {};
+            sessions.forEach(s => {
+                // Usamos el alias 'bestStyle' que definiste en el backend
+                // Si viene null o undefined, ponemos 'Por definir'
+                let style = s.beststyle || s.bestStyle || 'Por definir'; 
+                
+                // Normalizar: Primera letra mayúscula
+                style = style.charAt(0).toUpperCase() + style.slice(1);
+                
+                styleCounts[style] = (styleCounts[style] || 0) + 1;
+            });
+
+            new Chart(document.getElementById('styleChart'), {
+                type: 'doughnut',
+                data: {
+                    labels: Object.keys(styleCounts),
+                    datasets: [{
+                        data: Object.values(styleCounts),
+                        backgroundColor: ['#0066CC', '#00B4D8', '#F59E0B', '#E91E63']
+                    }]
+                }
+            });
+        }
+    </script>
 </body>
 </html>

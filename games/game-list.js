@@ -1,78 +1,43 @@
 // Lista de minijuegos existentes en el proyecto
-const existingGames = [
-    // Juegos existentes
-    {
-        id: 'emotion-game',
-        title: 'Reconoce Emociones',
-        description: 'Aprende a identificar diferentes emociones',
-        icon: 'fa-smile',
-        path: '../games/emotion-game/index.html', // RUTA CORREGIDA
-        category: 'conducta'
-    },
-    {
-        id: 'memory-game',
-        title: 'Juego de Memoria',
-        description: 'Repite la secuencia de colores',
-        icon: 'fa-brain',
-        path: '../games/memory-game/index.html', // RUTA CORREGIDA
-        category: 'lenguaje'
-    },
-    {
-        id: 'patterns-game',
-        title: 'Juego de Patrones',
-        description: 'Completa los patrones secuenciales',
-        icon: 'fa-shapes',
-        path: '../games/patterns-game/index.html', // RUTA CORREGIDA
-        category: 'lenguaje'
-    },
-    
-    // Nuevos juegos de Lenguaje
-    {
-        id: 'asocia-imagen',
-        title: 'Asocia la Imagen Correcta',
-        description: 'Selecciona la palabra correcta para cada imagen',
-        icon: 'fa-image',
-        path: '../games/visual-games/asocia-imagen/index.html', // RUTA CORREGIDA
-        category: 'lenguaje'
-    },
-    {
-        id: 'eco-palabras',
-        title: 'El Eco de las Palabras',
-        description: 'Repite las palabras que escuchas',
-        icon: 'fa-volume-up',
-        path: '../games/auditivo/eco-palabras/index.html', // RUTA CORREGIDA
-        category: 'lenguaje'
-    },
-    {
-        id: 'oracion-colores',
-        title: 'Arma la Oración con Colores',
-        description: 'Ordena las palabras para formar oraciones',
-        icon: 'fa-font',
-        path: '../games/lecto-escritor/oracion-colores/index.html', // RUTA CORREGIDA
-        category: 'lenguaje'
-    },
-    
-    // Nuevos juegos de Conducta
-    {
-        id: 'sigue-lider',
-        title: 'Sigue al Líder de Movimiento',
-        description: 'Imita los movimientos del avatar',
-        icon: 'fa-running',
-        path: '../games/kinestesico/sigue-lider/index.html', // RUTA CORREGIDA
-        category: 'conducta'
-    },
-    
-    // Nuevos juegos de Ocupacional
-    {
-        id: 'explora-profesiones',
-        title: 'Explora Profesiones',
-        description: 'Aprende sobre diferentes trabajos',
-        icon: 'fa-briefcase',
-        path: '../games/ocupacional/explora-profesiones/index.html', // RUTA CORREGIDA
-        category: 'ocupacional'
-    }
-];
 
+// Lista de minijuegos organizada por Estilo y Nivel
+const existingGames = [
+    // --- AUDITIVO ---
+    { id: 'cadena-palabras', title: 'Cadena de Palabras', description: 'Crea cadenas de palabras sonoras', icon: 'fa-link', category: 'lenguaje', style: 'auditivo', level: 1, path: '../games/auditivo/nivel-1/Cadena-Palabras/index.html' },
+    { id: 'eco-palabras', title: 'Eco de Palabras', description: 'Repite lo que escuchas', icon: 'fa-volume-up', category: 'lenguaje', style: 'auditivo', level: 1, path: '../games/auditivo/nivel-1/eco-palabras/index.html' },
+    { id: 'cadena-palabras-2', title: 'Cadena de Palabras 2', description: 'Nivel avanzado de cadenas', icon: 'fa-link', category: 'lenguaje', style: 'auditivo', level: 2, path: '../games/auditivo/nivel-2/Cadena-Palabras2/index.html' },
+    { id: 'completa-auditiva', title: 'Completa la Oración', description: 'Escucha y completa la frase', icon: 'fa-headphones', category: 'lenguaje', style: 'auditivo', level: 2, path: '../games/auditivo/nivel-2/Completa-Oracion-Auditiva/index.html' },
+    { id: 'eco-palabras-2', title: 'Eco de Palabras 2', description: 'Repetición de frases complejas', icon: 'fa-microphone', category: 'lenguaje', style: 'auditivo', level: 3, path: '../games/auditivo/nivel-3/eco-palabras-2/index.html' },
+
+    // --- KINESTÉSICO ---
+    { id: 'atencion-conjunta', title: 'Atención Conjunta', description: 'Sigue el foco de atención', icon: 'fa-eye', category: 'conducta', style: 'kinestesico', level: 1, path: '../games/kinestesico/nivel-1/Atencion-Conjunta/index.html' },
+    { id: 'emotion-game', title: 'Reconoce Emociones', description: 'Identifica gestos y sentimientos', icon: 'fa-smile', category: 'conducta', style: 'kinestesico', level: 1, path: '../games/kinestesico/nivel-1/emotion-game/index.html' },
+    { id: 'sigue-lider', title: 'Sigue al Líder', description: 'Imita movimientos en tiempo real', icon: 'fa-running', category: 'conducta', style: 'kinestesico', level: 1, path: '../games/kinestesico/nivel-1/sigue-lider/index.html' },
+    { id: 'regulando-grito', title: 'Regulando el Grito', description: 'Control de volumen y voz', icon: 'fa-volume-mute', category: 'conducta', style: 'kinestesico', level: 2, path: '../games/kinestesico/nivel-2/Regulando-Grito/index.html' },
+    { id: 'ritmo-silabas', title: 'Ritmo de Sílabas', description: 'Mueve tu cuerpo al ritmo', icon: 'fa-music', category: 'lenguaje', style: 'kinestesico', level: 2, path: '../games/kinestesico/nivel-2/Ritmo-Silabas/index.html' },
+    { id: 'ritmo-silabas-2', title: 'Ritmo de Sílabas 2', description: 'Coordinación avanzada', icon: 'fa-drum', category: 'lenguaje', style: 'kinestesico', level: 3, path: '../games/kinestesico/nivel-3/Ritmo-Silabas-2/index.html' },
+    { id: 'emotion-game-2', title: 'Emociones Pro', description: 'Situaciones sociales complejas', icon: 'fa-theater-masks', category: 'conducta', style: 'kinestesico', level: 3, path: '../games/kinestesico/nivel-3/emotion-game-2/index.html' },
+    { id: 'sigue-lider-2', title: 'Sigue al Líder 2', description: 'Coreografías de aprendizaje', icon: 'fa-user-friends', category: 'conducta', style: 'kinestesico', level: 3, path: '../games/kinestesico/nivel-3/sigue-lider-2/index.html' },
+
+    // --- LECTO-ESCRITOR ---
+    { id: 'encuentra-error', title: 'Encuentra el Error', description: 'Detecta fallas en el texto', icon: 'fa-search', category: 'lenguaje', style: 'lecto-escritor', level: 1, path: '../games/lecto-escritor/nivel-1/encuentra-error/index.html' },
+    { id: 'leeyasocia', title: 'Lee y Asocia', description: 'Une palabras con su significado', icon: 'fa-book-reader', category: 'lenguaje', style: 'lecto-escritor', level: 1, path: '../games/lecto-escritor/nivel-1/leeyasocia/index.html' },
+    { id: 'oracion-colores', title: 'Oración de Colores', description: 'Estructura frases visualmente', icon: 'fa-palette', category: 'lenguaje', style: 'lecto-escritor', level: 1, path: '../games/lecto-escritor/nivel-1/oracion-colores/index.html' },
+    { id: 'completa-oracion', title: 'Completa la Oración', description: 'Escribe la palabra que falta', icon: 'fa-pen-nib', category: 'lenguaje', style: 'lecto-escritor', level: 2, path: '../games/lecto-escritor/nivel-2/completa-oracion/index.html' },
+    { id: 'escribe-palabra', title: 'Escribe la Palabra', description: 'Ortografía y vocabulario', icon: 'fa-keyboard', category: 'lenguaje', style: 'lecto-escritor', level: 2, path: '../games/lecto-escritor/nivel-2/escribe-palabra/index.html' },
+    { id: 'leeyasocia-2', title: 'Lee y Asocia 2', description: 'Lectura comprensiva nivel 3', icon: 'fa-spell-check', category: 'lenguaje', style: 'lecto-escritor', level: 3, path: '../games/lecto-escritor/nivel-3/leeyasocia2/index.html' },
+
+    // --- VISUAL ---
+    { id: 'detective-errores', title: 'Detective de Errores', description: 'Busca diferencias visuales', icon: 'fa-user-secret', category: 'lenguaje', style: 'visual', level: 1, path: '../games/visual/nivel-1/detective-errores/index.html' },
+    { id: 'memoriza-imagen', title: 'Memoriza la Imagen', description: 'Retención visual a corto plazo', icon: 'fa-eye', category: 'lenguaje', style: 'visual', level: 1, path: '../games/visual/nivel-1/memoriza-imagen/index.html' },
+    { id: 'memory-game', title: 'Juego de Memoria', description: 'El clásico juego de pares', icon: 'fa-clone', category: 'lenguaje', style: 'visual', level: 1, path: '../games/visual/nivel-1/memory-game/index.html' },
+    { id: 'completa-escena', title: 'Completa la Escena', description: 'Organización espacial visual', icon: 'fa-puzzle-piece', category: 'ocupacional', style: 'visual', level: 2, path: '../games/visual/nivel-2/completa-escena/index.html' },
+    { id: 'explora-profesiones', title: 'Explora Profesiones', description: 'Asociación visual de trabajos', icon: 'fa-briefcase', category: 'ocupacional', style: 'visual', level: 2, path: '../games/visual/nivel-2/explora-profesiones/index.html' },
+    { id: 'ordena-historia', title: 'Ordena la Historia', description: 'Secuenciación visual', icon: 'fa-sort-numeric-down', category: 'lenguaje', style: 'visual', level: 2, path: '../games/visual/nivel-2/ordena-historia/index.html' },
+    { id: 'asocia-imagen', title: 'Asocia la Imagen', description: 'Relación imagen-concepto', icon: 'fa-images', category: 'lenguaje', style: 'visual', level: 3, path: '../games/visual/nivel-3/asocia-imagen/index.html' },
+    { id: 'clasificacion-grupos', title: 'Clasifica Grupos', description: 'Categorización visual', icon: 'fa-layer-group', category: 'lenguaje', style: 'visual', level: 3, path: '../games/visual/nivel-3/clasificacion-grupos/index.html' },
+    { id: 'patterns-game', title: 'Juego de Patrones', description: 'Lógica y patrones visuales', icon: 'fa-shapes', category: 'lenguaje', style: 'visual', level: 3, path: '../games/visual/nivel-3/patterns-game/index.html' }
+];
 // Función para obtener la lista de juegos
 function getGamesList() {
     return existingGames;

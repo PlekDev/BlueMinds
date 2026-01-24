@@ -1,11 +1,12 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Quiz para Niños - BlueMinds</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="../css/quiz-ninos.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Quiz para Niños - BlueMinds</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="../css/quiz-ninos.css">
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
 </head>       
 <body>
     <div id="app">
@@ -74,6 +75,9 @@
      <script src="../api.js"></script>
  <script src="../js/auth-guard.js"></script>
     <script>
+        let isProcessing = false;
+        let currentQuestionType = '';
+        let draggedValue = null
         let currentQuestionIndex = 0;
         let answers = [];
         let selectedAnswer = null;
@@ -81,6 +85,9 @@
         let score = 0;
         let startTime = Date.now();
         let currentAudio = null;
+        let questionStartTime = Date.now();
+        const verifyBtn = document.getElementById('verify-button');
+        let currentSessionId = null;
 
         // Definición de preguntas según el documento
         const questions = [
@@ -335,372 +342,680 @@
                 correct: ['María', 'juega', 'en', 'el', 'parque']
             }
         ];
+        const recommendations = {
+        visual: "Se recomienda el uso de pictogramas y agendas visuales para las tareas diarias.",
+        auditivo: "El refuerzo mediante instrucciones verbales claras y rimas facilitará su retención.",
+        kinestesico: "Aprende mejor a través de la manipulación de objetos y el movimiento.",
+        lectoescritura: "Aprende mejor con símbolos gráficos y estructuras de palabras."
+    };
 
-        // Variables para el tipo de pregunta actual
-        let sequenceAnswer = [];
-        let wordOrderAnswer = [];
-        let pairAnswers = [];
-
-        function playSound() {
-            const current = questions[currentQuestionIndex];
-            if (current.soundFile) {
-                if (currentAudio) {
-                    currentAudio.pause();
-                    currentAudio.currentTime = 0;
-                }
-                currentAudio = new Audio(current.soundFile);
-                currentAudio.play().catch(error => {
-                    console.log('Error reproduciendo audio:', error);
-                });
-            } else if (current.audioText) {
-                // Usar Text-to-Speech del navegador
-                const utterance = new SpeechSynthesisUtterance(current.audioText);
-                utterance.lang = 'es-ES';
-                utterance.rate = 0.9;
-                speechSynthesis.speak(utterance);
+    // Cargar progreso al iniciar
+    async function loadQuizProgress() {
+        try {
+            const response = await fetch(`${api.baseURL}/quiz/progress`, {
+                headers: api._getHeaders()
+            });
+            if (!response.ok) throw new Error('Error al obtener progreso');
+            const data = await response.json();
+            console.log(data);
+            if (data.progress && data.progress.id) {
+                currentSessionId = data.progress.id; 
             }
+            if (data.progress && !data.progress.is_completed) {
+                currentQuestionIndex = Math.min(
+                    data.progress.current_question_index,
+                    questions.length - 1
+                );
+                if (currentQuestionIndex >= questions.length) {
+                    alert('¡Parece que ya completaste este quiz! Cargando resultados...');
+                    return;
+                }
+                alert(`¡Bienvenido de nuevo! Continuamos desde la pregunta ${currentQuestionIndex + 1}`);
+            }
+        } catch (err) {
+            console.error('Error cargando progreso del quiz de niños:', err);
         }
+        render();
+    }
 
-        function handleSelection(value) {
-            selectedAnswer = value;
-            document.getElementById('verify-button').disabled = false;
+    // Variables por tipo de pregunta
+    let sequenceAnswer = [];
+    let wordOrderAnswer = [];
+    let pairAnswers = [];
+
+    function playSound() {
+        const current = questions[currentQuestionIndex];
+        if (current.soundFile) {
+            if (currentAudio) {
+                currentAudio.pause();
+                currentAudio.currentTime = 0;
+            }
+            currentAudio = new Audio(current.soundFile);
+            currentAudio.play().catch(error => console.log('Error reproduciendo audio:', error));
+        } else if (current.audioText) {
+            const utterance = new SpeechSynthesisUtterance(current.audioText);
+            utterance.lang = 'es-ES';
+            utterance.rate = 0.9;
+            speechSynthesis.speak(utterance);
+        }
+    }
+
+    function handleSelection(value) {
+        selectedAnswer = value;
+        document.getElementById('verify-button').disabled = false;
+        render();
+    }
+
+    function handleSequenceClick(index, emoji) {
+        const current = questions[currentQuestionIndex];
+        if (!sequenceAnswer.includes(emoji)) {
+            sequenceAnswer[index] = emoji;
+            updateVerifyButtonState();
             render();
         }
+    }
 
-        function handleSequenceClick(index, emoji) {
+    function handleWordClick(word) {
+        const index = wordOrderAnswer.indexOf(word);
+        if (index > -1) {
+            wordOrderAnswer.splice(index, 1);
+        } else {
             const current = questions[currentQuestionIndex];
-            if (!sequenceAnswer.includes(emoji)) {
-                sequenceAnswer[index] = emoji;
-                document.getElementById('verify-button').disabled = sequenceAnswer.length !== current.correct.length;
-                render();
-            }
-        }
-
-        function handleWordClick(word) {
-            if (!wordOrderAnswer.includes(word)) {
+            if (wordOrderAnswer.length < current.correct.length) {
                 wordOrderAnswer.push(word);
-                const current = questions[currentQuestionIndex];
-                document.getElementById('verify-button').disabled = wordOrderAnswer.length !== current.correct.length;
-                render();
             }
         }
+        updateVerifyButtonState();
+        render();
+    }
 
-        function handlePairAnswer(answer) {
-            const current = questions[currentQuestionIndex];
-            pairAnswers.push(answer);
-            
-            if (pairAnswers.length < current.pairs.length) {
-                current.currentPair++;
-                render();
-            } else {
-                // Todas las parejas completadas, verificar automáticamente
-                selectedAnswer = pairAnswers.every(a => a === true);
-                checkAnswer();
-            }
-        }
+    function handlePairAnswer(answer) {
+        const current = questions[currentQuestionIndex];
+        pairAnswers.push(answer);
 
-        function checkAnswer() {
-            const current = questions[currentQuestionIndex];
-            let isCorrect = false;
-
-            if (current.type === 'sequence' || current.type === 'drag-sequence') {
-                isCorrect = JSON.stringify(sequenceAnswer) === JSON.stringify(current.correct);
-            } else if (current.type === 'order-words') {
-                isCorrect = JSON.stringify(wordOrderAnswer) === JSON.stringify(current.correct);
-            } else {
-                isCorrect = selectedAnswer === current.correct || selectedAnswer === true;
-            }
-
-            if (isCorrect) score++;
-
-            answers.push({
-                questionIndex: currentQuestionIndex,
-                nivel: current.nivel,
-                learningStyle: current.learningStyle,
-                correct: isCorrect,
-                answer: selectedAnswer || sequenceAnswer || wordOrderAnswer
-            });
-
-            showFeedback = true;
-            document.getElementById('feedback').innerHTML = `
-                <div class="feedback-box ${isCorrect ? 'correct' : 'incorrect'}">
-                    <i class="fas fa-${isCorrect ? 'check-circle' : 'times-circle'}" 
-                       style="font-size: 2rem; color: ${isCorrect ? 'var(--green-600)' : 'var(--red-500)'}"></i>
-                    <div>
-                        <div style="font-weight: 700; font-size: 1.25rem; margin-bottom: 0.5rem;">
-                            ${isCorrect ? '¡Muy bien! ✨' : 'Respuesta registrada 📝'}
-                        </div>
-                        <div style="color: var(--gray-600);">
-                            ${isCorrect ? 'Excelente trabajo, sigamos adelante' : 'Continuemos con la siguiente pregunta'}
-                        </div>
-                    </div>
+        // Feedback inmediato por pareja
+        showFeedback = true;
+        document.getElementById('feedback').innerHTML = `
+            <div class="feedback-box ${answer ? 'correct' : 'incorrect'}">
+                <i class="fas fa-${answer ? 'check-circle' : 'times-circle'}" style="font-size: 2rem; color: ${answer ? 'var(--green-600)' : 'var(--red-500)'}"></i>
+                <div style="margin-left: 1rem;">
+                    <strong>${answer ? '¡Correcto!' : 'Incorrecto'}</strong><br>
+                    ${answer ? 'Bien visto' : 'Revisa la imagen de nuevo'}
                 </div>
-            `;
+            </div>
+        `;
 
-            document.getElementById('verify-button').textContent = 'SIGUIENTE PREGUNTA';
-            document.getElementById('verify-button').onclick = nextQuestion;
-            
-            // CORRECCIÓN: Asegurar que el botón sea visible para todos los tipos de preguntas
-            document.getElementById('verify-button').style.display = 'block';
+        if (pairAnswers.length < current.pairs.length) {
+            current.currentPair++;
+            render(); // Avanza a siguiente pareja
+        } else {
+            // Todas las parejas terminadas → habilitar botón para terminar (si es última pregunta) o siguiente
+            selectedAnswer = pairAnswers.every(a => a === true);
             document.getElementById('verify-button').disabled = false;
-        }
-
-        function nextQuestion() {
-            if (currentQuestionIndex < questions.length - 1) {
-                currentQuestionIndex++;
-                selectedAnswer = null;
-                sequenceAnswer = [];
-                wordOrderAnswer = [];
-                pairAnswers = [];
-                showFeedback = false;
-                document.getElementById('feedback').innerHTML = '';
-                document.getElementById('verify-button').textContent = 'VERIFICAR RESPUESTA';
-                document.getElementById('verify-button').onclick = checkAnswer;
-                document.getElementById('verify-button').disabled = true;
-                
-                const current = questions[currentQuestionIndex];
-                if (current.type === 'word-to-image') {
-                    current.currentPair = 0;
-                }
-                
-                render();
+            if (currentQuestionIndex === questions.length - 1) {
+                document.getElementById('verify-button').textContent = 'TERMINAR QUIZ';
+                document.getElementById('verify-button').onclick = completeGame;
             } else {
-                completeGame();
+                document.getElementById('verify-button').textContent = 'SIGUIENTE PREGUNTA';
+                document.getElementById('verify-button').onclick = nextQuestion;
             }
         }
+    }
 
-        // Reemplazamos la función showResults() con completeGame()
-        function completeGame() {
-            const endTime = Date.now();
-            const timeInMinutes = Math.round((endTime - startTime) / 60000);
-            
-            // Análisis por estilo de aprendizaje
-            const learningStats = {
-                visual: { correct: 0, total: 0 },
-                auditivo: { correct: 0, total: 0 },
-                kinestesico: { correct: 0, total: 0 },
-                lectoescritura: { correct: 0, total: 0 }
-            };
+async function checkAnswer() {
+          if(isProcessing){
+            return;
+          }
+          isProcessing = true;
+          verifyBtn.disabled = true;
+    const current = questions[currentQuestionIndex];
+    const responseTimeMs = Date.now() - questionStartTime;
 
-            // Análisis por nivel
-            const levelStats = {
-                1: { correct: 0, total: 0 },
-                2: { correct: 0, total: 0 },
-                3: { correct: 0, total: 0 }
-            };
+    let isCorrect = false;
 
-            answers.forEach(answer => {
-                const style = answer.learningStyle;
-                const level = answer.nivel;
-                
-                learningStats[style].total++;
-                levelStats[level].total++;
-                
-                if (answer.correct) {
-                    learningStats[style].correct++;
-                    levelStats[level].correct++;
-                }
-            });
+    if (['sequence', 'drag-sequence', 'complete-sequence'].includes(current.type)) {
+        let userAnswer;
+        if (current.type === 'complete-sequence') {
+            userAnswer = sequenceAnswer[0];
+        } else {
+            userAnswer = sequenceAnswer;
+        }
+        isCorrect = JSON.stringify(userAnswer) === JSON.stringify(current.correct);
+    } else if (current.type === 'order-words') {
+        isCorrect = JSON.stringify(wordOrderAnswer) === JSON.stringify(current.correct);
+    } else if (current.type === 'word-to-image') {
+        // Para word-to-image: todas las parejas deben ser correctas
+        isCorrect = pairAnswers.every(a => a === true);
+    } else {
+        isCorrect = selectedAnswer === current.correct || selectedAnswer === true;
+    }
 
-            // Determinar estilo de aprendizaje predominante
-            let bestStyle = '';
-            let bestScore = 0;
-            for (let style in learningStats) {
-                const percentage = (learningStats[style].correct / learningStats[style].total) * 100;
-                if (percentage > bestScore) {
-                    bestScore = percentage;
-                    bestStyle = style;
-                }
+    if (isCorrect) score++;
+
+    // Guardar respuesta por índice
+    answers[currentQuestionIndex] = {
+        questionIndex: currentQuestionIndex,
+        nivel: current.nivel,
+        learningStyle: current.learningStyle,
+        correct: isCorrect,
+        answer: selectedAnswer || sequenceAnswer || wordOrderAnswer || pairAnswers || [],
+        responseTimeMs
+    };
+
+    console.log(`Respuesta guardada en índice ${currentQuestionIndex} → total: ${Object.keys(answers).length}`);
+
+    try {
+            await api.saveQuizResponse({
+            quiz_session_id: currentSessionId, // Enviamos el ID de sesión
+            question_index: currentQuestionIndex, // Con guion bajo
+            question_type: current.type,
+            learning_style: current.learningStyle,
+            nivel: current.nivel,
+            answer: selectedAnswer || sequenceAnswer || wordOrderAnswer || pairAnswers || [],
+            is_correct: isCorrect,
+            response_time_ms: responseTimeMs
+        });
+    } catch (err) {
+        console.error('Error guardando respuesta:', err);
+    }
+
+    showFeedback = true;
+    document.getElementById('feedback').innerHTML = `
+        <div class="feedback-box ${isCorrect ? 'correct' : 'incorrect'}">
+            <i class="fas fa-${isCorrect ? 'check-circle' : 'times-circle'}" style="font-size: 2rem; color: ${isCorrect ? 'var(--green-600)' : 'var(--red-500)'}"></i>
+            <div>
+                <div style="font-weight: 700; font-size: 1.25rem; margin-bottom: 0.5rem;">
+                    ${isCorrect ? '¡Muy bien! ✨' : 'Respuesta registrada 📝'}
+                </div>
+                <div style="color: var(--gray-600);">
+                    ${isCorrect ? 'Excelente trabajo, sigamos adelante' : 'Continuamos con la siguiente pregunta'}
+                </div>
+            </div>
+        </div>
+    `;
+
+    if (isCorrect) {
+        confetti({
+            particleCount: 100,
+            spread: 70,
+            origin: { y: 0.6 },
+            colors: ['#3b82f6', '#60a5fa', '#93c5fd']
+        });
+    }
+
+
+    // Deshabilitar temporalmente durante feedback
+    verifyBtn.disabled = true;
+
+    // Si es la última pregunta → completar automáticamente
+    if (currentQuestionIndex === questions.length - 1) {
+        setTimeout(() => {
+            completeGame();
+        }, 1500);
+    } else {
+        // Habilitar botón para siguiente
+        verifyBtn.textContent = 'SIGUIENTE PREGUNTA';
+        verifyBtn.onclick = nextQuestion;
+        verifyBtn.disabled = false;
+    }
+    setTimeout(() => {
+          isProcessing = false;
+          if (currentQuestionIndex !== questions.length - 1) {
+              verifyBtn.disabled = false;
+          }
+      }, 1500);
+}
+function nextQuestion() {
+    if (currentQuestionIndex < questions.length - 1) {
+        currentQuestionIndex++;
+        const current = questions[currentQuestionIndex];
+        selectedAnswer = null;
+        pairAnswers = [];
+        showFeedback = false;
+
+        // Reinicio de estados
+        if (['sequence', 'drag-sequence', 'complete-sequence'].includes(current.type)) {
+            let slots = current.correct ? current.correct.length : 1;
+            if (current.sequence) {
+                slots = current.sequence.filter(s => s === '?').length || slots;
             }
+            sequenceAnswer = new Array(slots).fill(null);
+        } else if (current.type === 'order-words') {
+            wordOrderAnswer = new Array(current.correct.length).fill(null);
+        }
 
-            const styleNames = {
-                visual: '👁️ Visual',
-                auditivo: '👂 Auditivo',
-                kinestesico: '✋ Kinestésico',
-                lectoescritura: '📖 Lectoescritura'
-            };
+        document.getElementById('feedback').innerHTML = '';
+        const verifyBtn = document.getElementById('verify-button');
+        verifyBtn.textContent = 'VERIFICAR RESPUESTA';
+        verifyBtn.onclick = checkAnswer;
+        verifyBtn.disabled = true;
 
-            // Determinar nivel predominante
-            let suggestedLevel = 0;
-            for (let level in levelStats) {
-                const percentage = (levelStats[level].correct / levelStats[level].total) * 100;
-                if (percentage >= 60) {
-                    suggestedLevel = Math.max(suggestedLevel, parseInt(level));
-                }
-            }
+        if (current.type === 'word-to-image') {
+            current.currentPair = 0;
+        }
 
-            // Guardar resultados en localStorage
-            localStorage.setItem('blueminds_test_completed', 'true');
-            localStorage.setItem('blueminds_user_type', 'child');
-            localStorage.setItem('blueminds_learning_style', bestStyle);
-            localStorage.setItem('blueminds_suggested_level', suggestedLevel || 1);
-            localStorage.setItem('blueminds_score', score);
+        questionStartTime = Date.now();
+        render();
+    } else {
+        console.log('Última pregunta: esperando que checkAnswer complete automáticamente');
+    }
+}
+async function completeGame() {
+    const endTime = Date.now();
+    const totalTimeSeconds = Math.round((endTime - startTime) / 1000);
+    const timeInMinutes = Math.round(totalTimeSeconds / 60);
 
-            document.getElementById('quiz-container').classList.add('hidden');
-            document.getElementById('results-container').classList.remove('hidden');
-            document.getElementById('correct-answers').textContent = score;
-            document.getElementById('completion-time').textContent = timeInMinutes + 'm';
+    const styleNames = {
+        visual: '👁️ Visual',
+        auditivo: '👂 Auditivo',
+        kinestesico: '✋ Kinestésico',
+        lectoescritura: '📖 Lectoescritura',
+        'No detectado': 'No detectado'
+    };
 
-            let analysisHTML = `
-                <p style="margin-bottom: 1rem;"><strong>🎯 Estilo de aprendizaje predominante:</strong> ${styleNames[bestStyle]}</p>
-                <p style="margin-bottom: 1rem;"><strong>📊 Nivel sugerido:</strong> Nivel ${suggestedLevel || 1}</p>
+    try {
+        console.log(`Enviando ${answers.length} respuestas al backend...`);
+        console.log('Score calculado localmente antes de enviar:', answers.filter(a => a && a.correct).length);
+        const response = await fetch(`${api.baseURL}/quiz/complete`, {
+            method: 'POST',
+            headers: api._getHeaders(),
+            body: JSON.stringify({ answers })
+        });
+
+        console.log('Respuesta backend:', response.status);
+
+        if (!response.ok) {
+            const errData = await response.json().catch(() => ({}));
+            throw new Error(errData.error || `Error del servidor: ${response.status}`);
+        }
+
+        const data = await response.json();
+
+        score = data.score || score;
+        bestStyle = data.bestStyle || 'No detectado';
+        suggestedLevel = data.suggestedLevel || 1;
+        const learningStats = data.learningStats || {};
+        const recommendations = data.recommendations || [];
+
+        document.getElementById('quiz-container').classList.add('hidden');
+        document.getElementById('results-container').classList.remove('hidden');
+
+        document.getElementById('correct-answers').textContent = score;
+        document.getElementById('completion-time').textContent = timeInMinutes + 'm';
+
+        let analysisHTML = `
+            <p style="margin-bottom: 1rem;"><strong>🎯 Estilo de aprendizaje predominante:</strong> ${styleNames[bestStyle] || bestStyle}</p>
+            <p style="margin-bottom: 1rem;"><strong>📊 Nivel sugerido:</strong> Nivel ${suggestedLevel}</p>
+        `;
+
+        if (Object.keys(learningStats).length > 0) {
+            analysisHTML += `
                 <div style="margin-top: 1rem; padding-top: 1rem; border-top: 2px solid var(--gray-300);">
                     <p style="font-weight: 600; margin-bottom: 0.5rem;">Desglose por estilo:</p>
             `;
-
             for (let style in learningStats) {
                 const stats = learningStats[style];
-                const percentage = Math.round((stats.correct / stats.total) * 100);
+                const percentage = stats.total > 0 ? Math.round((stats.correct / stats.total) * 100) : 0;
                 analysisHTML += `
                     <div style="margin-bottom: 0.5rem;">
-                        ${styleNames[style]}: ${stats.correct}/${stats.total} (${percentage}%)
+                        ${styleNames[style] || style}: ${stats.correct}/${stats.total} (${percentage}%)
                     </div>
                 `;
             }
-
             analysisHTML += `</div>`;
-            document.getElementById('learning-analysis').innerHTML = analysisHTML;
         }
 
-        // Agregamos la función goToMainApp()
-        function goToMainApp() {
-            window.location.href = 'BlueMindsMain.html';
+        if (recommendations.length > 0) {
+            analysisHTML += `
+                <div class="analysis-item" style="margin-top: 1.5rem;">
+                    <strong>Recomendaciones personalizadas:</strong><br>
+                    ${recommendations.map(rec => `• ${rec}<br>`).join('')}
+                </div>
+            `;
         }
 
-        function render() {
-            const current = questions[currentQuestionIndex];
-            const progress = ((currentQuestionIndex + 1) / questions.length) * 100;
+        document.getElementById('learning-analysis').innerHTML = analysisHTML;
 
-            document.getElementById('progress-bar').style.width = progress + '%';
-            document.getElementById('progress-text').textContent = Math.round(progress) + '%';
-            document.getElementById('question-title').textContent = current.question;
-            document.getElementById('question-subtitle').textContent = current.subtitle + ` (${currentQuestionIndex + 1}/${questions.length})`;
+        if (score >= 15) {
+            confetti({
+                particleCount: 150,
+                spread: 90,
+                origin: { y: 0.6 }
+            });
+        }
 
-            const contentEl = document.getElementById('question-content');
-            contentEl.innerHTML = '';
+        localStorage.setItem('blueminds_test_completed', 'true');
+        localStorage.setItem('blueminds_user_type', 'child');
+        localStorage.setItem('blueminds_learning_style', bestStyle);
+        localStorage.setItem('blueminds_suggested_level', suggestedLevel);
+        localStorage.setItem('blueminds_score', score);
 
-            if (current.type === 'sound' || current.type === 'sound-complete') {
-                contentEl.innerHTML = `
-                    <button onclick="playSound()" class="sound-play-button">
-                        <i class="fas fa-volume-up" style="font-size: 3rem; color: white;"></i>
-                    </button>
-                    <div class="animal-options-container">
-                        ${current.options.map(opt => `
-                            <div onclick="handleSelection('${opt.value}')" 
-                                 class="animal-option ${selectedAnswer === opt.value ? 'selected' : ''}">
-                                <span class="animal-emoji">${opt.emoji}</span>
-                                <span class="animal-name">${opt.label || opt.animal}</span>
-                            </div>
-                        `).join('')}
-                    </div>
-                `;
-            } else if (current.type === 'sequence' || current.type === 'drag-sequence') {
-                contentEl.innerHTML = `
-                    <div class="sequence-container">
-                        ${current.correct.map((_, index) => `
-                            <div class="sequence-box ${sequenceAnswer[index] ? 'filled' : ''}">
-                                ${sequenceAnswer[index] || '?'}
-                            </div>
-                        `).join('')}
-                    </div>
-                    <div class="draggable-options">
-                        ${current.options.map((emoji, index) => `
-                            <div onclick="handleSequenceClick(${sequenceAnswer.length}, '${emoji}')" 
-                                 class="draggable-item ${sequenceAnswer.includes(emoji) ? 'used' : ''}">
-                                ${emoji}
-                            </div>
-                        `).join('')}
-                    </div>
-                `;
-            } else if (current.type === 'complete-sequence') {
-                contentEl.innerHTML = `
-                    <div class="sequence-container">
-                        ${current.sequence.map(item => `
-                            <div class="sequence-box filled">${item}</div>
-                        `).join('')}
-                    </div>
-                    <div class="image-options-container">
-                        ${current.options.map(opt => `
-                            <div onclick="handleSelection('${opt.value}')" 
-                                 class="image-option ${selectedAnswer === opt.value ? 'selected' : ''}">
-                                <span class="animal-emoji">${opt.emoji}</span>
-                            </div>
-                        `).join('')}
-                    </div>
-                `;
-            } else if (current.type === 'image-to-word') {
-                contentEl.innerHTML = `
-                    <div style="text-align: center; margin: 2rem 0;">
-                        <div style="font-size: 8rem; margin-bottom: 2rem;">${current.image}</div>
-                    </div>
-                    <div class="image-options-container">
-                        ${current.options.map(word => `
-                            <div onclick="handleSelection('${word}')" 
-                                 class="image-option ${selectedAnswer === word ? 'selected' : ''}">
-                                <span class="image-label">${word}</span>
-                            </div>
-                        `).join('')}
-                    </div>
-                `;
-            } else if (current.type === 'word-to-image') {
-                const pair = current.pairs[current.currentPair];
-                contentEl.innerHTML = `
-                    <div style="text-align: center; margin: 2rem 0;">
-                        <div style="font-size: 2rem; font-weight: 700; margin-bottom: 2rem; color: var(--gray-800);">
-                            ${pair.word}
+    } catch (err) {
+        console.error('Error en completeGame (backend):', err);
+        alert('Error al conectar con el servidor. Mostrando cálculo local...');
+
+        const learningStats = {
+            visual: { correct: 0, total: 0 },
+            auditivo: { correct: 0, total: 0 },
+            kinestesico: { correct: 0, total: 0 },
+            lectoescritura: { correct: 0, total: 0 }
+        };
+
+        const levelStats = {
+            1: { correct: 0, total: 0 },
+            2: { correct: 0, total: 0 },
+            3: { correct: 0, total: 0 }
+        };
+
+        let validAnswers = 0;
+        answers.forEach(answer => {
+            if (answer) {
+                const style = answer.learningStyle;
+                const level = answer.nivel;
+                if (style && learningStats[style]) {
+                    learningStats[style].total++;
+                    if (answer.correct) learningStats[style].correct++;
+                }
+                if (level && levelStats[level]) {
+                    levelStats[level].total++;
+                    if (answer.correct) levelStats[level].correct++;
+                }
+                if (style || level) validAnswers++;
+            }
+        });
+
+        let bestStyle = 'No detectado';
+        let bestPercentage = 0;
+        if (validAnswers > 0) {
+            for (let style in learningStats) {
+                const percentage = (learningStats[style].total > 0)
+                    ? (learningStats[style].correct / learningStats[style].total) * 100
+                    : 0;
+                if (percentage > bestPercentage) {
+                    bestPercentage = percentage;
+                    bestStyle = style;
+                }
+            }
+        }
+
+        let suggestedLevel = 1;
+        for (let level in levelStats) {
+            const percentage = (levelStats[level].total > 0)
+                ? (levelStats[level].correct / levelStats[level].total) * 100
+                : 0;
+            if (percentage >= 60) {
+                suggestedLevel = Math.max(suggestedLevel, parseInt(level));
+            }
+        }
+
+        document.getElementById('quiz-container').classList.add('hidden');
+        document.getElementById('results-container').classList.remove('hidden');
+
+        document.getElementById('correct-answers').textContent = score;
+        document.getElementById('completion-time').textContent = timeInMinutes + 'm';
+
+        let analysisHTML = `
+            <p style="margin-bottom: 1rem;"><strong>🎯 Estilo de aprendizaje predominante (temporal):</strong> ${styleNames[bestStyle]}</p>
+            <p style="margin-bottom: 1rem;"><strong>📊 Nivel sugerido:</strong> Nivel ${suggestedLevel}</p>
+            <div style="margin-top: 1rem; padding-top: 1rem; border-top: 2px solid var(--gray-300);">
+                <p style="font-weight: 600; margin-bottom: 0.5rem;">Desglose por estilo:</p>
+        `;
+
+        for (let style in learningStats) {
+            const stats = learningStats[style];
+            const percentage = stats.total > 0 ? Math.round((stats.correct / stats.total) * 100) : 0;
+            analysisHTML += `
+                <div style="margin-bottom: 0.5rem;">
+                    ${styleNames[style]}: ${stats.correct}/${stats.total} (${percentage}%)
+                </div>
+            `;
+        }
+
+        analysisHTML += `</div>
+            <p style="color: orange; margin-top: 1rem;">(Modo fallback: análisis local)</p>`;
+
+        document.getElementById('learning-analysis').innerHTML = analysisHTML;
+
+        if (score >= 15) {
+            confetti({
+                particleCount: 150,
+                spread: 90,
+                origin: { y: 0.6 }
+            });
+        }
+    }
+}
+    function goToMainApp() {
+        window.location.href = 'BlueMindsMain.html';
+    }
+
+    function render() {
+        if (currentQuestionIndex < 0 || currentQuestionIndex >= questions.length) {
+            console.warn(`Índice inválido: ${currentQuestionIndex}. Reseteando a 0.`);
+            currentQuestionIndex = 0;
+        }
+
+        const current = questions[currentQuestionIndex];
+        const progress = ((currentQuestionIndex + 1) / questions.length) * 100;
+        currentQuestionType = current.type;
+
+        document.getElementById('progress-bar').style.width = progress + '%';
+        document.getElementById('progress-text').textContent = Math.round(progress) + '%';
+        document.getElementById('question-title').textContent = current.question;
+        document.getElementById('question-subtitle').textContent = current.subtitle + ` (${currentQuestionIndex + 1}/${questions.length})`;
+
+        const contentEl = document.getElementById('question-content');
+        contentEl.innerHTML = '';
+
+        if (current.type === 'sound' || current.type === 'sound-complete') {
+            contentEl.innerHTML = `
+                <button onclick="playSound()" class="sound-play-button">
+                    <i class="fas fa-volume-up" style="font-size: 3rem; color: white;"></i>
+                </button>
+                <div class="animal-options-container">
+                    ${current.options.map(opt => `
+                        <div onclick="handleSelection('${opt.value}')"
+                             class="animal-option ${selectedAnswer === opt.value ? 'selected' : ''}">
+                            <span class="animal-emoji">${opt.emoji}</span>
+                            <span class="animal-name">${opt.label || opt.animal}</span>
                         </div>
-                        <div style="font-size: 8rem; margin-bottom: 2rem;">${pair.image}</div>
-                        <p style="color: var(--gray-600); margin-bottom: 2rem;">¿Es correcto?</p>
-                    </div>
-                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
-                        <button onclick="handlePairAnswer(true)" class="action-button" style="background: linear-gradient(135deg, var(--green-500), var(--green-600)); margin: 0;">
-                            ✓ SÍ
-                        </button>
-                        <button onclick="handlePairAnswer(false)" class="action-button" style="background: linear-gradient(135deg, var(--red-500), #dc2626); margin: 0;">
-                            ✗ NO
-                        </button>
-                    </div>
-                `;
-                
-                // CORRECCIÓN: Solo ocultar el botón si no estamos mostrando feedback
-                if (!showFeedback) {
-                    document.getElementById('verify-button').style.display = 'none';
-                }
-            } else if (current.type === 'order-words') {
-                if (current.audioText) {
-                    contentEl.innerHTML = `
-                        <button onclick="playSound()" class="sound-play-button">
-                            <i class="fas fa-volume-up" style="font-size: 3rem; color: white;"></i>
-                        </button>
-                    `;
-                }
-                contentEl.innerHTML += `
-                    <div class="word-order-container">
-                        ${wordOrderAnswer.map(word => `
-                            <div class="word-slot filled">${word}</div>
-                        `).join('')}
-                        ${Array(current.correct.length - wordOrderAnswer.length).fill(0).map(() => `
-                            <div class="word-slot">?</div>
-                        `).join('')}
-                    </div>
-                    <div class="word-options">
-                        ${current.words.map(word => `
-                            <div onclick="handleWordClick('${word}')" 
-                                 class="word-item ${wordOrderAnswer.includes(word) ? 'used' : ''}">
-                                ${word}
-                            </div>
-                        `).join('')}
-                    </div>
-                `;
-            }
+                    `).join('')}
+                </div>
+            `;
+        } else if (current.type === 'sequence' || current.type === 'drag-sequence') {
+            contentEl.innerHTML = `
+                <div class="sequence-slots">
+                    ${Array(current.correct.length).fill().map((_, i) => {
+                        const val = sequenceAnswer[i];
+                        if (val) {
+                            return `<div class="sequence-box filled">
+                                ${val}
+                                <button class="remove-slot-btn" data-slot-index="${i}">×</button>
+                            </div>`;
+                        } else {
+                            return `<div class="sequence-box drop-zone" data-slot-index="${i}"></div>`;
+                        }
+                    }).join('')}
+                </div>
+                <div class="options-pool">
+                    ${current.options.filter(opt => !sequenceAnswer.includes(opt)).map(opt => `
+                        <div class="draggable-item" data-value="${opt}">${opt}</div>
+                    `).join('')}
+                </div>
+            `;
+        } else if (current.type === 'complete-sequence') {
+            const optionsMap = {};
+            current.options.forEach(opt => optionsMap[opt.value] = opt.emoji);
 
-            // CORRECCIÓN: Asegurar que el botón sea visible para todos los tipos de preguntas excepto word-to-image sin feedback
-            if (current.type !== 'word-to-image' || showFeedback) {
-                document.getElementById('verify-button').style.display = 'block';
+            let slotIdx = 0;
+            const sequenceHtml = current.sequence.map(item => {
+                if (item === '?') {
+                    const idx = slotIdx++;
+                    const val = sequenceAnswer[idx];
+                    if (val) {
+                        const display = optionsMap[val] || val;
+                        return `<div class="sequence-box filled">
+                            ${display}
+                            <button class="remove-slot-btn" data-slot-index="${idx}">×</button>
+                        </div>`;
+                    } else {
+                        return `<div class="sequence-box drop-zone" data-slot-index="${idx}"></div>`;
+                    }
+                } else {
+                    return `<div class="sequence-box fixed">${item}</div>`;
+                }
+            }).join('');
+
+            contentEl.innerHTML = `
+                <div class="sequence-slots">
+                    ${sequenceHtml}
+                </div>
+                <div class="options-pool">
+                    ${current.options.filter(opt => !sequenceAnswer.includes(opt.value)).map(opt => `
+                        <div class="draggable-item" data-value="${opt.value}">
+                            ${opt.emoji}
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+        } else if (current.type === 'image-to-word') {
+            contentEl.innerHTML = `
+                <div style="text-align: center; margin: 2rem 0;">
+                    <div style="font-size: 8rem; margin-bottom: 2rem;">${current.image}</div>
+                </div>
+                <div class="image-options-container">
+                    ${current.options.map(word => `
+                        <div onclick="handleSelection('${word}')"
+                             class="image-option ${selectedAnswer === word ? 'selected' : ''}">
+                            <span class="image-label">${word}</span>
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+        } else if (current.type === 'word-to-image') {
+            const pair = current.pairs[current.currentPair];
+            contentEl.innerHTML = `
+                <div style="text-align: center; margin: 2rem 0;">
+                    <div style="font-size: 2rem; font-weight: 700; margin-bottom: 2rem; color: var(--gray-800);">
+                        ${pair.word}
+                    </div>
+                    <div style="font-size: 8rem; margin-bottom: 2rem;">${pair.image}</div>
+                    <p style="color: var(--gray-600); margin-bottom: 2rem;">¿Es correcto?</p>
+                </div>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                    <button onclick="handlePairAnswer(true)" class="action-button" style="background: linear-gradient(135deg, var(--green-500), var(--green-600)); margin: 0;">
+                        ✓ SÍ
+                    </button>
+                    <button onclick="handlePairAnswer(false)" class="action-button" style="background: linear-gradient(135deg, var(--red-500), #dc2626); margin: 0;">
+                        ✗ NO
+                    </button>
+                </div>
+            `;
+        } else if (current.type === 'order-words') {
+            if (current.audioText) {
+                contentEl.innerHTML = `<button onclick="playSound()" class="sound-play-button"><i class="fas fa-volume-up" style="font-size: 3rem;"></i></button>`;
             }
+            contentEl.innerHTML += `
+                <div class="word-order-slots">
+                    ${Array(current.correct.length).fill().map((_, i) => {
+                        const val = wordOrderAnswer[i];
+                        if (val) {
+                            return `<div class="word-slot filled">
+                                ${val}
+                                <button class="remove-slot-btn" data-slot-index="${i}">×</button>
+                            </div>`;
+                        } else {
+                            return `<div class="word-slot drop-zone" data-slot-index="${i}"></div>`;
+                        }
+                    }).join('')}
+                </div>
+                <div class="word-options-pool">
+                    ${current.words.filter(w => !wordOrderAnswer.includes(w)).map(word => `
+                        <div class="draggable-item" data-value="${word}">${word}</div>
+                    `).join('')}
+                </div>
+            `;
         }
 
-        document.addEventListener('DOMContentLoaded', render);
+
+        attachDragAndDropListeners();
+        updateVerifyButtonState();
+    }
+
+    function updateVerifyButtonState() {
+        const current = questions[currentQuestionIndex];
+        let isComplete = false;
+
+        if (['sequence', 'drag-sequence', 'complete-sequence'].includes(current.type)) {
+            isComplete = sequenceAnswer.every(v => v !== null);
+        } else if (current.type === 'order-words') {
+            isComplete = wordOrderAnswer.every(v => v !== null);
+        } else if (current.type === 'word-to-image') {
+            isComplete = pairAnswers.length === current.pairs.length;
+        } else {
+            isComplete = selectedAnswer !== null;
+        }
+
+        document.getElementById('verify-button').disabled = !isComplete;
+    }
+
+    function attachDragAndDropListeners() {
+        const content = document.getElementById('question-content');
+        if (!content) return;
+
+        content.querySelectorAll('.draggable-item').forEach(item => {
+            item.draggable = true;
+            item.ondragstart = (e) => {
+                draggedValue = e.target.dataset.value;
+                e.target.classList.add('dragging');
+            };
+            item.ondragend = (e) => {
+                e.target.classList.remove('dragging');
+            };
+        });
+
+        content.querySelectorAll('.drop-zone').forEach(zone => {
+            zone.ondragover = (e) => {
+                e.preventDefault();
+                zone.classList.add('drag-over');
+            };
+            zone.ondragleave = (e) => zone.classList.remove('drag-over');
+            zone.ondrop = (e) => {
+                e.preventDefault();
+                zone.classList.remove('drag-over');
+                if (draggedValue) {
+                    const slotIndex = parseInt(zone.dataset.slotIndex);
+                    if (['sequence', 'drag-sequence', 'complete-sequence'].includes(currentQuestionType)) {
+                        sequenceAnswer[slotIndex] = draggedValue;
+                    } else if (currentQuestionType === 'order-words') {
+                        wordOrderAnswer[slotIndex] = draggedValue;
+                    }
+                    draggedValue = null;
+                    updateVerifyButtonState();
+                    render();
+                }
+            };
+        });
+
+        content.querySelectorAll('.remove-slot-btn').forEach(btn => {
+            btn.onclick = (e) => {
+                e.stopPropagation();
+                const slotIndex = parseInt(btn.dataset.slotIndex);
+                if (['sequence', 'drag-sequence', 'complete-sequence'].includes(currentQuestionType)) {
+                    sequenceAnswer[slotIndex] = null;
+                } else if (currentQuestionType === 'order-words') {
+                    wordOrderAnswer[slotIndex] = null;
+                }
+                updateVerifyButtonState();
+                render();
+            };
+        });
+    }
+
+    document.addEventListener('DOMContentLoaded', async () => {
+        await loadQuizProgress();
+        render();
+    });
     </script>
 </body>
 </html>

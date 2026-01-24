@@ -19,6 +19,78 @@
 
 body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 100vh; padding:1rem; }
 
+.sequence-slots, .word-order-slots {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    margin: 2rem 0;
+    flex-wrap: wrap;
+}
+
+.sequence-box, .word-slot {
+    width: 80px;
+    height: 80px;
+    border: 3px dashed #ccc;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2.5rem;
+    background: #f8fafc;
+    position: relative;
+}
+
+.sequence-box.filled, .word-slot.filled {
+    border-style: solid;
+    background: #dbeafe;
+}
+
+.drop-zone.drag-over {
+    border-color: #3b82f6;
+    background: #eff6ff;
+}
+
+.draggable-item {
+    width: 80px;
+    height: 80px;
+    font-size: 2.5rem;
+    border: 2px solid #cbd5e1;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: white;
+    cursor: grab;
+    margin: 0.5rem;
+}
+
+.draggable-item.dragging { opacity: 0.6; }
+
+.remove-slot-btn {
+    position: absolute;
+    top: -8px;
+    right: -8px;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background: #ef4444;
+    color: white;
+    border: none;
+    font-size: 16px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.options-pool, .word-options-pool {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    justify-content: center;
+    margin-top: 2rem;
+}
+
 .container { max-width: 56rem; margin: 0 auto; }
 
 .card { background: var(--white); border-radius: 2rem; box-shadow: 0 20px 60px rgba(0,0,0,0.3); padding: 2.5rem; margin-bottom:1.5rem; }
@@ -46,7 +118,7 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-
 .sequence-box:hover { transform: scale(1.05); border-color: var(--blue-400); }
 
 .draggable-options { display:flex; gap:1rem; justify-content:center; flex-wrap:wrap; margin-top:2rem; }
-.draggable-item { width:120px; height:120px; background: var(--white); border:3px solid var(--gray-300); border-radius:1rem; display:flex; align-items:center; justify-content:center; font-size:3.5rem; cursor: grab; transition: all 0.3s; }
+.draggable-item { width:120px; height:120px; background: var(--white); border:3px solid var(--gray-300); border-radius:1rem; display:flex; align-items:center; justify-content:center; font-size:1.5rem; cursor: grab; transition: all 0.3s; }
 .draggable-item:hover { transform: scale(1.1); border-color: var(--blue-400); box-shadow: 0 8px 20px rgba(0,0,0,0.15); }
 .draggable-item.used { opacity: 0.3; cursor:not-allowed; }
 

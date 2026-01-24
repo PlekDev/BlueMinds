@@ -80,12 +80,110 @@
                 <button onclick="goToMain()" class="btn btn-secondary" style="width: 100%;">
                     <i class="fas fa-arrow-right"></i> Ir a la Aplicación Principal
                 </button>
+                <button onclick="startNewParentQuiz()" class="btn btn-success" style="width: 100%; margin-top: 1rem;">
+                    <i class="fas fa-plus"></i> Iniciar Nueva Evaluación
+                </button>
             </div>
         </div>
     </div>
      <script src="../api.js"></script>
  <script src="../js/auth-guard.js"></script>
     <script>
+
+
+    async function loadParentQuizProgress() {
+        try {
+            const response = await fetch(`${api.baseURL}/parent-quiz/progress`, {
+                headers: api._getHeaders()
+            });
+
+        console.log(response);
+
+            if (!response.ok) throw new Error('Error al obtener progreso');
+
+            const data = await response.json();
+
+            if (data.progress) {
+                // Siempre toma la más reciente
+                if (data.progress.is_completed) {
+                    alert('Tu última evaluación está completa. Puedes ver resultados o iniciar una nueva.');
+                    await loadLastCompletedResults();
+                } else {
+                    currentQuestionIndex = data.progress.current_question_index;
+                    alert(`Continuamos desde la pregunta ${currentQuestionIndex + 1}`);
+                }
+            }
+        } catch (err) {
+            console.error('Error cargando progreso:', err);
+        }
+        render();
+    }
+
+    // Nueva función: Cargar resultados de la última sesión completada
+    async function loadLastCompletedResults() {
+        try {
+            // Endpoint que devuelve la última sesión completada (lo agregamos abajo)
+            const res = await fetch(`${api.baseURL}/parent-quiz/last-completed`, {
+                headers: api._getHeaders()
+            });
+            console.log(res);
+
+            if (!res.ok) throw new Error('Error al cargar resultados anteriores');
+
+            const data = await res.json();
+            const analysis = data.analysis;
+
+            // Mostrar resultados directamente
+            document.getElementById('quiz-container').classList.add('hidden');
+            document.getElementById('results-container').classList.remove('hidden');
+
+            document.getElementById('learning-style').textContent = analysis.learningStyle.name || 'No detectado';
+            document.getElementById('communication-profile').textContent = analysis.communication.level || 'No calculado';
+
+            let html = `
+                <div class="analysis-item">
+                    <strong>Evaluación del ${new Date(data.created_at).toLocaleDateString('es-MX')}:</strong>
+                </div>
+                <div class="analysis-item">
+                    <strong>Estilo Predominante:</strong> ${analysis.learningStyle.name}<br>
+                    ${analysis.learningStyle.predominant}
+                </div>
+                <div class="analysis-item">
+                    <strong>Perfil de Comunicación:</strong> ${analysis.communication.level}<br>
+                    ${analysis.communication.description}
+                </div>
+                <div class="analysis-item">
+                    <strong>Recomendaciones:</strong><br>
+                    ${analysis.recommendations.map(r => `• ${r}<br>`).join('')}
+                </div>
+            `;
+
+            document.getElementById('detailed-analysis').innerHTML = html;
+        } catch (err) {
+            console.error('Error cargando resultados anteriores:', err);
+            alert('No pudimos cargar tus resultados anteriores. Puedes iniciar una nueva evaluación.');
+        }
+    }
+
+
+    async function resetParentQuiz() {
+    if (confirm('¿Seguro que quieres reiniciar el inventario? Perderás el progreso actual.')) {
+        try {
+            await fetch(`${api.baseURL}/parent-quiz/reset`, {
+                method: 'POST',
+                headers: api._getHeaders()
+            });
+            location.reload();
+        } catch (err) {
+            console.error('Error reiniciando quiz:', err);
+        }
+    }
+}
+
+    document.addEventListener('DOMContentLoaded', async () => {
+        await loadParentQuizProgress();
+        render();
+    });
         const questions = [
             {
                 section: "Comunicación y Relación",
@@ -271,7 +369,7 @@
                     { letter: "A", text: "Lo primero que hace es tocarlo, morderlo, desarmarlo o aventarlo.", value: "kinestesico" },
                     { letter: "B", text: "Se queda mirándolo un buen rato antes de tocarlo.", value: "visual" },
                     { letter: "C", text: "Espera a que le digas qué hacer con él.", value: "auditivo" },
-                    { letter: "D", text: "Espera a ver cómo juegas tú con el juguete primero.", value: "visual" }
+                    { letter: "D", text: "Espera a ver cómo juegas tú con el juguete primero.", value: "visual_b" }
                 ]
             },
             {
@@ -301,11 +399,22 @@
         let currentQuestionIndex = 0;
         let answers = [];
 
-        function selectOption(optionValue) {
-            answers[currentQuestionIndex] = optionValue;
-            document.getElementById('next-btn').disabled = false;
-            render();
-        }
+      function selectOption(optionValue) {
+          if(answers[currentQuestionIndex] === optionValue  ){
+            return;
+      }
+          answers[currentQuestionIndex] = optionValue;
+          document.getElementById('next-btn').disabled = false;
+
+          // Guardar en backend
+          try {
+              api.saveParentQuizResponse(currentQuestionIndex, questions[currentQuestionIndex].section, optionValue);
+          } catch (err) {
+              console.error('Error guardando respuesta de padres:', err);
+          }
+
+          render();
+      }
 
         function nextQuestion() {
             if (currentQuestionIndex < questions.length - 1) {
@@ -323,89 +432,108 @@
             }
         }
 
-        function showResults() {
-            const learningStyles = {
-                visual: 0,
-                auditivo: 0,
-                kinestesico: 0,
-                lectoescritura: 0
-            };
 
-            for (let i = 9; i < 18; i++) {
-                const answer = answers[i];
-                if (learningStyles.hasOwnProperty(answer)) {
-                    learningStyles[answer]++;
-                }
-            }
+        async function showResults() {
+    try {
+        console.log(api.baseUrl );
+        // Enviar TODAS las respuestas al backend para análisis completo
+        const response = await fetch(`${api.baseURL}/parent-quiz/complete`, {
+            method: 'POST',
+            headers: api._getHeaders(),
+            body: JSON.stringify({ answers }) // Envía array completo ['A', 'B', ...]
+        });
 
-            let maxStyle = 'visual';
-            let maxCount = 0;
-            for (let style in learningStyles) {
-                if (learningStyles[style] > maxCount) {
-                    maxCount = learningStyles[style];
-                    maxStyle = style;
-                }
-            }
-
-            const styleNames = {
-                visual: '👁️ Visual',
-                auditivo: '👂 Auditivo',
-                kinestesico: '✋ Kinestésico',
-                lectoescritura: '📖 Lectoescritura'
-            };
-
-            let communicationScore = 0;
-            const communicationAnswers = answers.slice(0, 8);
-            communicationAnswers.forEach(answer => {
-                if (answer === 'A') communicationScore += 4;
-                else if (answer === 'B') communicationScore += 3;
-                else if (answer === 'C') communicationScore += 2;
-                else if (answer === 'D') communicationScore += 1;
-            });
-
-            let communicationLevel = 'Nivel 3 - Apoyo Significativo';
-            if (communicationScore > 24) communicationLevel = 'Nivel 1 - Apoyo Mínimo';
-            else if (communicationScore > 16) communicationLevel = 'Nivel 2 - Apoyo Moderado';
-
-            document.getElementById('quiz-container').classList.add('hidden');
-            document.getElementById('results-container').classList.remove('hidden');
-            document.getElementById('learning-style').textContent = styleNames[maxStyle];
-            document.getElementById('communication-profile').textContent = communicationLevel;
-
-            let analysisHTML = `
-                <div class="analysis-item">
-                    <strong>Estilo de Aprendizaje Predominante:</strong> ${styleNames[maxStyle]}<br>
-                    Tu hijo/a aprende mejor cuando se utilizan métodos ${maxStyle === 'visual' ? 'visuales (imágenes, videos, dibujos)' : maxStyle === 'auditivo' ? 'auditivos (explicaciones verbales, música, sonidos)' : maxStyle === 'kinestesico' ? 'kinestésicos (actividades físicas, manipulación de objetos)' : 'de lectoescritura (palabras escritas, textos)'}.
-                </div>
-                <div class="analysis-item">
-                    <strong>Perfil de Comunicación:</strong> ${communicationLevel}<br>
-                    ${communicationScore > 24 ? 'Tu hijo/a muestra habilidades de comunicación avanzadas con necesidades mínimas de apoyo.' : communicationScore > 16 ? 'Tu hijo/a se beneficiaría de apoyo moderado en situaciones sociales y de comunicación.' : 'Tu hijo/a requiere apoyo significativo en comunicación y comprensión social.'}
-                </div>
-                <div class="analysis-item">
-                    <strong>Recomendaciones:</strong><br>
-                    • Utilizar apoyos visuales ${maxStyle === 'visual' || learningStyles.visual > 2 ? '(muy importante para este perfil)' : '(complementarios)'}<br>
-                    • ${maxStyle === 'auditivo' ? 'Reforzar el aprendizaje con explicaciones verbales claras y repetidas' : 'Incluir elementos auditivos como música y canciones'}<br>
-                    • ${maxStyle === 'kinestesico' ? 'Incorporar actividades físicas y manipulativas en el aprendizaje' : 'Permitir movimiento durante las actividades cuando sea apropiado'}<br>
-                    • ${communicationScore <= 16 ? 'Considerar evaluación por especialista en comunicación' : 'Continuar fomentando las habilidades sociales'}
-                </div>
-                <div class="analysis-item">
-                    <strong>Distribución de Estilos de Aprendizaje:</strong><br>
-                    • Visual: ${learningStyles.visual} respuestas<br>
-                    • Auditivo: ${learningStyles.auditivo} respuestas<br>
-                    • Kinestésico: ${learningStyles.kinestesico} respuestas<br>
-                    • Lectoescritura: ${learningStyles.lectoescritura} respuestas
-                </div>
-            `;
-
-            document.getElementById('detailed-analysis').innerHTML = analysisHTML;
-
-            // Guardar que completó el test
-            localStorage.setItem('blueminds_test_completed', 'true');
-            localStorage.setItem('blueminds_user_type', 'parent');
-            localStorage.setItem('blueminds_learning_style', maxStyle);
-            localStorage.setItem('blueminds_communication_level', communicationLevel);
+        if (!response.ok) {
+            const errData = await response.json().catch(() => ({}));
+            throw new Error(errData.error || `Error del servidor: ${response.status}`);
         }
 
+        const data = await response.json();
+        const analysis = data.analysis;
+
+        // Mostrar resultados en la UI
+        document.getElementById('quiz-container').classList.add('hidden');
+        document.getElementById('results-container').classList.remove('hidden');
+
+        // Actualizar elementos principales
+        document.getElementById('learning-style').textContent = analysis.learningStyle.name || 'No detectado';
+        document.getElementById('communication-profile').textContent = analysis.communication.level || 'No calculado';
+
+        // Construir HTML detallado con datos del backend
+        let analysisHTML = `
+            <div class="analysis-item">
+                <strong>Estilo de Aprendizaje Predominante:</strong> ${analysis.learningStyle.name}<br>
+            </div>
+
+            <div class="analysis-item">
+                <strong>Perfil de Comunicación:</strong> ${analysis.communication.level}<br>
+            </div>
+
+            <div class="analysis-item">
+                <strong>Recomendaciones personalizadas:</strong><br>
+                ${analysis.recommendations.map(rec => `• ${rec}<br>`).join('')}
+            </div>
+
+            <div class="analysis-item">
+                <strong>Distribución de estilos de aprendizaje:</strong><br>
+                • Visual: ${analysis.learningStyle.distribution.visual} respuestas<br>
+                • Auditivo: ${analysis.learningStyle.distribution.auditivo} respuestas<br>
+                • Kinestésico: ${analysis.learningStyle.distribution.kinestesico} respuestas<br>
+                • Lectoescritura: ${analysis.learningStyle.distribution.lectoescritura} respuestas
+            </div>
+        `;
+
+        document.getElementById('detailed-analysis').innerHTML = analysisHTML;
+
+        // Guardar en localStorage como respaldo (para offline o fallback)
+        localStorage.setItem('blueminds_test_completed', 'true');
+        localStorage.setItem('blueminds_user_type', 'parent');
+        localStorage.setItem('blueminds_learning_style', analysis.learningStyle.name);
+        localStorage.setItem('blueminds_communication_level', analysis.communication.level);
+
+        // Opcional: Confeti final si el puntaje de comunicación es alto
+        if (analysis.communication.score > 20) {
+            confetti({
+                particleCount: 100,
+                spread: 70,
+                origin: { y: 0.6 }
+            });
+        }
+
+    } catch (err) {
+        console.error('Error en showResults (backend):', err);
+        alert('Hubo un problema al procesar los resultados en el servidor. Intenta de nuevo o contacta soporte.');
+
+        // Fallback: cálculo local (tu lógica original) si backend falla
+        const learningStyles = { visual: 0, auditivo: 0, kinestesico: 0, lectoescritura: 0 };
+        let validLearning = 0;
+        for (let i = 8; i < 18; i++) {
+            const ans = answers[i];
+            if (ans && learningStyles[ans]) {
+                learningStyles[ans]++;
+                validLearning++;
+            }
+        }
+
+        let maxStyle = validLearning > 0 ? Object.keys(learningStyles).reduce((a, b) => learningStyles[a] > learningStyles[b] ? a : b) : 'No detectado';
+
+        let commScore = 0;
+        answers.slice(0, 8).forEach(ans => {
+            if (ans === 'A') commScore += 4;
+            else if (ans === 'B') commScore += 3;
+            else if (ans === 'C') commScore += 2;
+            else if (ans === 'D') commScore += 1;
+        });
+
+        let commLevel = commScore > 24 ? 'Nivel 1 - Apoyo Mínimo' : commScore > 16 ? 'Nivel 2 - Apoyo Moderado' : 'Nivel 3 - Apoyo Significativo';
+
+        // Mostrar fallback
+        document.getElementById('learning-style').textContent = maxStyle === 'No detectado' ? 'No detectado' : {visual:'👁️ Visual', auditivo:'👂 Auditivo', kinestesico:'✋ Kinestésico/Táctil', lectoescritura:'📖 Lectoescritura'}[maxStyle];
+        document.getElementById('communication-profile').textContent = commLevel;
+
+        document.getElementById('detailed-analysis').innerHTML = '<p style="color: red;">Análisis temporal (modo fallback): ' + commLevel + ' - ' + maxStyle + '</p>';
+    }
+}
         function downloadResults() {
             const learningStyles = {
                 visual: 0,
@@ -483,6 +611,28 @@
 
         function goToMain() {
             window.location.href = 'BlueMindsMain.html';
+        }
+        async function startNewParentQuiz() {
+            if (confirm('Esto iniciará una nueva evaluación. ¿Continuar?')) {
+                try {
+                    // Crear nueva sesión vacía directamente (nuevo endpoint)
+                    const res = await fetch(`${api.baseURL}/parent-quiz/new-session`, {
+                        method: 'POST',
+                        headers: api._getHeaders()
+                    });
+
+                    if (!res.ok) throw new Error('Error al crear nueva sesión');
+
+                    currentQuestionIndex = 0;
+                    answers = [];
+                    document.getElementById('results-container').classList.add('hidden');
+                    document.getElementById('quiz-container').classList.remove('hidden');
+                    render();
+                } catch (err) {
+                    console.error('Error iniciando nueva evaluación:', err);
+                    alert('No pudimos iniciar una nueva evaluación. Intenta de nuevo.');
+                }
+            }
         }
 
         function render() {

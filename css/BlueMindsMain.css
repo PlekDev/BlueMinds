@@ -6,6 +6,141 @@
     --dark-text: #3c3c3c;
     --white: #ffffff;
 }
+@keyframes pulse-soft {
+    0% { transform: scale(1.05); box-shadow: 0 0 0 0 rgba(255, 204, 0, 0.4); }
+    70% { transform: scale(1.07); box-shadow: 0 0 0 15px rgba(255, 204, 0, 0); }
+    100% { transform: scale(1.05); box-shadow: 0 0 0 0 rgba(255, 204, 0, 0); }
+}
+
+/* Contenedor Principal de Estadísticas */
+.stats-container {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr); /* Dos columnas para los charts */
+    gap: 25px;
+    padding: 20px;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+/* Tarjetas Base (Charts e Historial) */
+.chart-card, .history-card {
+    background: #ffffff;
+    border-radius: 20px;
+    padding: 25px; /* Espacio interno para que nada toque los bordes */
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+    transition: transform 0.3s ease;
+}
+
+.chart-card h3, .history-card h3 {
+    margin-top: 0;
+    margin-bottom: 20px;
+    color: #2d3436;
+    font-size: 1.2rem;
+    font-weight: 700;
+}
+
+/* Fix específico para que los Canvas no se desborden */
+canvas {
+    max-width: 100% !important;
+    height: auto !important;
+    margin: 0 auto;
+}
+
+/* Clases de utilidad para el layout */
+.full-width {
+    grid-column: 1 / -1; /* Ocupa todo el ancho disponible (las 2 columnas) */
+}
+
+/* Estilos de la Tabla de Historial */
+table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0 10px; /* Espaciado entre filas */
+    margin-top: -10px;
+}
+
+thead th {
+    color: #636e72;
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 0.85rem;
+    padding: 15px;
+    text-align: left;
+    border-bottom: 2px solid #f1f2f6;
+}
+
+tbody td {
+    padding: 15px;
+    background-color: #f8f9fa;
+    color: #2d3436;
+    font-size: 0.95rem;
+}
+
+/* Redondear esquinas de las filas de la tabla */
+tbody tr td:first-child { border-radius: 10px 0 0 10px; }
+tbody tr td:last-child { border-radius: 0 10px 10px 0; }
+
+/* Sección de Recomendaciones */
+#recommendations-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 15px;
+}
+
+.recommendation-item {
+    background: #eef2f7;
+    padding: 15px;
+    border-radius: 12px;
+    border-left: 5px solid #ffcc00; /* Color de realce */
+    font-size: 0.9rem;
+    line-height: 1.5;
+}
+
+/* Responsividad para móviles */
+@media (max-width: 768px) {
+    .stats-container {
+        grid-template-columns: 1fr; /* Una sola columna en móviles */
+        padding: 10px;
+    }
+    
+    .chart-card {
+        padding: 15px;
+    }
+}
+
+.category-card.is-recommended {
+    border: 3px solid #ffcc00;
+    z-index: 5;
+}
+.category-card.is-recommended {
+    border: 3px solid #ffcc00;
+    position: relative; /* Asegura que el badge se posicione relativo a la tarjeta */
+    overflow: visible !important; /* ¡VITAL! Permite que el badge sobresalga */
+    z-index: 10;
+}
+
+.rec-badge {
+    position: absolute;
+    top: -15px; /* Lo subimos un poco más */
+    right: 15px;
+    background: #ffcc00; /* Color llamativo que combine con el pulse */
+    color: #333; /* Texto oscuro para mejor contraste */
+    padding: 5px 12px;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: bold;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    z-index: 100; /* Por encima de todo */
+    white-space: nowrap; /* Evita que el texto se parta en dos líneas */
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+/* Banderas de nivel */
+.category-flag.completed {
+    background-color: #ffcc00 !important; /* Dorado/Amarillo */
+    box-shadow: 0 0 8px #ffcc00;
+}
 
 /* Header Styles */
 header {

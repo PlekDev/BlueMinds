@@ -53,8 +53,106 @@ class BlueMindsAPI {
     });
     return this._handleAuthResponse(response);
   }
+  async getQuizProgress() {
+      const response = await fetch(`${this.baseURL}/quiz/progress`, {
+          headers: this._getHeaders()
+      });
+      if (!response.ok) throw new Error('Error al obtener progreso');
+      const data = await response.json();
+      return data.progress;
+  }
+  
+async saveQuizResponse(data) {
+    console.log("Token: ", this.token);
+    
+    // Desestructuramos para asegurar que enviamos los nombres que el backend espera
+    const { 
+        quiz_session_id, 
+        question_index, 
+        question_type, 
+        learning_style, 
+        nivel, 
+        answer, 
+        is_correct, 
+        response_time_ms 
+    } = data;
 
-  // En api.js, agrega este método
+    const response = await fetch(`${this.baseURL}/quiz/response`, {
+        method: 'POST',
+        headers: this._getHeaders(),
+        body: JSON.stringify({
+            quiz_session_id,
+            question_index, // <-- IMPORTANTE: Antes era questionIndex
+            question_type,
+            learning_style,
+            nivel,
+            answer, // No hace falta stringify aquí si el backend ya lo maneja o si es JSONB directo
+            is_correct,
+            response_time_ms
+        })
+    });
+
+    // Nota: No puedes llamar a .text() y luego a .json() sobre la misma respuesta
+    if (!response.ok) {
+        const errData = await response.json().catch(() => ({ error: 'Error desconocido' }));
+        throw new Error(errData.error || 'Error al guardar respuesta del quiz');
+    }
+
+    return await response.json();
+}
+
+  async saveQuizCompletion(score, totalTimeSeconds, learningStyle, suggestedLevel) {
+    const response = await fetch(`${this.baseURL}/quiz/complete`, {
+      method: 'POST',
+      headers: this._getHeaders(),
+      body: JSON.stringify({
+        score,
+        totalTimeSeconds,
+        learningStyle,
+        suggestedLevel
+      })
+    });
+
+    if (!response.ok) {
+      const errData = await response.json();
+      throw new Error(errData.error || 'Error al completar quiz');
+    }
+
+    return await response.json();
+  }
+
+// Quiz Padres
+
+  // QUIZ PADRES
+async saveParentQuizResponse(questionIndex, section, answer) {
+    const response = await fetch(`${this.baseURL}/parent-quiz/response`, {
+        method: 'POST',
+        headers: this._getHeaders(),
+        body: JSON.stringify({ questionIndex, section, answer })
+    });
+    if (!response.ok) throw new Error('Error al guardar respuesta del quiz de padres');
+    return await response.json();
+}
+
+async getParentQuizProgress() {
+    const response = await fetch(`${this.baseURL}/parent-quiz/progress`, {
+        headers: this._getHeaders()
+    });
+    if (!response.ok) throw new Error('Error al obtener progreso del quiz de padres');
+    const data = await response.json();
+    return data.progress;
+}
+
+async completeParentQuiz(communicationScore, learningStyle) {
+    const response = await fetch(`${this.baseURL}/parent-quiz/complete`, {
+        method: 'POST',
+        headers: this._getHeaders(),
+        body: JSON.stringify({ communicationScore, learningStyle })
+    });
+    if (!response.ok) throw new Error('Error al completar quiz de padres');
+    return await response.json();
+}
+
 async needsOnboardingCheck() {
     try {
         const user = this.getCurrentUser();

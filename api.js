@@ -31,7 +31,25 @@ class BlueMindsAPI {
     }
     return headers;
   }
-
+  async saveGameResults(gameData) {
+    console.log("save game results of ", gameData);
+      const response = await fetch(`${this.baseURL}/games/save-results`, {
+          method: 'POST',
+          headers: this._getHeaders(), // Aquí ya incluyes el token automáticamente
+          body: JSON.stringify(gameData)
+      });
+      
+      if (!response.ok) throw new Error('Error al guardar resultados del juego');
+      return await response.json();
+  }
+  async getBestScore(gameId) {
+    const response = await fetch(`${this.baseURL}/games/best-score/${gameId}`, {
+        headers: this._getHeaders()
+    });
+    if (!response.ok) return 0;
+    const data = await response.json();
+    return data.bestScore; // Suponiendo que creamos este endpoint
+}
   // ========================================================================
   // AUTHENTICATION MODULE
   // ========================================================================

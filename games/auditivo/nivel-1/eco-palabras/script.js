@@ -9,9 +9,11 @@ let score = 0;
 let currentWord = null;
 let isRecording = false;
 let hasPlayed = false;
-let difficulty = 'normal';
+let difficulty = 'easy';
 let recognitionActive = false;
-let analyzer = null;
+var analyzer = analyzer || null;
+let roundStartTime = null;
+let roundTimes = [];
 
 const words = [
     { src: "https://tse1.mm.bing.net/th/id/OIP.z589HEF6wuRZZR-B9C49RQHaFK?rs=1&pid=ImgDetMain&o=7&rm=3", name: "sol", audio: "sol", color: "primary", difficulty: 'easy' },
@@ -19,6 +21,9 @@ const words = [
     { src: "https://img.freepik.com/vector-premium/estrella-dibujada-mano-plana-elegante-mascota-personaje-dibujos-animados-dibujo-pegatina-icono-concepto-aislado_730620-302755.jpg", name: "estrella", audio: "estrella", color: "red", difficulty: 'medium' },
     { src: "https://static.vecteezy.com/system/resources/previews/024/190/108/non_2x/cute-cartoon-cloud-kawaii-weather-illustrations-for-kids-free-png.png", name: "nube", audio: "nube", color: "purple", difficulty: 'easy' },
     { src: "https://img.freepik.com/fotos-premium/estilo-ilustracion-vectorial-lluvia-dibujos-animados_750724-13162.jpg", name: "lluvia", audio: "lluvia", color: "accent", difficulty: 'hard' },
+    { src: "https://img.freepik.com/vector-premium/ilustracion-vectorial-dibujos-animados-dinosaurio-lindo_104589-158.jpg", name: "dinosaurio", audio: "dinosaurio", color: "green", difficulty: 'hard' },
+    { src: "https://img.freepik.com/vector-premium/dibujos-animados-mariposa-linda-aislado-blanco_29190-4712.jpg", name: "mariposa", audio: "mariposa", color: "pink", difficulty: 'hard' },
+    { src: "https://img.freepik.com/vector-premium/computadora-portatil-dibujos-animados-aislada-blanco_29190-4354.jpg", name: "computadora", audio: "computadora", color: "blue", difficulty: 'hard' },
     { src: "https://static.vecteezy.com/system/resources/previews/008/132/083/non_2x/green-tree-cartoon-isolated-on-white-background-illustration-of-green-tree-cartoon-free-vector.jpg", name: "árbol", audio: "arbol", color: "primary", difficulty: 'medium' },
 ];
 
@@ -30,10 +35,11 @@ let recognition;
 // ========================
 
 document.addEventListener('DOMContentLoaded', function() {
-    setupSpeechRecognition();
-    setupEventListeners();
-    initializeAnalyzer();
-    startNewRound();
+  loadHighScore();
+  setupSpeechRecognition();
+  setupEventListeners();
+  initializeAnalyzer();
+  startNewRound();
 });
 
 // ========================
@@ -61,10 +67,21 @@ function setupSpeechRecognition() {
         };
 
         recognition.onerror = function(event) {
-            console.error('Error en reconocimiento de voz:', event.error);
-            showFeedback('Error al grabar. Intenta de nuevo.', false);
-            stopRecording();
+          console.error('Error en reconocimiento de voz:', event.error);
+      
+            if (event.error === 'network') {
+                showFeedback('Error de red. Asegúrate de estar en Chrome/Edge y tener internet.', false);
+            } else if (event.error === 'not-allowed') {
+                showFeedback('¡Ups! Necesito permiso para usar el micrófono.', false);
+            }
+            
+            // IMPORTANTE: Resetear el estado para que el niño pueda intentar de nuevo
+            stopRecording(); 
+            isRecording = false;
+            const recordButton = document.getElementById('record-button');
+            recordButton.innerHTML = '<i class="fas fa-microphone"></i> Reintentar grabar';
         };
+
 
         recognition.onend = function() {
             recognitionActive = false;
@@ -82,10 +99,10 @@ function setupSpeechRecognition() {
 
 function initializeAnalyzer() {
     if (typeof PronunciationAnalyzer !== 'undefined') {
-        analyzer = new PronunciationAnalyzer();
+        if(!analyzer){ // <--- Aquí intentas usarlo
+          analyzer = new PronunciationAnalyzer();
+        }
         console.log('Analizador de pronunciación inicializado');
-    } else {
-        console.error('PronunciationAnalyzer no está disponible. Asegúrate de cargar pronunciation-analyzer.js');
     }
 }
 
@@ -110,33 +127,61 @@ function setupEventListeners() {
 // INICIAR NUEVA RONDA
 // ========================
 
+
 function startNewRound() {
-    let filteredWords = words;
-    
-    // Filtrar palabras por dificultad
-    if (difficulty === 'easy') {
-        filteredWords = words.filter(function(w) {
-            return w.difficulty === 'easy';
-        });
-    } else if (difficulty === 'hard') {
-        filteredWords = words.filter(function(w) {
-            return w.difficulty === 'hard';
-        });
+    console.log("--- Iniciando Ronda ---");
+    console.log("Dificultad actual:", difficulty);
+
+    // 1. Limpiamos historial de errores del analizador para que no nos "atrape"
+    if (analyzer) {
+        analyzer.userHistory.failedPhonemes = [];
     }
 
-    // Seleccionar palabra aleatoria
+    // 2. Filtrado Ultra-Seguro
+    let filteredWords = words.filter(w => {
+        return w.difficulty.trim().toLowerCase() === difficulty.trim().toLowerCase();
+    });
+
+    console.log("Palabras encontradas para esta dificultad:", filteredWords.length);
+
+    // 3. Si por un milagro no encuentra nada, que NO use toda la lista (porque ahí está lluvia)
+    // Que use las de nivel 'easy' por defecto.
+    if (filteredWords.length === 0) {
+        console.warn("Dificultad no encontrada, forzando a 'easy'");
+        filteredWords = words.filter(w => w.difficulty === 'easy');
+    }
+
+    // 4. Selección aleatoria
     const randomWord = filteredWords[Math.floor(Math.random() * filteredWords.length)];
     currentWord = randomWord;
+    
+    console.log("Palabra seleccionada:", currentWord.name);
+
     hasPlayed = false;
     isRecording = false;
     
+    roundStartTime = Date.now();
     updateUI();
-    
-    // Reproducir palabra automáticamente después de 1 segundo
-    setTimeout(function() {
-        playWord();
-    }, 1000);
+    setTimeout(playWord, 1000);
 }
+
+// Función para obtener y mostrar el récord
+async function loadHighScore() {
+    try {
+        const gameId = 'eco-palabras-1'; // El ID que usas en Koyeb
+        const bestScore = await api.getBestScore(gameId);
+        
+        const highScoreElement = document.getElementById('high-score-text');
+        if (highScoreElement) {
+            highScoreElement.textContent = `${bestScore} pts`;
+        }
+        return bestScore;
+    } catch (error) {
+        console.error("Error cargando récord:", error);
+        return 0;
+    }
+}
+
 
 // ========================
 // ACTUALIZAR INTERFAZ
@@ -309,10 +354,12 @@ function analyzePronounciation(transcript) {
         const feedbackMsg = result.feedback.emoji + ' ' + result.feedback.messages[0];
         showFeedback(feedbackMsg, true);
         
-        // Ajustar dificultad si es muy bueno
-        if (similarity >= 90 && difficulty !== 'hard') {
-            difficulty = 'hard';
-        }
+          // En lugar de saltar a hard con una sola de 90
+      if (similarity >= 95 && difficulty === 'medium') {
+          difficulty = 'hard';
+      } else if (similarity >= 90 && difficulty === 'easy') {
+          difficulty = 'medium';
+      }
     } else {
         const feedbackMsg = result.feedback.emoji + ' ' + result.feedback.messages[0];
         showFeedback(feedbackMsg, false);
@@ -336,6 +383,10 @@ function analyzePronounciation(transcript) {
         errores: result.errors,
         feedback: result.feedback
     });
+    const responseTime = Date.now() - roundStartTime;
+    roundTimes.push(responseTime); // Guardamos el tiempo de esta ronda
+    
+    console.log(`Ronda ${currentRound + 1}: ${responseTime}ms`);
 
     // Avanzar a siguiente ronda después de 2.5 segundos
     setTimeout(function() {
@@ -369,9 +420,29 @@ function showFeedback(message, isCorrect) {
 // COMPLETAR JUEGO
 // ========================
 
-function completeGame() {
+async function completeGame() {
     const audioCard = document.getElementById('audio-card');
+    const reportData = getPlayerReport();
     const promedio = Math.round(score / totalRounds);
+    const totalTime = roundTimes.reduce((acc,time) => acc + time, 0);
+    const averageResponseTime = Math.round(totalTime / roundTimes.length);
+    const gameData = {
+        gameId: 'eco-palabras-1',
+        style: 'auditivo',
+        level: difficulty === 'hard' ? 3 : (difficulty === 'easy' ? 1 : 2),
+        score: score,
+        accuracy: reportData ? reportData.averageScore : Math.round(score / totalRounds),
+        responseTime: averageResponseTime 
+    };
+
+    try {
+    console.log("Tratando de guardar en api ", gameData);
+      await api.saveGameResults(gameData);
+      console.log('Progreso guardado en backend');
+
+    } catch (error){
+      console.error('Error al guardar ', error);
+    }
     
     // Obtener reporte si el analizador está disponible
     let reporteExtra = '';
@@ -409,7 +480,7 @@ function completeGame() {
 // ========================
 
 function goToMainPage() {
-    window.location.href = 'https://plekdev.github.io/BlueMinds/selectores/selector-auditivo.html';
+    window.location.href = '../../../../selectores/selector-auditivo.html';
 }
 
 // ========================

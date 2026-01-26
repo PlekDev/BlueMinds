@@ -336,6 +336,13 @@ let recognition;
 // ========================
 
 document.addEventListener('DOMContentLoaded', function() {
+    const gameId = 'imitacion-animales-1';
+    api.getBestScore(gameId).then(bestScore => {
+        document.getElementById('score-display').innerHTML = 
+            `🏆 Récord: ${bestScore} pts | <span id="current-score-val">0</span> pts`;
+    }).catch(() => {
+        document.getElementById('score-display').innerHTML = `Actual: <span id="current-score-val">0</span> pts`;
+    });
     setupSpeechRecognition();
     setupEventListeners();
     startNewRound();
@@ -566,32 +573,49 @@ function showFeedback(message, isCorrect, details = []) {
     feedbackElement.style.display = 'block';
 }
 
-function completeGame() {
+// --- Función completeGame actualizada ---
+async function completeGame() {
     const mainCard = document.getElementById('main-card');
     const report = analyzer.getSessionReport();
+    
+    // Preparar el objeto para Koyeb
+    const gameData = {
+        gameId: 'imitacion-animales-1',
+        style: 'auditivo',
+        level: analyzer.currentDifficulty === 'hard' ? 3 : (analyzer.currentDifficulty === 'medium' ? 2 : 1),
+        score: score,
+        accuracy: report.averageAccuracy,
+        responseTime: 0 // Opcional en este juego
+    };
 
-    let html = '<div class="game-completed">';
-    html += '<h2 style="margin-bottom: 20px; color: #0066CC;">¡Juego Completado!</h2>';
-    html += '<div class="final-score">';
-    html += '<h2>Puntuación Final:</h2>';
-    html += '<div class="score-number">' + score + '</div>';
-    html += '<p>puntos</p>';
-    html += '</div>';
-    html += '<div class="analysis-box">';
-    html += '<h3 style="text-align: center; margin-bottom: 15px; color: #0066CC;">📊 Análisis de Desempeño</h3>';
-    html += '<div class="stat-row"><span class="stat-label">Respuestas Correctas:</span><span class="stat-value">' + report.correctAttempts + '/' + report.totalAttempts + '</span></div>';
-    html += '<div class="stat-row"><span class="stat-label">Exactitud Promedio:</span><span class="stat-value">' + report.averageAccuracy + '%</span></div>';
-    html += '<div class="stat-row"><span class="stat-label">👂 Discriminación Auditiva:</span><span class="stat-value">' + report.discriminationScore + '%</span></div>';
-    html += '<div class="stat-row"><span class="stat-label">🎤 Capacidad de Imitación:</span><span class="stat-value">' + report.imitationScore + '%</span></div>';
-    html += '<div class="stat-row"><span class="stat-label">⚠️ Confusiones Detectadas:</span><span class="stat-value">' + report.confusionsDetected + '</span></div>';
-    html += '</div>';
-    html += '<div class="options-container" style="margin-top: 20px;">';
-    html += '<button class="option-button primary" onclick="location.reload()"><i class="fas fa-redo"></i> Jugar de Nuevo</button>';
-    html += '<button class="option-button blue" onclick="goToMainPage()"><i class="fas fa-arrow-left"></i> Volver</button>';
-    html += '</div>';
-    html += '</div>';
+    mainCard.innerHTML = '<div class="game-completed"><h2>Guardando tu progreso...</h2></div>';
 
-    mainCard.innerHTML = html;
+    try {
+        await api.saveGameResults(gameData);
+    } catch (error) {
+        console.error("Error al guardar:", error);
+    }
+
+    // Renderizar reporte final
+    mainCard.innerHTML = `
+        <div class="game-completed">
+            <h2 style="margin-bottom: 20px; color: #0066CC;">¡Sesión de Sonidos Terminada!</h2>
+            <div class="final-score">
+                <h2>Puntuación Final:</h2>
+                <div class="score-number">${score}</div>
+                <p>puntos</p>
+            </div>
+            <div class="analysis-box">
+                <h3 style="text-align: center; margin-bottom: 15px; color: #0066CC;">📊 Análisis Vocal</h3>
+                <div class="stat-row"><span class="stat-label">🎤 Imitación:</span><span class="stat-value">${report.imitationScore}%</span></div>
+                <div class="stat-row"><span class="stat-label">👂 Discriminación:</span><span class="stat-value">${report.discriminationScore}%</span></div>
+                <div class="stat-row"><span class="stat-label">⚠️ Confusiones:</span><span class="stat-value">${report.confusionsDetected}</span></div>
+            </div>
+            <div class="options-container" style="margin-top: 20px;">
+                <button class="option-button primary" onclick="location.reload()">Jugar de Nuevo</button>
+                <button class="option-button blue" onclick="goToMainPage()">Volver</button>
+            </div>
+        </div>`;
 }
 
 function goToMainPage() {

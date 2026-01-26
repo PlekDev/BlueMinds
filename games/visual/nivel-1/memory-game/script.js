@@ -36,6 +36,7 @@ class AIMemoryGame {
             medium: { initialLength: 3, speed: 700, increment: 1 },
             hard: { initialLength: 4, speed: 500, increment: 1.5 }
         };
+        this.activeTimeouts = [];
     }
 
     // ===== SÍNTESIS DE VOZ =====
@@ -283,61 +284,76 @@ class AIMemoryGame {
     }
 
     // ===== JUEGO COMPLETADO =====
-    completeGame() {
-        const gameCard = document.querySelector('.status-card');
-        const avgAccuracy = ((this.score / (this.maxLevel * 20)) * 100).toFixed(1);
-        
-        let performanceMessage = '¡Memoria excepcional! 🏆';
-        let audioMessage = '¡Felicidades! Completaste el juego con una memoria excepcional.';
-        
-        if (avgAccuracy < 60) {
-            performanceMessage = '¡Sigue practicando! Tu memoria mejorará. 💪';
-            audioMessage = 'Juego completado. Sigue practicando para mejorar tu memoria.';
-        } else if (avgAccuracy < 80) {
-            performanceMessage = '¡Muy buen trabajo! Tu memoria está en desarrollo. 🌟';
-            audioMessage = '¡Muy buen trabajo! Tu memoria está mejorando constantemente.';
-        }
+    async completeGame() {
 
-        this.speak(audioMessage);
+      const gameData = {
+        gameId: 'memoria-patrones-1',
+        style: 'visual',
+        level: this.difficulty === 'hard' ? 3 : (this.difficulty === 'medium' ? 2 : 1),
+        score: this.score,
+        accuracy: parseFloat(((this.score / (this.maxLevel * 20)) * 100).toFixed(1)),
+        responseTime: this.sequenceSpeed
+      }
+      try {
+          await api.saveGameResults(gameData);
+      } catch (e) {
+          console.error("No se pudo guardar el progreso:", e);
+      }
 
-        gameCard.innerHTML = `
-            <div class="status-message">
-                ¡Juego Completado!
-            </div>
-            
-            <div style="background: linear-gradient(135deg, #0066CC 0%, #0099FF 100%); color: white; padding: 20px; border-radius: 12px; margin: 20px 0; font-size: 24px; font-weight: 700;">
-                Tu puntaje final: ${this.score} puntos
-            </div>
+      const gameCard = document.querySelector('.status-card');
+      const avgAccuracy = ((this.score / (this.maxLevel * 20)) * 100).toFixed(1);
+      
+      let performanceMessage = '¡Memoria excepcional! 🏆';
+      let audioMessage = '¡Felicidades! Completaste el juego con una memoria excepcional.';
+      
+      if (avgAccuracy < 60) {
+          performanceMessage = '¡Sigue practicando! Tu memoria mejorará. 💪';
+          audioMessage = 'Juego completado. Sigue practicando para mejorar tu memoria.';
+      } else if (avgAccuracy < 80) {
+          performanceMessage = '¡Muy buen trabajo! Tu memoria está en desarrollo. 🌟';
+          audioMessage = '¡Muy buen trabajo! Tu memoria está mejorando constantemente.';
+      }
 
-            <div style="background: rgba(0, 102, 204, 0.1); border-left: 4px solid #0066CC; padding: 15px; border-radius: 8px; margin: 20px 0; text-align: left; color: #1F2937; font-size: 14px;">
-                <strong>📊 Análisis Final de IA - Memoria de Patrones:</strong>
-                <div style="margin-top: 10px; line-height: 1.8;">
-                    <div>✓ Precisión: ${avgAccuracy}%</div>
-                    <div>✓ Puntuación de memoria: ${this.memoryScore.toFixed(0)}%</div>
-                    <div>✓ Nivel final alcanzado: ${this.difficulty.toUpperCase()}</div>
-                    <div>✓ Velocidad de respuesta: ${this.sequenceSpeed}ms</div>
-                </div>
-            </div>
+      this.speak(audioMessage);
 
-            <div style="color: var(--primary-blue); font-size: 18px; font-weight: 600; margin: 15px 0;">
-                ${performanceMessage}
-            </div>
-        `;
+      gameCard.innerHTML = `
+          <div class="status-message">
+              ¡Juego Completado!
+          </div>
+          
+          <div style="background: linear-gradient(135deg, #0066CC 0%, #0099FF 100%); color: white; padding: 20px; border-radius: 12px; margin: 20px 0; font-size: 24px; font-weight: 700;">
+              Tu puntaje final: ${this.score} puntos
+          </div>
 
-        const colorCard = document.querySelector('.color-card');
-        colorCard.innerHTML = `
-            <div class="options-container">
-                <button class="option-button primary" onclick="location.reload()">
-                    Jugar de Nuevo
-                </button>
-                <button class="option-button blue" onclick="goToMainPage()">
-                    Volver al Menú
-                </button>
-            </div>
-        `;
+          <div style="background: rgba(0, 102, 204, 0.1); border-left: 4px solid #0066CC; padding: 15px; border-radius: 8px; margin: 20px 0; text-align: left; color: #1F2937; font-size: 14px;">
+              <strong>📊 Análisis Final de IA - Memoria de Patrones:</strong>
+              <div style="margin-top: 10px; line-height: 1.8;">
+                  <div>✓ Precisión: ${avgAccuracy}%</div>
+                  <div>✓ Puntuación de memoria: ${this.memoryScore.toFixed(0)}%</div>
+                  <div>✓ Nivel final alcanzado: ${this.difficulty.toUpperCase()}</div>
+                  <div>✓ Velocidad de respuesta: ${this.sequenceSpeed}ms</div>
+              </div>
+          </div>
 
-        document.getElementById('ai-analysis').classList.remove('show');
-    }
+          <div style="color: var(--primary-blue); font-size: 18px; font-weight: 600; margin: 15px 0;">
+              ${performanceMessage}
+          </div>
+      `;
+
+      const colorCard = document.querySelector('.color-card');
+      colorCard.innerHTML = `
+          <div class="options-container">
+              <button class="option-button primary" onclick="location.reload()">
+                  Jugar de Nuevo
+              </button>
+              <button class="option-button blue" onclick="goToMainPage()">
+                  Volver al Menú
+              </button>
+          </div>
+      `;
+
+      document.getElementById('ai-analysis').classList.remove('show');
+  }
 }
 
 // ===== INICIALIZACIÓN =====

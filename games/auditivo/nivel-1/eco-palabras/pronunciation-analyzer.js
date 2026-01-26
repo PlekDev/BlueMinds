@@ -62,7 +62,10 @@ const WORD_PHONEME_DATABASE = {
     phonemes: ['a', 'r', 'b', 'o', 'l'], 
     difficulty: 'medium',
     commonErrors: ['dificultad con r vibrante', 'omitir acentuación']
-  }
+  },
+  'dinosaurio': { phonemes: ['d', 'i', 'n', 'o', 's', 'a', 'u', 'r', 'i', 'o'], difficulty: 'hard' },
+'mariposa': { phonemes: ['m', 'a', 'r', 'i', 'p', 'o', 's', 'a'], difficulty: 'hard' },
+'computadora': { phonemes: ['c', 'o', 'm', 'p', 'u', 't', 'a', 'd', 'o', 'r', 'a'], difficulty: 'hard' }
 };
 
 // ========================
@@ -138,7 +141,9 @@ class PronunciationAnalyzer {
    * Extraer fonemas del texto grabado
    */
   extractPhonemes(text) {
-    const cleaned = text.toLowerCase().trim();
+    const cleaned = text.toLowerCase().trim()
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "");
     const phonemes = [];
     
     // Procesar texto carácter por carácter
@@ -241,7 +246,7 @@ class PronunciationAnalyzer {
     ];
     
     for (const [a, b] of similarPairs) {
-      if ((expected === a && received === b) || (expected === b && received === a)) {
+      if ((expected === a && recorded === b) || (expected === b && recorded === a)) {
         return 75; // Parcialmente correcto
       }
     }
@@ -469,25 +474,28 @@ class PronunciationAnalyzer {
   /**
    * Actualizar historial del usuario
    */
+
   updateHistoricalData(attempt) {
     this.userHistory.sessionStats.totalAttempts++;
     this.userHistory.sessionStats.totalScore += attempt.score;
     this.userHistory.sessionStats.averageScore = 
       Math.round(this.userHistory.sessionStats.totalScore / this.userHistory.sessionStats.totalAttempts);
     
-    // Actualizar fonemas problemáticos
-    attempt.detailedAnalysis.forEach((phoneme, index) => {
+    // CORRECCIÓN AQUÍ: Convertimos el objeto en un array de valores para poder usar forEach
+    Object.values(attempt.detailedAnalysis).forEach((phoneme) => {
       if (phoneme.accuracy >= 80) {
         if (!this.userHistory.successfulPhonemes.includes(phoneme.expected)) {
           this.userHistory.successfulPhonemes.push(phoneme.expected);
         }
       } else {
         if (!this.userHistory.failedPhonemes.includes(phoneme.expected)) {
-          this.userHistory.failedPhonemes.push(phoneme.expected);
+          if (!this.userHistory.failedPhonemes.includes(phoneme.expected)) {
+            this.userHistory.failedPhonemes.push(phoneme.expected);
+          }
         }
       }
     });
-  }
+}
 
   /**
    * Obtener reporte del progreso
@@ -503,35 +511,6 @@ class PronunciationAnalyzer {
   }
 }
 
-// ========================
-// USO EN TU JUEGO
-// ========================
-
-const analyzer = new PronunciationAnalyzer();
-
-// En la función analyzePronounciation() del script original:
-function analyzePronounciation(transcript) {
-  const currentWordName = currentWord.name;
-  
-  // Usar el nuevo analizador
-  const result = analyzer.analyze(currentWordName, transcript);
-  
-  // Mostrar resultados
-  console.log('Score:', result.score);
-  console.log('Feedback:', result.feedback);
-  console.log('Próximo ejercicio:', result.nextExercise);
-  
-  // Actualizar UI
-  document.getElementById('similarity-fill').style.width = result.score + '%';
-  document.getElementById('similarity-text').textContent = result.score + '%';
-  
-  showFeedback(result.feedback.emoji + ' ' + result.feedback.messages[0], result.score >= 70);
-  
-  // Aplicar siguiente ejercicio adaptativo
-  if (result.nextExercise.type === 'phoneme_focus') {
-    console.log('Próxima palabra enfocada en:', result.nextExercise.targetPhoneme);
-  }
-}
 
 // ========================
 // EXPORTAR PARA USO

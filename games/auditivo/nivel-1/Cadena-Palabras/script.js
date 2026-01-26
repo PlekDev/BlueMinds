@@ -2,6 +2,7 @@
 // ANALIZADOR DE MEMORIA AUDITIVA
 // ========================
 
+
 class AuditoryMemoryAnalyzer {
     constructor() {
         this.sessionStats = {
@@ -181,18 +182,35 @@ const wordDatabase = {
     'manzana': 'https://img.freepik.com/vector-premium/dibujos-animados-clipart-manzana-dibujo-ilustracion_871209-13267.jpg?w=2000',
     'pera': 'https://img.freepik.com/vector-gratis/fruta-pera-aislada-sobre-fondo-blanco_1308-117166.jpg?semt=ais_hybrid&w=740',
     'uva': 'https://static.vecteezy.com/system/resources/previews/021/964/649/large_2x/grapes-fruit-cartoon-colored-clipart-illustration-free-vector.jpg',
-    'platano': 'https://static.vecteezy.com/system/resources/previews/004/557/519/original/fruit-banana-cartoon-object-vector.jpg',
+    'plátano': 'https://static.vecteezy.com/system/resources/previews/004/557/519/original/fruit-banana-cartoon-object-vector.jpg',
     'naranja': 'https://img.freepik.com/vector-premium/ilustracion-vectorial-dibujos-animados-color-naranja_871209-3168.jpg?w=2000',
     'fresa': 'https://i.pinimg.com/originals/c8/32/6a/c8326ac10514ba82a4ee79bcd8992c17.jpg',
-    'sandia': 'https://static.vecteezy.com/system/resources/previews/007/570/246/original/cartoon-watermelon-slice-fruits-vector.jpg',
-    'limon': 'https://static.vecteezy.com/system/resources/previews/004/485/242/original/lemon-fruit-illustrations-free-vector.jpg'
+    'sandía': 'https://static.vecteezy.com/system/resources/previews/007/570/246/original/cartoon-watermelon-slice-fruits-vector.jpg',
+    'limón': 'https://static.vecteezy.com/system/resources/previews/004/485/242/original/lemon-fruit-illustrations-free-vector.jpg'
 };
 
 // ========================
 // INICIALIZACIÓN
 // ========================
 
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', async function() {
+// 1. Intentar cargar el récord personal
+    try {
+        const gameId = 'cadena-palabras-1'; // ID único para este juego
+        const bestScore = await api.getBestScore(gameId);
+        
+        // Buscamos un lugar donde mostrarlo, por ejemplo junto al puntaje actual
+        const scoreContainer = document.querySelector('.score-container');
+        if (scoreContainer) {
+            const highSubstitute = document.createElement('div');
+            highSubstitute.className = 'high-score-tag';
+            highSubstitute.innerHTML = `⭐ Récord: <span id="high-score">${bestScore}</span> pts`;
+            highSubstitute.style = "font-size: 0.8rem; color: #f59e0b; font-weight: bold; margin-top: 5px;";
+            scoreContainer.appendChild(highSubstitute);
+        }
+    } catch (error) {
+        console.log("No se pudo cargar el récord (posiblemente modo invitado)");
+    }
     startNewRound();
 });
 
@@ -364,7 +382,7 @@ function clearSelection() {
 }
 
 function playSequence() {
-    if (gameStarted) return;
+    if (gameStarted && isAnalyzing) return; // Evitar doble click
     
     gameStarted = true;
     roundStartTime = performance.now();
@@ -372,34 +390,71 @@ function playSequence() {
     const sequenceDisplay = document.getElementById('sequence-display');
     sequenceDisplay.style.display = 'flex';
     
-    const utterances = currentSequence.map(word => word);
-    const speechRate = difficulty === 'hard' ? 1.0 : difficulty === 'medium' ? 0.85 : 0.7;
+    // Cancelamos cualquier voz previa por seguridad
+    window.speechSynthesis.cancel();
     
-    playSequenceAudio(utterances, 0, speechRate);
+    const speechRate = difficulty === 'hard' ? 1.0 : (difficulty === 'medium' ? 0.85 : 0.7);
+    playSequenceAudio(currentSequence, 0, speechRate);
+}
+
+// 1. Función para obtener la voz de forma segura
+function getSpanishVoice() {
+    const voices = window.speechSynthesis.getVoices();
+    // Prioridad: México, luego España, luego cualquier español
+    return voices.find(v => v.lang === 'es-MX') || 
+           voices.find(v => v.lang.includes('es')) || 
+           voices[0];
 }
 
 function playSequenceAudio(words, index, speechRate) {
     if (index >= words.length) {
-        document.getElementById('sequence-display').style.display = 'none';
-        document.getElementById('repeat-button').style.display = 'inline-flex';
+        setTimeout(() => {
+            document.getElementById('sequence-display').style.display = 'none';
+            document.getElementById('repeat-button').style.display = 'inline-flex';
+        }, 1000);
         return;
     }
 
-    const utterance = new SpeechSynthesisUtterance(words[index]);
-    utterance.lang = 'es-ES';
-    utterance.rate = speechRate;
-    utterance.pitch = 1;
-    
+    const sequenceDisplay = document.getElementById('sequence-display');
     const sequenceText = document.getElementById('sequence-text');
-    sequenceText.textContent = words.slice(0, index + 1).join(', ');
+    
+    // Mostramos el contenedor y la palabra
+    sequenceDisplay.style.display = 'flex';
+    sequenceText.textContent = words[index];
+    
+    // --- EFECTO VISUAL (Neuro-feedback) ---
+    sequenceText.style.transform = 'scale(1.5)';
+    sequenceText.style.color = '#FF5733'; // Color llamativo
+    sequenceText.style.transition = 'all 0.3s ease';
+    
+    setTimeout(() => {
+        sequenceText.style.transform = 'scale(1)';
+        sequenceText.style.color = '#0066CC';
+    }, 400);
 
-    utterance.onend = () => {
-        setTimeout(() => {
-            playSequenceAudio(words, index + 1, speechRate);
-        }, 800);
+    // --- INTENTO DE VOZ (Si funciona, genial; si no, el niño lee) ---
+    try {
+        window.speechSynthesis.cancel();
+        const utterance = new SpeechSynthesisUtterance(words[index]);
+        utterance.lang = 'es-MX';
+        utterance.rate = speechRate;
+        window.speechSynthesis.speak(utterance);
+    } catch (e) {
+        console.warn("Speech API no soportada en este navegador.");
+    }
+
+    // Siguiente palabra basándonos en el tiempo (independiente de si sonó o no)
+    setTimeout(() => {
+        playSequenceAudio(words, index + 1, speechRate);
+    }, 1200); // 1.2 segundos por palabra para dar tiempo a procesar
+}
+
+// 2. IMPORTANTE: Forzar la carga de voces al inicio
+window.speechSynthesis.getVoices();
+if (speechSynthesis.onvoiceschanged !== undefined) {
+    speechSynthesis.onvoiceschanged = () => {
+        console.log("Voces cargadas: ", window.speechSynthesis.getVoices().length);
     };
-
-    speechSynthesis.speak(utterance);
 }
 
 function repeatSequence() {
@@ -474,11 +529,32 @@ function showFeedback(result) {
     feedbackElement.className = result.isCorrect ? 'feedback show correct' : 'feedback show incorrect';
     feedbackElement.style.display = 'block';
 }
-
-function completeGame() {
+const API_URL = 'https://crude-sailfish-blueminds-65b642e8.koyeb.app/api';
+async function completeGame() {
     const mainCard = document.getElementById('main-card');
     const report = analyzer.getSessionReport();
+    
+    // --- NUEVO: Lógica de guardado en Backend ---
+    const token = localStorage.getItem('token'); // Recuperamos el JWT
+    
+    const gameData = {
+        gameId: 'cadena-palabras-1',
+        style: 'auditivo',
+        level: difficulty === 'hard' ? 3 : (difficulty === 'medium' ? 2 : 1),
+        score: score,
+        accuracy: report.averageAccuracy,
+        responseTime: report.averageResponseTime
+    };
 
+        try {
+          await api.saveGameResults(gameData);
+          console.log('Progreso guardado exitosamente');
+        } catch (error) {
+            console.error('❌ Error al conectar con el servidor:', error);
+        }
+    // --- FIN DE LÓGICA DE BACKEND ---
+
+    // Tu código original de UI (se mantiene igual)
     let html = '<div class="game-completed">';
     html += '<h2 style="margin-bottom: 20px; color: #0066CC;">¡Juego Completado!</h2>';
     html += '<div class="final-score">';
@@ -502,7 +578,12 @@ function completeGame() {
 }
 
 function goToMainPage() {
-    window.location.href = 'https://plekdev.github.io/BlueMinds/selectores/selector-auditivo.html';
+    window.location.href = '../../../../selectores/selector-auditivo.html';
+}
+// Precargar voces para evitar que la primera palabra falle
+window.speechSynthesis.getVoices();
+if (speechSynthesis.onvoiceschanged !== undefined) {
+  speechSynthesis.onvoiceschanged = () => speechSynthesis.getVoices();
 }
 
 // Event Listeners

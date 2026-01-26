@@ -334,8 +334,18 @@ const totalQuestions = 5;
 // INICIALIZACIÓN
 // ========================
 
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', async function() {
     startNewQuestion();
+
+  const gameId = 'comprension-auditiva-1';
+    const highScoreElement = document.getElementById('score-display');
+    
+    try {
+        const bestScore = await api.getBestScore(gameId);
+        highScoreElement.innerHTML = `🏆 Récord: ${bestScore} pts | <span id="current-score-val">0</span> pts`;
+    } catch (e) {
+        highScoreElement.innerHTML = `Actual: <span id="current-score-val">0</span> pts`;
+    }
 });
 
 function startNewQuestion() {
@@ -515,6 +525,14 @@ function checkAnswer() {
         }
     }, 3500);
 }
+function playFeedbackSound(isCorrect) {
+    const synth = window.speechSynthesis;
+    const utterance = new SpeechSynthesisUtterance(isCorrect ? "¡Sí!" : "¡Oh!");
+    utterance.volume = 0.5;
+    utterance.pitch = isCorrect ? 1.5 : 0.5;
+    utterance.rate = 2;
+    synth.speak(utterance);
+}
 
 function showFeedback(result) {
     const feedbackElement = document.getElementById('feedback');
@@ -535,37 +553,58 @@ function showFeedback(result) {
     
     feedbackElement.className = result.isCorrect ? 'feedback show correct' : 'feedback show incorrect';
     feedbackElement.style.display = 'block';
+    playFeedbackSound(result.isCorrect);
 }
 
-function completeGame() {
+async function completeGame() {
     const mainCard = document.getElementById('main-card');
     const report = analyzer.getSessionReport();
-    
-    let html = '<div class="game-completed">';
-    html += '<h2 style="margin-bottom: 20px; color: #0066CC;">¡Juego Completado!</h2>';
-    html += '<div class="final-score">';
-    html += '<h2>Puntuación Final:</h2>';
-    html += '<div class="score-number">' + score + '</div>';
-    html += '<p>puntos</p>';
-    html += '</div>';
-    html += '<div class="analysis-box">';
-    html += '<h3 style="text-align: center; margin-bottom: 15px; color: #0066CC;">📊 Análisis de Desempeño</h3>';
-    html += '<div class="stat-row"><span class="stat-label">Respuestas Correctas:</span><span class="stat-value">' + report.correctAttempts + '/' + report.totalAttempts + '</span></div>';
-    html += '<div class="stat-row"><span class="stat-label">Exactitud Promedio:</span><span class="stat-value">' + report.averageAccuracy + '%</span></div>';
-    html += '<div class="stat-row"><span class="stat-label">📌 Comprensión Auditiva:</span><span class="stat-value">' + report.comprehensionScore + '%</span></div>';
-    html += '<div class="stat-row"><span class="stat-label">⚡ Tiempo Promedio:</span><span class="stat-value">' + report.averageResponseTime + 'ms</span></div>';
-    html += '</div>';
-    html += '<div class="options-container" style="margin-top: 20px;">';
-    html += '<button class="option-button primary" onclick="location.reload()"><i class="fas fa-redo"></i> Jugar de Nuevo</button>';
-    html += '<button class="option-button blue" onclick="goToMainPage()"><i class="fas fa-arrow-left"></i> Volver</button>';
-    html += '</div>';
-    html += '</div>';
+    const gameId = 'comprension-auditiva-1';
+
+    // Preparar datos para la API
+    const gameData = {
+        gameId: gameId,
+        style: 'auditivo',
+        level: Math.round(analyzer.difficultyLevel),
+        score: score,
+        accuracy: report.averageAccuracy,
+        responseTime: report.averageResponseTime
+    };
+
+    mainCard.innerHTML = '<div class="game-completed"><h2>Guardando progreso...</h2></div>';
+
+    try {
+        await api.saveGameResults(gameData);
+    } catch (error) {
+        console.error("Error al guardar:", error);
+    }
+
+    // Mostrar el reporte final
+    let html = `
+        <div class="game-completed">
+            <h2 style="margin-bottom: 20px; color: #0066CC;">¡Comprensión Completada!</h2>
+            <div class="final-score">
+                <h2>Puntuación Final:</h2>
+                <div class="score-number">${score}</div>
+                <p>puntos</p>
+            </div>
+            <div class="analysis-box">
+                <h3 style="text-align: center; margin-bottom: 15px; color: #0066CC;">📊 Análisis de Desempeño</h3>
+                <div class="stat-row"><span class="stat-label">📌 Comprensión:</span><span class="stat-value">${report.comprehensionScore}%</span></div>
+                <div class="stat-row"><span class="stat-label">🎯 Exactitud:</span><span class="stat-value">${report.averageAccuracy}%</span></div>
+                <div class="stat-row"><span class="stat-label">⚡ Velocidad:</span><span class="stat-value">${report.averageResponseTime}ms</span></div>
+            </div>
+            <div class="options-container" style="margin-top: 20px;">
+                <button class="option-button primary" onclick="location.reload()">Jugar de Nuevo</button>
+                <button class="option-button blue" onclick="goToMainPage()">Volver</button>
+            </div>
+        </div>`;
     
     mainCard.innerHTML = html;
 }
 
 function goToMainPage() {
-    window.location.href = 'https://plekdev.github.io/BlueMinds/selectores/selector-auditivo.html';
+    window.location.href = '../../../../selectores/selector-auditivo.html';
 }
 
 // Event Listeners

@@ -143,6 +143,9 @@ body {
 }
 
 .animal-display {
+    display: flex;
+    flex-flow: column;
+    align-items: center;
     text-align: center;
     margin-bottom: 30px;
 }

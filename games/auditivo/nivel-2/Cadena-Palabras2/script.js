@@ -240,19 +240,29 @@ const wordDatabase = {
     'manzana': 'https://img.freepik.com/vector-premium/dibujos-animados-clipart-manzana-dibujo-ilustracion_871209-13267.jpg?w=2000',
     'pera': 'https://img.freepik.com/vector-gratis/fruta-pera-aislada-sobre-fondo-blanco_1308-117166.jpg?semt=ais_hybrid&w=740',
     'uva': 'https://static.vecteezy.com/system/resources/previews/021/964/649/large_2x/grapes-fruit-cartoon-colored-clipart-illustration-free-vector.jpg',
-    'platano': 'https://static.vecteezy.com/system/resources/previews/004/557/519/original/fruit-banana-cartoon-object-vector.jpg',
+    'plátano': 'https://static.vecteezy.com/system/resources/previews/004/557/519/original/fruit-banana-cartoon-object-vector.jpg',
     'naranja': 'https://img.freepik.com/vector-premium/ilustracion-vectorial-dibujos-animados-color-naranja_871209-3168.jpg?w=2000',
     'fresa': 'https://i.pinimg.com/originals/c8/32/6a/c8326ac10514ba82a4ee79bcd8992c17.jpg',
-    'sandia': 'https://static.vecteezy.com/system/resources/previews/007/570/246/original/cartoon-watermelon-slice-fruits-vector.jpg',
-    'limon': 'https://static.vecteezy.com/system/resources/previews/004/485/242/original/lemon-fruit-illustrations-free-vector.jpg'
+    'sandía': 'https://static.vecteezy.com/system/resources/previews/007/570/246/original/cartoon-watermelon-slice-fruits-vector.jpg',
+    'limón': 'https://static.vecteezy.com/system/resources/previews/004/485/242/original/lemon-fruit-illustrations-free-vector.jpg'
 };
 
 // ========================
 // INICIALIZACIÓN
 // ========================
 
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', async function() {
     startNewRound();
+    const highScoreElement = document.getElementById('score-display');
+    const gameId = 'memoria-auditiva-1';
+
+    try {
+        const bestScore = await api.getBestScore(gameId);
+        highScoreElement.innerHTML = `🏆 Récord: ${bestScore} pts | <span id="current-score-val">0</span> pts`;
+    } catch (error) {
+        console.error("No se pudo obtener el récord:", error);
+        highScoreElement.innerHTML = `Actual: <span id="current-score-val">0</span> pts`;
+    }
 });
 
 function startNewRound() {
@@ -287,8 +297,7 @@ function startNewRound() {
 function updateUI() {
     document.getElementById('current-round').textContent = currentRound + 1;
     document.getElementById('total-rounds').textContent = totalRounds;
-    document.getElementById('score').textContent = score + ' puntos';
-    document.getElementById('score-display').textContent = score + ' puntos';
+    document.getElementById('current-score-val').textContent = score;
 
     const progress = ((currentRound + 1) / totalRounds) * 100;
     document.getElementById('progress-fill').style.width = progress + '%';
@@ -524,8 +533,8 @@ function checkAnswer() {
     showFeedback(result);
     
     score += result.score;
-    document.getElementById('score').textContent = score + ' puntos';
-    document.getElementById('score-display').textContent = score + ' puntos';
+    const scoreVal = document.getElementById('current-score-val');
+    if (scoreVal) scoreVal.textContent = score;
 
     if (!result.isCorrect) {
         const cards = document.querySelectorAll('.image-card');
@@ -577,36 +586,51 @@ function showFeedback(result) {
     feedbackElement.style.display = 'block';
 }
 
-function completeGame() {
+async function completeGame() {
     const mainCard = document.getElementById('main-card');
     const report = analyzer.getSessionReport();
 
+    // 1. Preparar el objeto para la API
+    const gameData = {
+        gameId: 'memoria-auditiva-1', // ID único para este minijuego
+        style: 'auditivo',
+        level: Math.round(analyzer.difficultyLevel), // Nivel adaptativo final
+        score: score,
+        accuracy: report.averageAccuracy,
+        responseTime: report.averageResponseTime
+    };
+
+    // 2. Mostrar estado de carga en la UI
+    mainCard.innerHTML = '<div class="game-completed"><h2>Guardando tu progreso...</h2></div>';
+
+    try {
+        // 3. Enviar a la API (usando tu instancia global 'api')
+        await api.saveGameResults(gameData);
+        console.log("Resultados guardados con éxito");
+    } catch (error) {
+        console.error("Error al guardar en el backend:", error);
+        // No bloqueamos al usuario, permitimos ver su reporte aunque falle la red
+    }
+
+    // 4. Mostrar el reporte final (tu HTML original mejorado)
     let html = '<div class="game-completed">';
-    html += '<h2 style="margin-bottom: 20px; color: #0066CC;">¡Juego Completado - Nivel 2 Adaptativo!</h2>';
-    html += '<div class="final-score">';
-    html += '<h2>Puntuación Final:</h2>';
-    html += '<div class="score-number">' + score + '</div>';
-    html += '<p>puntos</p>';
-    html += '</div>';
+    html += '<h2 style="margin-bottom: 20px; color: #0066CC;">¡Juego Completado!</h2>';
+    html += '<div class="final-score"><h2>Puntuación Final:</h2><div class="score-number">' + score + '</div><p>puntos</p></div>';
     html += '<div class="analysis-box">';
     html += '<h3 style="text-align: center; margin-bottom: 15px; color: #0066CC;">📊 Análisis de Desempeño</h3>';
-    html += '<div class="stat-row"><span class="stat-label">Respuestas Correctas:</span><span class="stat-value">' + report.correctAttempts + '/' + report.totalAttempts + '</span></div>';
-    html += '<div class="stat-row"><span class="stat-label">Exactitud Promedio:</span><span class="stat-value">' + report.averageAccuracy + '%</span></div>';
     html += '<div class="stat-row"><span class="stat-label">📌 Memoria Auditiva:</span><span class="stat-value">' + report.auditoryMemoryScore + '%</span></div>';
-    html += '<div class="stat-row"><span class="stat-label">📍 Precisión de Orden:</span><span class="stat-value">' + report.orderingAccuracy + '%</span></div>';
     html += '<div class="stat-row"><span class="stat-label">⚡ Velocidad Promedio:</span><span class="stat-value">' + report.averageResponseTime + 'ms</span></div>';
     html += '</div>';
     html += '<div class="options-container" style="margin-top: 20px;">';
-    html += '<button class="option-button primary" onclick="location.reload()"><i class="fas fa-redo"></i> Jugar de Nuevo</button>';
-    html += '<button class="option-button blue" onclick="goToMainPage()"><i class="fas fa-arrow-left"></i> Volver</button>';
-    html += '</div>';
-    html += '</div>';
+    html += '<button class="option-button primary" onclick="location.reload()">Jugar de Nuevo</button>';
+    html += '<button class="option-button blue" onclick="goToMainPage()">Volver</button>';
+    html += '</div></div>';
 
     mainCard.innerHTML = html;
 }
 
 function goToMainPage() {
-    window.location.href = 'https://plekdev.github.io/BlueMinds/selectores/selector-auditivo.html';
+    window.location.href = '../../../../selectores/selector-auditivo.html';
 }
 
 // Event Listeners

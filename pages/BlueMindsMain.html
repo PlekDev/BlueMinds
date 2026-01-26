@@ -11,19 +11,8 @@
     <link rel="stylesheet" href="../css/BlueMindsMain.css">
     <link rel="stylesheet" href="../css/NewStylesMain.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <style>
-        /* Ajustes para integrar los nuevos elementos sin romper el estilo original */
-        .stats-container { margin-top: 40px; display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
-        .chart-card, .history-card { background: white; padding: 20px; border-radius: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
-        .full-width { grid-column: 1 / -1; }
-        table { width: 100%; border-collapse: collapse; margin-top: 10px; }
-        th { text-align: left; color: var(--primary-color); padding: 10px; border-bottom: 2px solid #f0f4f8; }
-        td { padding: 10px; border-bottom: 1px solid #f0f4f8; font-size: 0.9em; }
-        .recommendation-item { display: flex; align-items: center; gap: 10px; background: #e0f2fe; padding: 15px; border-radius: 12px; margin-bottom: 10px; }
-    </style>
 </head>
 <body>
-
     <header>
         <div class="header-container">
             <a href="BlueMindsMain.html" class="logo">
@@ -35,6 +24,9 @@
                 <li><a href="test-selector.html">Test</a></li>
                 <li><a href="https://plekdev.github.io/BlueMindsLandingPage/">Acerca de</a></li>
             </ul>
+            <button class="menu-toggle" id="menu-toggle">
+                <i class="fas fa-bars"></i>
+            </button>
             <div class="user-menu">
                 <span class="user-name" id="userName">Usuario</span>
                 <button class="logout-btn" onclick="logout()" title="Cerrar Sesión">
@@ -46,24 +38,21 @@
 
     <main class="main-content">
         <div class="container">
-            <section class="overall-progress">
-                <div class="progress-header">
-                    <h2>Tu Camino de Aprendizaje</h2>
-                    <span class="progress-count" id="lastScoreLabel">Cargando progreso...</span>
+                    <h2 style="margin-bottom: 20px; color: white; text-align: center; font-size: 2.1rem;">Selecciona tu aventura</h2>
+            
+            <div class="dashboard-wrapper" style="margin-bottom: 40px;">
+                <div class="dashboard-right">
+                    <div class="hero-image-placeholder">
+                        <img src="../mascotas/dino edu.jpeg" alt="Dino Edu" style="width: 100%; max-width: 300px; height: auto; border-radius: 30px; box-shadow: 0 10px 20px rgba(0,0,0,0.1);">
+                        <div id="quick-tip" style="margin-top: 15px; font-weight: 700; color: #0066CC; text-align: center; font-size: 1.2rem;">
+                            "¡Hola! ¿A qué mundo quieres viajar hoy?"
+                        </div>
+                    </div>
                 </div>
-                <div class="level-path">
-                    <div class="level-path-progress" id="progressBar" style="width: 0%;"></div>
-                    <div class="flag-item completed"><div class="flag-circle"><i class="fas fa-flag-checkered"></i></div><span class="flag-label">Inicio</span></div>
-                    <div class="flag-item" id="flag-lvl1"><div class="flag-circle"><i class="fas fa-flag"></i></div><span class="flag-label">Nivel 1</span></div>
-                    <div class="flag-item" id="flag-lvl2"><div class="flag-circle"><i class="fas fa-flag"></i></div><span class="flag-label">Nivel 2</span></div>
-                    <div class="flag-item" id="flag-lvl3"><div class="flag-circle"><i class="fas fa-flag"></i></div><span class="flag-label">Nivel 3</span></div>
-                </div>
-            </section>
 
-            <div class="dashboard-wrapper">
                 <div class="dashboard-left">
                     <section class="categories-section">
-                        <div class="category-card auditivo" onclick="showCategoryGames('auditivo')">
+                        <div class="category-card auditivo" id="card-auditivo" onclick="showCategoryGames('auditivo')">
                             <div class="category-icon"><i class="fas fa-volume-up"></i></div>
                             <div class="category-content">
                                 <h3 class="category-title">Auditivo</h3>
@@ -73,7 +62,8 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="category-card kinestesico" onclick="showCategoryGames('kinestesico')">
+
+                        <div class="category-card kinestesico" id="card-kinestesico" onclick="showCategoryGames('kinestesico')">
                             <div class="category-icon"><i class="fas fa-hand-paper"></i></div>
                             <div class="category-content">
                                 <h3 class="category-title">Kinestésico</h3>
@@ -83,7 +73,8 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="category-card visual" onclick="showCategoryGames('visual')">
+
+                        <div class="category-card visual" id="card-visual" onclick="showCategoryGames('visual')">
                             <div class="category-icon"><i class="fas fa-eye"></i></div>
                             <div class="category-content">
                                 <h3 class="category-title">Visual</h3>
@@ -93,11 +84,12 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="category-card lectoescritura" onclick="showCategoryGames('lecto-escritor')">
+
+                        <div class="category-card lectoescritura" id="card-lectoescritor" onclick="showCategoryGames('lecto-escritor')">
                             <div class="category-icon"><i class="fas fa-book-open"></i></div>
                             <div class="category-content">
                                 <h3 class="category-title">Lecto-escritor</h3>
-                                <p class="category-description">Aprende leyendo y escribiendo</p>
+                                <p class="category-description">Lectura y escritura</p>
                                 <div class="category-level-path" id="path-lecto-escritor">
                                     <div class="category-flag"></div><div class="category-flag"></div><div class="category-flag"></div>
                                 </div>
@@ -105,27 +97,105 @@
                         </div>
                     </section>
                 </div>
+            </div>
 
-                <div class="dashboard-right">
-                    <div class="hero-image-placeholder">
-                        <img src="../mascotas/dino edu.jpeg" alt="Dino Edu" style="width: 75%; height: auto; border-radius: 30px;">
-                        <div id="quick-tip" style="margin-top: 15px; font-style: italic; color: #555; text-align: center; padding: 0 20px;">
-                            "¡Sigue así! Cada juego te hace más fuerte."
-                        </div>
+            <section class="evolution-highlight" style="background: linear-gradient(135deg, #00B4D8, #0066CC);">
+                <h2 style="color: white; margin-bottom: 25px;">Tu progreso con Dino Edu</h2>
+                <div class="evolution-stats">
+                    <div class="evolution-card">
+                        <div class="evolution-icon"><i class="fas fa-gamepad"></i></div>
+                        <div class="evolution-value" id="gamesPlayed">0</div>
+                        <div class="evolution-label">Juegos jugados</div>
+                    </div>
+                    <div class="evolution-card">
+                        <div class="evolution-icon"><i class="fas fa-percentage"></i></div>
+                        <div class="evolution-value" id="avgAccuracy">0%</div>
+                        <div class="evolution-label">Precisión promedio</div>
+                    </div>
+                    <div class="evolution-card">
+                        <div class="evolution-icon"><i class="fas fa-trophy"></i></div>
+                        <div class="evolution-value" id="bestScore">0</div>
+                        <div class="evolution-label">Mejor puntaje</div>
+                    </div>
+                    <div class="evolution-card">
+                        <div class="evolution-icon"><i class="fas fa-chart-line"></i></div>
+                        <div class="evolution-value" id="improvement">+0%</div>
+                        <div class="evolution-label">Mejora general</div>
                     </div>
                 </div>
-            </div>
+                <div class="ai-insight" style="background: rgba(255,255,255,0.2); border: none; color: white;">
+                    <p id="aiInsightGeneral">Analizando tu aventura...</p>
+                </div>
+            </section>
+
+            <section class="evolution-highlight" style="background: #f8fafc; border: 2px border: #e2e8f0;">
+                <div class="evolution-header">
+                    <h2 style="color: #1e293b;">Análisis de Especialista BlueBot</h2>
+                    <p class="subtitle" style="color: #64748b;">Nivel de dominio detectado por nuestra IA</p>
+                </div>
+
+                <div class="skills-branches-container">
+                    <div class="skill-branch auditivo">
+                        <div class="skill-info">
+                            <span class="skill-name" style="color: #1e293b;"><i class="fas fa-volume-up"></i> Auditivo</span>
+                            <div class="skill-data">
+                                <span class="game-count" id="count-auditivo" style="color: #64748b;">0 jgs</span>
+                                <span class="accuracy-label" id="pct-auditivo" style="color: #0066CC;">0%</span>
+                            </div>
+                        </div>
+                        <div class="skill-bar-bg"><div id="bar-auditivo" class="skill-bar-fill"></div></div>
+                    </div>
+
+                    <div class="skill-branch visual">
+                        <div class="skill-info">
+                            <span class="skill-name" style="color: #1e293b;"><i class="fas fa-eye"></i> Visual</span>
+                            <div class="skill-data">
+                                <span class="game-count" id="count-visual" style="color: #64748b;">0 jgs</span>
+                                <span class="accuracy-label" id="pct-visual" style="color: #0066CC;">0%</span>
+                            </div>
+                        </div>
+                        <div class="skill-bar-bg"><div id="bar-visual" class="skill-bar-fill"></div></div>
+                    </div>
+
+                    <div class="skill-branch kinestesico">
+                        <div class="skill-info">
+                            <span class="skill-name" style="color: #1e293b;"><i class="fas fa-hand-paper"></i> Kinestésico</span>
+                            <div class="skill-data">
+                                <span class="game-count" id="count-kinestesico" style="color: #64748b;">0 jgs</span>
+                                <span class="accuracy-label" id="pct-kinestesico" style="color: #0066CC;">0%</span>
+                            </div>
+                        </div>
+                        <div class="skill-bar-bg"><div id="bar-kinestesico" class="skill-bar-fill"></div></div>
+                    </div>
+
+                    <div class="skill-branch lectoescritura">
+                        <div class="skill-info">
+                            <span class="skill-name" style="color: #1e293b;"><i class="fas fa-book-open"></i> Lectoescritura</span>
+                            <div class="skill-data">
+                                <span class="game-count" id="count-lectoescritor" style="color: #64748b;">0 jgs</span>
+                                <span class="accuracy-label" id="pct-lectoescritor" style="color: #0066CC;">0%</span>
+                            </div>
+                        </div>
+                        <div class="skill-bar-bg"><div id="bar-lectoescritor" class="skill-bar-fill"></div></div>
+                    </div>
+                </div>
+
+                <div class="ai-insight-box" style="background: white; border: 1px solid #e2e8f0;">
+                    <div class="ai-icon" style="background: #0066CC;"><i class="fas fa-robot"></i></div>
+                    <p id="aiInsight" style="color: #334155;">Consultando con BlueBot sobre tus talentos...</p>
+                </div>
+            </section>
 
             <div class="stats-container">
                 <div class="chart-card">
-                    <h3>Tu Evolución (Score)</h3>
+                    <h3>Tu Evolución (Puntos)</h3>
                     <canvas id="scoreChart"></canvas>
                 </div>
                 <div class="chart-card">
                     <h3>Estilos Dominantes</h3>
                     <canvas id="styleChart"></canvas>
                 </div>
-                
+
                 <div class="history-card full-width">
                     <h3>Historial de Evaluaciones</h3>
                     <table>
@@ -136,10 +206,11 @@
                                 <th>Mejor Estilo</th>
                                 <th>Nivel</th>
                                 <th>Puntos</th>
+                                <th>Tiempo</th>
                             </tr>
                         </thead>
                         <tbody id="history-body">
-                            <tr><td colspan="5">Cargando tu historia...</td></tr>
+                            <tr><td colspan="6">Cargando tu historia...</td></tr>
                         </tbody>
                     </table>
                 </div>
@@ -161,183 +232,191 @@
     <script src="../api.js"></script>
     <script src="../js/auth-guard.js"></script>
     <script>
-        function logout() {
-            localStorage.removeItem('blueminds_current_user');
-            window.location.href = '../login.html';
+    function logout() {
+        localStorage.removeItem('blueminds_current_user');
+        window.location.href = '../login.html';
+    }
+
+    function showCategoryGames(category) {
+        const selectorMap = {
+            'auditivo': '../selectores/selector-auditivo.html',
+            'kinestesico': '../selectores/selector-kinestesico.html',
+            'visual': '../selectores/selector-visual.html',
+            'lecto-escritor': '../selectores/selector-lecto-escritor.html'
+        };
+        if (selectorMap[category]) window.location.href = selectorMap[category];
+    }
+
+    window.addEventListener('load', async () => {
+        const currentUser = localStorage.getItem('blueminds_current_user');
+        if (!currentUser) return window.location.href = '../login.html';
+        const user = JSON.parse(currentUser);
+        document.getElementById('userName').textContent = user.name || 'Explorador';
+        
+        // Ejecutamos ambas cargas de forma independiente
+        await loadDashboardData();
+        await loadDeepAnalysis(); // Este llenará las barras superiores y el insight robotizado
+    });
+
+    async function loadDashboardData() {
+        try {
+            const [historyRes, recsRes, summaryRes] = await Promise.all([
+                fetch(`${api.baseURL}/quiz/history`, { headers: api._getHeaders() }),
+                fetch(`${api.baseURL}/quiz/recommendations`, { headers: api._getHeaders() }),
+                fetch(`${api.baseURL}/game/summary`, { headers: api._getHeaders() })
+            ]);
+
+            const historyData = await historyRes.json();
+            const recsData = await recsRes.json();
+            const summaryData = await summaryRes.json();
+
+            // 1. Llenar estadísticas generales (Sección Dino Edu)
+            animateNumber('gamesPlayed', 0, summaryData.gamesPlayed || 0, 1500);
+            animateNumber('avgAccuracy', 0, summaryData.avgAccuracy || 0, 1500, true);
+            animateNumber('bestScore', 0, summaryData.bestScore || 0, 1500);
+            
+            const impVal = parseInt(summaryData.improvement || 0);
+            document.getElementById('improvement').style.color = impVal >= 0 ? '#10b981' : '#f59e0b';
+            animateNumber('improvement', 0, impVal, 1500);
+            document.getElementById('aiInsightGeneral').textContent = summaryData.aiInsight || "¡Sigue practicando!";
+
+            // 2. Historial y Recomendaciones
+            renderHistoryTable(historyData.sessions || []);
+            renderRecommendations(recsData.recommendations || []);
+            renderCharts(historyData.sessions || []);
+
+        } catch (err) {
+            console.error('Error cargando dashboard:', err);
         }
+    }
 
-        function showCategoryGames(category) {
-            const selectorMap = {
-                'auditivo': '../selectores/selector-auditivo.html',
-                'kinestesico': '../selectores/selector-kinestesico.html',
-                'visual': '../selectores/selector-visual.html',
-                'lecto-escritor': '../selectores/selector-lecto-escritor.html'
-            };
-            if (selectorMap[category]) window.location.href = selectorMap[category];
-        }
+    async function loadDeepAnalysis() {
+        try {
+            const res = await fetch(`${api.baseURL}/user/deep-analysis`, {
+                headers: api._getHeaders()
+            });
+            const data = await res.json();
 
-        window.addEventListener('load', async () => {
-            const currentUser = localStorage.getItem('blueminds_current_user');
-            if (!currentUser) return window.location.href = '../login.html';
+            if (data && data.analysis) {
+                const { averagesByStyle, reasoning, dominantStyle, suggestedLevel } = data.analysis;
 
-            const user = JSON.parse(currentUser);
-            document.getElementById('userName').textContent = user.name || 'Explorador';
+                // Mapeo de estilos para las barras superiores
+                const styleMap = {
+                    'auditivo': 'auditivo',
+                    'visual': 'visual',
+                    'kinestesico': 'kinestesico',
+                    'kinestésico': 'kinestesico',
+                    'lectoescritor': 'lectoescritor',
+                    'lecto-escritor': 'lectoescritor',
+                    'lectoescritura': 'lectoescritor'
+                };
 
-            await loadDashboardData();
-            await highlightBestCategory();
-        });
-        async function highlightBestCategory() {
-            try {
-                const response = await fetch(`${api.baseURL}/user/deep-analysis`, {
-                    headers: api._getHeaders()
-                });
-                const data = await response.json();
-                console.log(data);
-
-                if (data && data.analysis) {
-                    const { dominantStyle, suggestedLevel, trend } = data.analysis;
-
-                    // 1. Resaltar la tarjeta del estilo dominante
-                    // Nota: El backend devuelve 'lecto-escritor', asegurate que la clase sea igual
-                    const card = document.querySelector(`.category-card.${dominantStyle}`);
-                    
-                    if (card) {
-                        card.classList.add('is-recommended');
-                        
-                        // Badge con mensaje dinámico según la tendencia
-                        let message = '✨ Tu mejor estilo';
-                        if (trend === 'mejorando') message = '🚀 ¡Estás mejorando mucho!';
-                        
-                        const badge = document.createElement('div');
-                        badge.className = 'rec-badge';
-                        badge.innerHTML = message;
-                        card.appendChild(badge);
-                        
-                        // Palpitación suave para llamar la atención
-                        card.style.animation = "pulse-soft 2s infinite";
-                    }
-
-                    // 2. Actualizar las banderas de nivel
-                    const flags = document.querySelectorAll(`#path-${dominantStyle} .category-flag`);
-                    flags.forEach((flag, index) => {
-                        if (index < suggestedLevel) flag.classList.add('completed');
+                // Llenar las barras de dominio (Sección Superior)
+                if (averagesByStyle) {
+                    averagesByStyle.forEach(s => {
+                        const key = styleMap[s.learning_style.toLowerCase().trim()];
+                        if (key) {
+                            const pct = Math.round(s.avg_accuracy);
+                            document.getElementById(`bar-${key}`).style.width = `${pct}%`;
+                            document.getElementById(`pct-${key}`).textContent = `${pct}%`;
+                            document.getElementById(`count-${key}`).textContent = `${s.game_count} jgs`;
+                        }
                     });
                 }
-            } catch (err) {
-                console.error("Error aplicando Deep Analysis al UI:", err);
+
+                // Resaltar la tarjeta física según el estilo dominante
+                const domKey = styleMap[dominantStyle.toLowerCase().trim()];
+                const card = document.getElementById(`card-${domKey}`);
+                if (card) {
+                    card.classList.add('is-recommended');
+                    // Pintar banderas de progreso
+                    const flags = document.querySelectorAll(`#path-${domKey === 'lectoescritor' ? 'lecto-escritor' : domKey} .category-flag`);
+                    flags.forEach((f, i) => { if (i < suggestedLevel) f.classList.add('completed'); });
+                }
+
+                // Insight del Robot (Superior)
+                document.getElementById('aiInsight').innerHTML = `<strong>Análisis BlueMinds:</strong> ${reasoning}`;
             }
+        } catch (err) {
+            console.error('Error en Deep Analysis:', err);
         }
+    }
 
-        function updateLevelFlags(style, level) {
-            const flags = document.querySelectorAll(`#path-${style} .category-flag`);
-            flags.forEach((flag, index) => {
-                if (index < level) {
-                    flag.classList.add('completed'); // Estilo CSS para bandera iluminada
-                }
-            });
+    // --- Funciones de renderizado separadas para orden ---
+    function renderHistoryTable(sessions) {
+        const body = document.getElementById('history-body');
+        body.innerHTML = sessions.length ? sessions.slice(0, 10).map(s => `
+            <tr>
+                <td>${new Date(s.created_at).toLocaleDateString()}</td>
+                <td><span class="type-badge ${s.type === 'Niños' ? 'child' : 'parent'}">${s.type}</span></td>
+                <td><strong>${s.beststyle || '-'}</strong></td>
+                <td>${s.suggestedlevel || '-'}</td>
+                <td>${s.score || 0}</td>
+                <td>${s.totaltimeseconds ? Math.round(s.totaltimeseconds/60)+'m' : '-'}</td>
+            </tr>
+        `).join('') : '<tr><td colspan="6">Sin datos</td></tr>';
+    }
+
+    function renderRecommendations(recs) {
+        document.getElementById('recommendations-list').innerHTML = recs.map(r => `
+            <div class="recommendation-item"><i class="fas fa-star" style="color: #f59e0b"></i><span>${r}</span></div>
+        `).join('');
+    }
+
+    function animateNumber(id, start, end, duration, isPercent = false) {
+        const obj = document.getElementById(id);
+        if (!obj) return;
+        let startT = null;
+        const step = (ts) => {
+            if (!startT) startT = ts;
+            const prog = Math.min((ts - startT) / duration, 1);
+            const val = Math.floor(prog * (end - start) + start);
+            obj.textContent = isPercent ? `${val}%` : (id === 'improvement' ? `+${val}%` : val);
+            if (prog < 1) window.requestAnimationFrame(step);
+        };
+        window.requestAnimationFrame(step);
+    }
+
+    function renderCharts(sessions) {
+        if (!sessions.length) return;
+        const labels = sessions.map(s => new Date(s.created_at).toLocaleDateString()).reverse();
+        const scores = sessions.map(s => s.score || 0).reverse();
+        
+        new Chart(document.getElementById('scoreChart'), {
+            type: 'line',
+            data: { labels, datasets: [{ label: 'Puntos', data: scores, borderColor: '#0066CC', fill: true, tension: 0.4 }] }
+        });
+
+        const counts = {};
+        sessions.forEach(s => { const st = s.beststyle || 'Otro'; counts[st] = (counts[st] || 0) + 1; });
+        new Chart(document.getElementById('styleChart'), {
+            type: 'doughnut',
+            data: { labels: Object.keys(counts), datasets: [{ data: Object.values(counts), backgroundColor: ['#0066CC', '#00B4D8', '#F59E0B', '#E91E63'] }] }
+        });
+    }
+    document.addEventListener('DOMContentLoaded', () => {
+    const menuToggle = document.getElementById('menu-toggle');
+    const navCenter = document.querySelector('.nav-center');
+
+    menuToggle.addEventListener('click', () => {
+        navCenter.classList.toggle('active');
+        
+        // Cambia el icono de barras a una "X" al abrir
+        const icon = menuToggle.querySelector('i');
+        if (navCenter.classList.contains('active')) {
+            icon.classList.replace('fa-bars', 'fa-times');
+        } else {
+            icon.classList.replace('fa-times', 'fa-bars');
         }
+    });
 
-        async function loadDashboardData() {
-            try {
-                const [childRes, historyRes, recsRes] = await Promise.all([
-                    fetch(`${api.baseURL}/quiz/last?type=child`, { headers: api._getHeaders() }),
-                    fetch(`${api.baseURL}/quiz/history`, { headers: api._getHeaders() }),
-                    fetch(`${api.baseURL}/quiz/recommendations`, { headers: api._getHeaders() })
-                ]);
-
-                const childData = await childRes.json();
-                const historyData = await historyRes.json();
-                const recsData = await recsRes.json();
-
-                console.log(historyData);
-                // 1. Actualizar Barra de Progreso Superior
-                if (childData.result) {
-                    const score = childData.result.score || 0;
-                    const pct = Math.min((score / 20) * 100, 100);
-                    document.getElementById('progressBar').style.width = `${pct}%`;
-                    document.getElementById('lastScoreLabel').textContent = `Último puntaje: ${score} / 20`;
-                    
-                    if(score >= 5) document.getElementById('flag-lvl1').classList.add('completed');
-                    if(score >= 12) document.getElementById('flag-lvl2').classList.add('completed');
-                    if(score >= 18) document.getElementById('flag-lvl3').classList.add('completed');
-                }
-
-                // 2. Llenar Historial
-                const historyBody = document.getElementById('history-body');
-                historyBody.innerHTML = '';
-                historyData.sessions.slice(0, 5).forEach(s => {
-                    const row = document.createElement('tr');
-                    row.innerHTML = `
-                        <td>${new Date(s.created_at).toLocaleDateString()}</td>
-                        <td>${s.type === 'Niños' ? 'Niño' : 'Padre'}</td>
-                        <td><strong>${s.beststyle || 'Sin definirse'}</strong></td>
-                        <td>${s.suggestedlevel || 'Sin definirse'}</td>
-                        <td>${s.score || 0}</td>
-                    `;
-                    historyBody.appendChild(row);
-                });
-
-                // 3. Recomendaciones
-                const recsList = document.getElementById('recommendations-list');
-                recsList.innerHTML = recsData.recommendations.map(r => `
-                    <div class="recommendation-item">
-                        <i class="fas fa-star" style="color: #f59e0b"></i>
-                        <span>${r}</span>
-                    </div>
-                `).join('');
-
-                // 4. Renderizar Gráficos
-                renderCharts(historyData.sessions);
-
-            } catch (err) {
-                console.error('Error:', err);
-            }
-        }
-
-        function renderCharts(sessions) {
-            if (sessions.length === 0) return;
-
-            const labels = sessions.map(s => new Date(s.created_at).toLocaleDateString()).reverse();
-            const scores = sessions.map(s => s.score || 0).reverse();
-
-            new Chart(document.getElementById('scoreChart'), {
-                type: 'line',
-                data: {
-                    labels,
-                    datasets: [{
-                        label: 'Puntos',
-                        data: scores,
-                        borderColor: '#0066CC',
-                        backgroundColor: 'rgba(0, 102, 204, 0.1)',
-                        fill: true,
-                        tension: 0.4
-                    }]
-                }
-            });
-
-            const styleCounts = {};
-            sessions.forEach(s => {
-                // Usamos el alias 'bestStyle' que definiste en el backend
-                // Si viene null o undefined, ponemos 'Por definir'
-                let style = s.beststyle || s.bestStyle || 'Por definir'; 
-                
-                // Normalizar: Primera letra mayúscula
-                style = style.charAt(0).toUpperCase() + style.slice(1);
-                
-                styleCounts[style] = (styleCounts[style] || 0) + 1;
-            });
-
-            new Chart(document.getElementById('styleChart'), {
-                type: 'doughnut',
-                data: {
-                    labels: Object.keys(styleCounts),
-                    datasets: [{
-                        data: Object.values(styleCounts),
-                        backgroundColor: ['#0066CC', '#00B4D8', '#F59E0B', '#E91E63']
-                    }]
-                }
-            });
-        }
-    </script>
+    // Cerrar el menú al hacer clic en un enlace (opcional)
+    document.querySelectorAll('.nav-center a').forEach(link => {
+        link.addEventListener('click', () => {
+            navCenter.classList.remove('active');
+        });
+    });
+});
+</script>
 </body>
 </html>

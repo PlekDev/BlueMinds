@@ -20,16 +20,16 @@
                 <span>BlueMinds</span>
             </a>
             <ul class="nav-center">
-                <li><a href="BlueMindsMain.html">Inicio</a></li>
-                <li><a href="test-selector.html">Test</a></li>
-                <li><a href="https://plekdev.github.io/BlueMindsLandingPage/">Acerca de</a></li>
+                <li><a href="BlueMindsMain.html" data-i18n="nav.home">Inicio</a></li>
+                <li><a href="test-selector.html" data-i18n="nav.test">Test</a></li>
+                <li><a href="https://plekdev.github.io/BlueMindsLandingPage/" data-i18n="nav.about">Acerca de</a></li>
             </ul>
             <button class="menu-toggle" id="menu-toggle">
                 <i class="fas fa-bars"></i>
             </button>
             <div class="user-menu">
                 <span class="user-name" id="userName">Usuario</span>
-                <button class="logout-btn" onclick="logout()" title="Cerrar Sesión">
+                <button class="logout-btn" onclick="logout()" data-i18n-title="nav.logout" title="Cerrar Sesión">
                     <i class="fas fa-sign-out-alt"></i>
                 </button>
             </div>
@@ -38,13 +38,13 @@
 
     <main class="main-content">
         <div class="container">
-                    <h2 style="margin-bottom: 20px; color: white; text-align: center; font-size: 2.1rem;">Selecciona tu aventura</h2>
-            
+            <h2 style="margin-bottom: 20px; color: white; text-align: center; font-size: 2.1rem;" data-i18n="main.adventure">Selecciona tu aventura</h2>
+
             <div class="dashboard-wrapper" style="margin-bottom: 40px;">
                 <div class="dashboard-right">
                     <div class="hero-image-placeholder">
                         <img src="../mascotas/dino edu.jpeg" alt="Dino Edu" style="width: 100%; max-width: 300px; height: auto; border-radius: 30px; box-shadow: 0 10px 20px rgba(0,0,0,0.1);">
-                        <div id="quick-tip" style="margin-top: 15px; font-weight: 700; color: #0066CC; text-align: center; font-size: 1.2rem;">
+                        <div id="quick-tip" style="margin-top: 15px; font-weight: 700; color: #0066CC; text-align: center; font-size: 1.2rem;" data-i18n="main.dino_msg">
                             "¡Hola! ¿A qué mundo quieres viajar hoy?"
                         </div>
                     </div>
@@ -55,8 +55,8 @@
                         <div class="category-card auditivo" id="card-auditivo" onclick="showCategoryGames('auditivo')">
                             <div class="category-icon"><i class="fas fa-volume-up"></i></div>
                             <div class="category-content">
-                                <h3 class="category-title">Auditivo</h3>
-                                <p class="category-description">Aprende escuchando</p>
+                                <h3 class="category-title" data-i18n="main.cat_auditivo">Auditivo</h3>
+                                <p class="category-description" data-i18n="main.cat_auditivo_d">Aprende escuchando</p>
                                 <div class="category-level-path" id="path-auditivo">
                                     <div class="category-flag"></div><div class="category-flag"></div><div class="category-flag"></div>
                                 </div>
@@ -66,8 +66,8 @@
                         <div class="category-card kinestesico" id="card-kinestesico" onclick="showCategoryGames('kinestesico')">
                             <div class="category-icon"><i class="fas fa-hand-paper"></i></div>
                             <div class="category-content">
-                                <h3 class="category-title">Kinestésico</h3>
-                                <p class="category-description">Aprende haciendo</p>
+                                <h3 class="category-title" data-i18n="main.cat_kines">Kinestésico</h3>
+                                <p class="category-description" data-i18n="main.cat_kines_d">Aprende haciendo</p>
                                 <div class="category-level-path" id="path-kinestesico">
                                     <div class="category-flag"></div><div class="category-flag"></div><div class="category-flag"></div>
                                 </div>
@@ -77,8 +77,8 @@
                         <div class="category-card visual" id="card-visual" onclick="showCategoryGames('visual')">
                             <div class="category-icon"><i class="fas fa-eye"></i></div>
                             <div class="category-content">
-                                <h3 class="category-title">Visual</h3>
-                                <p class="category-description">Aprende viendo</p>
+                                <h3 class="category-title" data-i18n="main.cat_visual">Visual</h3>
+                                <p class="category-description" data-i18n="main.cat_visual_d">Aprende viendo</p>
                                 <div class="category-level-path" id="path-visual">
                                     <div class="category-flag"></div><div class="category-flag"></div><div class="category-flag"></div>
                                 </div>
@@ -88,8 +88,8 @@
                         <div class="category-card lectoescritura" id="card-lectoescritor" onclick="showCategoryGames('lecto-escritor')">
                             <div class="category-icon"><i class="fas fa-book-open"></i></div>
                             <div class="category-content">
-                                <h3 class="category-title">Lecto-escritor</h3>
-                                <p class="category-description">Lectura y escritura</p>
+                                <h3 class="category-title" data-i18n="main.cat_lecto">Lecto-escritor</h3>
+                                <p class="category-description" data-i18n="main.cat_lecto_d">Lectura y escritura</p>
                                 <div class="category-level-path" id="path-lecto-escritor">
                                     <div class="category-flag"></div><div class="category-flag"></div><div class="category-flag"></div>
                                 </div>
@@ -100,46 +100,46 @@
             </div>
 
             <section class="evolution-highlight" style="background: linear-gradient(135deg, #00B4D8, #0066CC);">
-                <h2 style="color: white; margin-bottom: 25px;">Tu progreso con Dino Edu</h2>
+                <h2 style="color: white; margin-bottom: 25px;" data-i18n="main.progress_title">Tu progreso con Dino Edu</h2>
                 <div class="evolution-stats">
                     <div class="evolution-card">
                         <div class="evolution-icon"><i class="fas fa-gamepad"></i></div>
                         <div class="evolution-value" id="gamesPlayed">0</div>
-                        <div class="evolution-label">Juegos jugados</div>
+                        <div class="evolution-label" data-i18n="main.games_played">Juegos jugados</div>
                     </div>
                     <div class="evolution-card">
                         <div class="evolution-icon"><i class="fas fa-percentage"></i></div>
                         <div class="evolution-value" id="avgAccuracy">0%</div>
-                        <div class="evolution-label">Precisión promedio</div>
+                        <div class="evolution-label" data-i18n="main.avg_accuracy">Precisión promedio</div>
                     </div>
                     <div class="evolution-card">
                         <div class="evolution-icon"><i class="fas fa-trophy"></i></div>
                         <div class="evolution-value" id="bestScore">0</div>
-                        <div class="evolution-label">Mejor puntaje</div>
+                        <div class="evolution-label" data-i18n="main.best_score">Mejor puntaje</div>
                     </div>
                     <div class="evolution-card">
                         <div class="evolution-icon"><i class="fas fa-chart-line"></i></div>
                         <div class="evolution-value" id="improvement">+0%</div>
-                        <div class="evolution-label">Mejora general</div>
+                        <div class="evolution-label" data-i18n="main.improvement">Mejora general</div>
                     </div>
                 </div>
                 <div class="ai-insight" style="background: rgba(255,255,255,0.2); border: none; color: white;">
-                    <p id="aiInsightGeneral">Analizando tu aventura...</p>
+                    <p id="aiInsightGeneral" data-i18n="main.analyzing">Analizando tu aventura...</p>
                 </div>
             </section>
 
             <section class="evolution-highlight" style="background: #f8fafc; border: 2px border: #e2e8f0;">
                 <div class="evolution-header">
-                    <h2 style="color: #1e293b;">Análisis de Especialista BlueBot</h2>
-                    <p class="subtitle" style="color: #64748b;">Nivel de dominio detectado por nuestra IA</p>
+                    <h2 style="color: #1e293b;" data-i18n="main.specialist">Análisis de Especialista BlueBot</h2>
+                    <p class="subtitle" style="color: #64748b;" data-i18n="main.specialist_sub">Nivel de dominio detectado por nuestra IA</p>
                 </div>
 
                 <div class="skills-branches-container">
                     <div class="skill-branch auditivo">
                         <div class="skill-info">
-                            <span class="skill-name" style="color: #1e293b;"><i class="fas fa-volume-up"></i> Auditivo</span>
+                            <span class="skill-name" style="color: #1e293b;"><i class="fas fa-volume-up"></i> <span data-i18n="main.cat_auditivo">Auditivo</span></span>
                             <div class="skill-data">
-                                <span class="game-count" id="count-auditivo" style="color: #64748b;">0 jgs</span>
+                                <span class="game-count" id="count-auditivo" style="color: #64748b;">0 <span data-i18n="main.games_short">jgs</span></span>
                                 <span class="accuracy-label" id="pct-auditivo" style="color: #0066CC;">0%</span>
                             </div>
                         </div>
@@ -148,9 +148,9 @@
 
                     <div class="skill-branch visual">
                         <div class="skill-info">
-                            <span class="skill-name" style="color: #1e293b;"><i class="fas fa-eye"></i> Visual</span>
+                            <span class="skill-name" style="color: #1e293b;"><i class="fas fa-eye"></i> <span data-i18n="main.cat_visual">Visual</span></span>
                             <div class="skill-data">
-                                <span class="game-count" id="count-visual" style="color: #64748b;">0 jgs</span>
+                                <span class="game-count" id="count-visual" style="color: #64748b;">0 <span data-i18n="main.games_short">jgs</span></span>
                                 <span class="accuracy-label" id="pct-visual" style="color: #0066CC;">0%</span>
                             </div>
                         </div>
@@ -159,9 +159,9 @@
 
                     <div class="skill-branch kinestesico">
                         <div class="skill-info">
-                            <span class="skill-name" style="color: #1e293b;"><i class="fas fa-hand-paper"></i> Kinestésico</span>
+                            <span class="skill-name" style="color: #1e293b;"><i class="fas fa-hand-paper"></i> <span data-i18n="main.cat_kines">Kinestésico</span></span>
                             <div class="skill-data">
-                                <span class="game-count" id="count-kinestesico" style="color: #64748b;">0 jgs</span>
+                                <span class="game-count" id="count-kinestesico" style="color: #64748b;">0 <span data-i18n="main.games_short">jgs</span></span>
                                 <span class="accuracy-label" id="pct-kinestesico" style="color: #0066CC;">0%</span>
                             </div>
                         </div>
@@ -170,9 +170,9 @@
 
                     <div class="skill-branch lectoescritura">
                         <div class="skill-info">
-                            <span class="skill-name" style="color: #1e293b;"><i class="fas fa-book-open"></i> Lectoescritura</span>
+                            <span class="skill-name" style="color: #1e293b;"><i class="fas fa-book-open"></i> <span data-i18n="main.cat_lecto">Lectoescritura</span></span>
                             <div class="skill-data">
-                                <span class="game-count" id="count-lectoescritor" style="color: #64748b;">0 jgs</span>
+                                <span class="game-count" id="count-lectoescritor" style="color: #64748b;">0 <span data-i18n="main.games_short">jgs</span></span>
                                 <span class="accuracy-label" id="pct-lectoescritor" style="color: #0066CC;">0%</span>
                             </div>
                         </div>
@@ -182,41 +182,41 @@
 
                 <div class="ai-insight-box" style="background: white; border: 1px solid #e2e8f0;">
                     <div class="ai-icon" style="background: #0066CC;"><i class="fas fa-robot"></i></div>
-                    <p id="aiInsight" style="color: #334155;">Consultando con BlueBot sobre tus talentos...</p>
+                    <p id="aiInsight" style="color: #334155;" data-i18n="main.consulting">Consultando con BlueBot sobre tus talentos...</p>
                 </div>
             </section>
 
             <div class="stats-container">
                 <div class="chart-card">
-                    <h3>Tu Evolución (Puntos)</h3>
+                    <h3 data-i18n="main.chart_score">Tu Evolución (Puntos)</h3>
                     <canvas id="scoreChart"></canvas>
                 </div>
                 <div class="chart-card">
-                    <h3>Estilos Dominantes</h3>
+                    <h3 data-i18n="main.chart_style">Estilos Dominantes</h3>
                     <canvas id="styleChart"></canvas>
                 </div>
 
                 <div class="history-card full-width">
-                    <h3>Historial de Evaluaciones</h3>
+                    <h3 data-i18n="main.history">Historial de Evaluaciones</h3>
                     <table>
                         <thead>
                             <tr>
-                                <th>Fecha</th>
-                                <th>Tipo</th>
-                                <th>Mejor Estilo</th>
-                                <th>Nivel</th>
-                                <th>Puntos</th>
-                                <th>Tiempo</th>
+                                <th data-i18n="main.history_date">Fecha</th>
+                                <th data-i18n="main.history_type">Tipo</th>
+                                <th data-i18n="main.history_style">Mejor Estilo</th>
+                                <th data-i18n="main.history_level">Nivel</th>
+                                <th data-i18n="main.history_points">Puntos</th>
+                                <th data-i18n="main.history_time">Tiempo</th>
                             </tr>
                         </thead>
                         <tbody id="history-body">
-                            <tr><td colspan="6">Cargando tu historia...</td></tr>
+                            <tr><td colspan="6" data-i18n="main.history_load">Cargando tu historia...</td></tr>
                         </tbody>
                     </table>
                 </div>
 
                 <div class="history-card full-width" id="recs-section">
-                    <h3>Recomendaciones para ti</h3>
+                    <h3 data-i18n="main.recs">Recomendaciones para ti</h3>
                     <div id="recommendations-list"></div>
                 </div>
             </div>
@@ -225,12 +225,13 @@
 
     <footer>
         <div class="container">
-            <p>© BlueMinds - Plataforma de Educación Inclusiva</p>
+            <p data-i18n="main.footer">© BlueMinds - Plataforma de Educación Inclusiva</p>
         </div>
     </footer>
 
     <script src="../api.js"></script>
     <script src="../js/auth-guard.js"></script>
+    <script src="../js/i18n.js"></script>
     <script>
     function logout() {
         localStorage.removeItem('blueminds_current_user');
@@ -252,10 +253,9 @@
         if (!currentUser) return window.location.href = '../login.html';
         const user = JSON.parse(currentUser);
         document.getElementById('userName').textContent = user.name || 'Explorador';
-        
-        // Ejecutamos ambas cargas de forma independiente
+
         await loadDashboardData();
-        await loadDeepAnalysis(); // Este llenará las barras superiores y el insight robotizado
+        await loadDeepAnalysis();
     });
 
     async function loadDashboardData() {
@@ -270,17 +270,15 @@
             const recsData = await recsRes.json();
             const summaryData = await summaryRes.json();
 
-            // 1. Llenar estadísticas generales (Sección Dino Edu)
             animateNumber('gamesPlayed', 0, summaryData.gamesPlayed || 0, 1500);
             animateNumber('avgAccuracy', 0, summaryData.avgAccuracy || 0, 1500, true);
             animateNumber('bestScore', 0, summaryData.bestScore || 0, 1500);
-            
+
             const impVal = parseInt(summaryData.improvement || 0);
             document.getElementById('improvement').style.color = impVal >= 0 ? '#10b981' : '#f59e0b';
             animateNumber('improvement', 0, impVal, 1500);
             document.getElementById('aiInsightGeneral').textContent = summaryData.aiInsight || "¡Sigue practicando!";
 
-            // 2. Historial y Recomendaciones
             renderHistoryTable(historyData.sessions || []);
             renderRecommendations(recsData.recommendations || []);
             renderCharts(historyData.sessions || []);
@@ -300,7 +298,6 @@
             if (data && data.analysis) {
                 const { averagesByStyle, reasoning, dominantStyle, suggestedLevel } = data.analysis;
 
-                // Mapeo de estilos para las barras superiores
                 const styleMap = {
                     'auditivo': 'auditivo',
                     'visual': 'visual',
@@ -311,7 +308,6 @@
                     'lectoescritura': 'lectoescritor'
                 };
 
-                // Llenar las barras de dominio (Sección Superior)
                 if (averagesByStyle) {
                     averagesByStyle.forEach(s => {
                         const key = styleMap[s.learning_style.toLowerCase().trim()];
@@ -319,22 +315,19 @@
                             const pct = Math.round(s.avg_accuracy);
                             document.getElementById(`bar-${key}`).style.width = `${pct}%`;
                             document.getElementById(`pct-${key}`).textContent = `${pct}%`;
-                            document.getElementById(`count-${key}`).textContent = `${s.game_count} jgs`;
+                            document.getElementById(`count-${key}`).textContent = `${s.game_count} ${I18n.t('main.games_short')}`;
                         }
                     });
                 }
 
-                // Resaltar la tarjeta física según el estilo dominante
                 const domKey = styleMap[dominantStyle.toLowerCase().trim()];
                 const card = document.getElementById(`card-${domKey}`);
                 if (card) {
                     card.classList.add('is-recommended');
-                    // Pintar banderas de progreso
                     const flags = document.querySelectorAll(`#path-${domKey === 'lectoescritor' ? 'lecto-escritor' : domKey} .category-flag`);
                     flags.forEach((f, i) => { if (i < suggestedLevel) f.classList.add('completed'); });
                 }
 
-                // Insight del Robot (Superior)
                 document.getElementById('aiInsight').innerHTML = `<strong>Análisis BlueMinds:</strong> ${reasoning}`;
             }
         } catch (err) {
@@ -342,7 +335,6 @@
         }
     }
 
-    // --- Funciones de renderizado separadas para orden ---
     function renderHistoryTable(sessions) {
         const body = document.getElementById('history-body');
         body.innerHTML = sessions.length ? sessions.slice(0, 10).map(s => `
@@ -381,10 +373,10 @@
         if (!sessions.length) return;
         const labels = sessions.map(s => new Date(s.created_at).toLocaleDateString()).reverse();
         const scores = sessions.map(s => s.score || 0).reverse();
-        
+
         new Chart(document.getElementById('scoreChart'), {
             type: 'line',
-            data: { labels, datasets: [{ label: 'Puntos', data: scores, borderColor: '#0066CC', fill: true, tension: 0.4 }] }
+            data: { labels, datasets: [{ label: I18n.t('main.chart_score'), data: scores, borderColor: '#0066CC', fill: true, tension: 0.4 }] }
         });
 
         const counts = {};
@@ -394,29 +386,27 @@
             data: { labels: Object.keys(counts), datasets: [{ data: Object.values(counts), backgroundColor: ['#0066CC', '#00B4D8', '#F59E0B', '#E91E63'] }] }
         });
     }
+
     document.addEventListener('DOMContentLoaded', () => {
-    const menuToggle = document.getElementById('menu-toggle');
-    const navCenter = document.querySelector('.nav-center');
+        const menuToggle = document.getElementById('menu-toggle');
+        const navCenter = document.querySelector('.nav-center');
 
-    menuToggle.addEventListener('click', () => {
-        navCenter.classList.toggle('active');
-        
-        // Cambia el icono de barras a una "X" al abrir
-        const icon = menuToggle.querySelector('i');
-        if (navCenter.classList.contains('active')) {
-            icon.classList.replace('fa-bars', 'fa-times');
-        } else {
-            icon.classList.replace('fa-times', 'fa-bars');
-        }
-    });
+        menuToggle.addEventListener('click', () => {
+            navCenter.classList.toggle('active');
+            const icon = menuToggle.querySelector('i');
+            if (navCenter.classList.contains('active')) {
+                icon.classList.replace('fa-bars', 'fa-times');
+            } else {
+                icon.classList.replace('fa-times', 'fa-bars');
+            }
+        });
 
-    // Cerrar el menú al hacer clic en un enlace (opcional)
-    document.querySelectorAll('.nav-center a').forEach(link => {
-        link.addEventListener('click', () => {
-            navCenter.classList.remove('active');
+        document.querySelectorAll('.nav-center a').forEach(link => {
+            link.addEventListener('click', () => {
+                navCenter.classList.remove('active');
+            });
         });
     });
-});
-</script>
+    </script>
 </body>
 </html>

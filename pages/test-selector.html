@@ -9,36 +9,38 @@
     <link rel="stylesheet" href="../css/main.css">
     <link rel="stylesheet" href="../css/welcome.css">
     <link rel="stylesheet" href="../css/test-selector.css">
-</head>  
+</head>
 <body>
     <div class="welcome-screen">
         <div class="welcome-card">
             <div class="welcome-logo">
                 <i class="fas fa-user-friends"></i>
             </div>
-            <h1 class="welcome-title">¿Quién tomará el test?</h1>
-            <p class="welcome-subtitle">Selecciona la opción que corresponda para comenzar la evaluación</p>
-            
+            <h1 class="welcome-title" data-i18n="test.who">¿Quién tomará el test?</h1>
+            <p class="welcome-subtitle" data-i18n="test.desc">Selecciona la opción que corresponda para comenzar la evaluación</p>
+
             <div class="welcome-buttons">
                 <button class="btn btn-primary" onclick="selectUser('parent')">
                     <i class="fas fa-user-tie"></i>
-                    Soy Padre/Madre
+                    <span data-i18n="test.parent">Soy Padre/Madre</span>
                 </button>
                 <button class="btn btn-secondary" onclick="selectUser('child')">
                     <i class="fas fa-child"></i>
-                    Soy Niño/Niña
+                    <span data-i18n="test.child">Soy Niño/Niña</span>
                 </button>
             </div>
-            
+
             <div class="back-link">
                 <a href="BlueMindsMain.html">
-                    <i class="fas fa-arrow-left"></i> Volver
+                    <i class="fas fa-arrow-left"></i> <span data-i18n="test.back">Volver</span>
                 </a>
             </div>
         </div>
     </div>
-     <script src="../api.js"></script>
- <script src="../js/auth-guard.js"></script>
+
+    <script src="../api.js"></script>
+    <script src="../js/auth-guard.js"></script>
+    <script src="../js/i18n.js"></script>
     <script>
         function selectUser(type) {
             if (type === 'parent') {

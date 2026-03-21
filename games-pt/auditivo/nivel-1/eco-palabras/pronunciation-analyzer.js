@@ -1,9 +1,9 @@
 // ========================
-// ANÁLISIS DE PRONUNCIACIÓN GRATUITO
+// ANÁLISE DE PRONÚNCIA GRATUITA
 // ========================
 
-// Base de datos de fonemas españoles
-const SPANISH_PHONEMES = {
+// Base de dados de fonemas do português brasileiro
+const PORTUGUESE_PHONEMES = {
   'a': { ipa: 'a', esperado: /a/ },
   'e': { ipa: 'e', esperado: /e/ },
   'i': { ipa: 'i', esperado: /i/ },
@@ -12,64 +12,65 @@ const SPANISH_PHONEMES = {
   's': { ipa: 's', esperado: /s/ },
   'l': { ipa: 'l', esperado: /l/ },
   'n': { ipa: 'n', esperado: /n/ },
-  'r': { ipa: 'ɾ', esperado: /r/ }, // vibrante simple
-  'rr': { ipa: 'r', esperado: /rr/ }, // vibrante múltiple
+  'r': { ipa: 'ɾ', esperado: /r/ }, // vibrante simples
+  'rr': { ipa: 'x', esperado: /rr/ }, // vibrante múltipla (como "h" no BR)
   't': { ipa: 't', esperado: /t/ },
   'b': { ipa: 'b', esperado: /b/ },
   'd': { ipa: 'd', esperado: /d/ },
   'g': { ipa: 'g', esperado: /g/ },
   'p': { ipa: 'p', esperado: /p/ },
   'c': { ipa: 'k', esperado: /c|k/ },
-  'z': { ipa: 'θ', esperado: /z/ },
-  'j': { ipa: 'x', esperado: /j/ },
-  'y': { ipa: 'ʝ', esperado: /y/ },
-  'v': { ipa: 'b', esperado: /v/ },
+  'z': { ipa: 'z', esperado: /z/ },
+  'j': { ipa: 'ʒ', esperado: /j/ },
+  'y': { ipa: 'j', esperado: /y/ },
+  'v': { ipa: 'v', esperado: /v/ },
   'm': { ipa: 'm', esperado: /m/ },
   'f': { ipa: 'f', esperado: /f/ },
-  'h': { ipa: '∅', esperado: /h/ }, // mudo en español
-  'ch': { ipa: 'ʧ', esperado: /ch/ },
-  'll': { ipa: 'ʝ', esperado: /ll|y/ }
+  'h': { ipa: '∅', esperado: /h/ }, // mudo em posição inicial no BR
+  'ch': { ipa: 'ʃ', esperado: /ch/ },
+  'lh': { ipa: 'ʎ', esperado: /lh/ },
+  'nh': { ipa: 'ɲ', esperado: /nh/ }
 };
 
-// Diccionario de palabras con fonemas
+// Dicionário de palavras com fonemas
 const WORD_PHONEME_DATABASE = {
   'sol': {
     phonemes: ['s', 'o', 'l'],
     difficulty: 'easy',
-    commonErrors: ['z en lugar de s', 'falta la l']
+    commonErrors: ['z no lugar de s', 'omitir o l']
   },
-  'luna': {
-    phonemes: ['l', 'u', 'n', 'a'],
+  'lua': {
+    phonemes: ['l', 'u', 'a'],
     difficulty: 'easy',
-    commonErrors: ['confundir ll con y', 'omitir la n']
+    commonErrors: ['omitir o a final']
   },
-  'estrella': {
-    phonemes: ['e', 's', 't', 'r', 'e', 'y', 'a'],
+  'estrela': {
+    phonemes: ['e', 's', 't', 'r', 'e', 'l', 'a'],
     difficulty: 'medium',
-    commonErrors: ['dificultad con r vibrante', 'confundir ll con y']
+    commonErrors: ['dificuldade com r', 'omitir o l']
   },
-  'nube': {
-    phonemes: ['n', 'u', 'b', 'e'],
+  'nuvem': {
+    phonemes: ['n', 'u', 'v', 'e', 'm'],
     difficulty: 'easy',
-    commonErrors: ['omitir la b']
+    commonErrors: ['omitir o m nasal']
   },
-  'lluvia': {
-    phonemes: ['y', 'u', 'v', 'i', 'a'],
+  'chuva': {
+    phonemes: ['ch', 'u', 'v', 'a'],
     difficulty: 'hard',
-    commonErrors: ['confundir ll con y', 'v con b']
+    commonErrors: ['confundir ch com s', 'v com b']
   },
-  'árbol': {
-    phonemes: ['a', 'r', 'b', 'o', 'l'],
+  'árvore': {
+    phonemes: ['a', 'r', 'v', 'o', 'r', 'e'],
     difficulty: 'medium',
-    commonErrors: ['dificultad con r vibrante', 'omitir acentuación']
+    commonErrors: ['dificuldade com r vibrante', 'omitir acentuação']
   },
-  'dinosaurio': { phonemes: ['d', 'i', 'n', 'o', 's', 'a', 'u', 'r', 'i', 'o'], difficulty: 'hard' },
-'mariposa': { phonemes: ['m', 'a', 'r', 'i', 'p', 'o', 's', 'a'], difficulty: 'hard' },
-'computadora': { phonemes: ['c', 'o', 'm', 'p', 'u', 't', 'a', 'd', 'o', 'r', 'a'], difficulty: 'hard' }
+  'dinossauro': { phonemes: ['d', 'i', 'n', 'o', 's', 'a', 'u', 'r', 'o'], difficulty: 'hard' },
+  'borboleta': { phonemes: ['b', 'o', 'r', 'b', 'o', 'l', 'e', 't', 'a'], difficulty: 'hard' },
+  'computador': { phonemes: ['c', 'o', 'm', 'p', 'u', 't', 'a', 'd', 'o', 'r'], difficulty: 'hard' }
 };
 
 // ========================
-// CLASE DE ANÁLISIS DE PRONUNCIACIÓN
+// CLASSE DE ANÁLISE DE PRONÚNCIA
 // ========================
 
 class PronunciationAnalyzer {
@@ -87,10 +88,10 @@ class PronunciationAnalyzer {
   }
 
   /**
-   * Analizar pronunciación
-   * @param {string} targetWord - Palabra esperada
-   * @param {string} recordedText - Lo que grabó el usuario
-   * @returns {Object} Análisis completo
+   * Analisar pronúncia
+   * @param {string} targetWord - Palavra esperada
+   * @param {string} recordedText - O que o usuário gravou
+   * @returns {Object} Análise completa
    */
   analyze(targetWord, recordedText) {
     const targetPhonemes = WORD_PHONEME_DATABASE[targetWord].phonemes;
@@ -99,19 +100,19 @@ class PronunciationAnalyzer {
     // Comparar fonemas
     const phonemeComparison = this.comparePhonemes(targetPhonemes, recordedPhonemes);
 
-    // Calcular similitud
+    // Calcular similaridade
     const similarity = this.calculateSimilarity(targetWord, recordedText);
 
-    // Análisis detallado por fonema
+    // Análise detalhada por fonema
     const detailedAnalysis = this.analyzeByPhoneme(targetWord, recordedText);
 
-    // Detectar errores específicos
+    // Detectar erros específicos
     const errors = this.detectSpecificErrors(targetWord, recordedText);
 
-    // Generar score
+    // Gerar pontuação
     const score = this.generateScore(phonemeComparison, similarity, errors);
 
-    // Registrar intento
+    // Registrar tentativa
     const attempt = {
       timestamp: new Date(),
       targetWord,
@@ -138,7 +139,7 @@ class PronunciationAnalyzer {
   }
 
   /**
-   * Extraer fonemas del texto grabado
+   * Extrair fonemas do texto gravado
    */
   extractPhonemes(text) {
     const cleaned = text.toLowerCase().trim()
@@ -146,19 +147,19 @@ class PronunciationAnalyzer {
       .replace(/[\u0300-\u036f]/g, "");
     const phonemes = [];
 
-    // Procesar texto carácter por carácter
+    // Processar texto caractere por caractere
     for (let i = 0; i < cleaned.length; i++) {
       const char = cleaned[i];
       const nextChar = cleaned[i + 1];
 
-      // Detectar combinaciones (ch, ll, rr, etc.)
+      // Detectar combinações (ch, lh, nh, rr, etc.)
       if ((char === 'c' && nextChar === 'h') ||
-          (char === 'l' && nextChar === 'l') ||
-          (char === 'r' && nextChar === 'r') ||
-          (char === 'z' && nextChar === 'z')) {
+          (char === 'l' && nextChar === 'h') ||
+          (char === 'n' && nextChar === 'h') ||
+          (char === 'r' && nextChar === 'r')) {
         phonemes.push(char + nextChar);
-        i++; // Saltar siguiente carácter
-      } else if (SPANISH_PHONEMES[char]) {
+        i++; // Pular próximo caractere
+      } else if (PORTUGUESE_PHONEMES[char]) {
         phonemes.push(char);
       }
     }
@@ -167,7 +168,7 @@ class PronunciationAnalyzer {
   }
 
   /**
-   * Comparar fonemas esperados vs grabados
+   * Comparar fonemas esperados vs gravados
    */
   comparePhonemes(expected, recorded) {
     const results = [];
@@ -182,13 +183,13 @@ class PronunciationAnalyzer {
 
       if (!exp && rec) {
         status = 'extra';
-        errorType = 'Extra phoneme';
+        errorType = 'Fonema extra';
       } else if (exp && !rec) {
         status = 'missing';
-        errorType = 'Omitted phoneme';
+        errorType = 'Fonema omitido';
       } else if (exp !== rec) {
         status = 'incorrect';
-        errorType = 'Substitution';
+        errorType = 'Substituição';
       }
 
       results.push({
@@ -205,7 +206,7 @@ class PronunciationAnalyzer {
   }
 
   /**
-   * Calcular similitud de cadenas (Levenshtein)
+   * Calcular similaridade de strings (Levenshtein)
    */
   calculateSimilarity(target, recorded) {
     const targetLower = target.toLowerCase();
@@ -220,7 +221,7 @@ class PronunciationAnalyzer {
       }
     }
 
-    // Bonus si contiene la palabra
+    // Bônus se contiver a palavra
     if (recordedLower.includes(targetLower) || targetLower.includes(recordedLower)) {
       matches = Math.min(maxLen, matches + 15);
     }
@@ -229,33 +230,33 @@ class PronunciationAnalyzer {
   }
 
   /**
-   * Precisión de un fonema individual
+   * Precisão de um fonema individual
    */
   calculatePhonemeAccuracy(expected, recorded) {
     if (!expected || !recorded) return 0;
     if (expected === recorded) return 100;
 
-    // Comprobar similaridad acústica (substituciones comunes)
+    // Verificar similaridade acústica (substituições comuns no português)
     const similarPairs = [
-      ['b', 'v'], // b y v suenan igual en español
-      ['y', 'll'], // yeísmo común
-      ['z', 's'], // seseo común
-      ['c', 'z'],
-      ['d', 't'],
-      ['g', 'k']
+      ['b', 'v'], // b e v podem se confundir
+      ['s', 'z'], // s e z podem se confundir
+      ['d', 't'], // oclusivas dentais
+      ['g', 'k'],
+      ['ch', 's'], // ch e s em algumas regiões
+      ['lh', 'l']
     ];
 
     for (const [a, b] of similarPairs) {
       if ((expected === a && recorded === b) || (expected === b && recorded === a)) {
-        return 75; // Parcialmente correcto
+        return 75; // Parcialmente correto
       }
     }
 
-    return 40; // Incorrecto
+    return 40; // Incorreto
   }
 
   /**
-   * Análisis detallado por fonema
+   * Análise detalhada por fonema
    */
   analyzeByPhoneme(targetWord, recordedText) {
     const targetData = WORD_PHONEME_DATABASE[targetWord];
@@ -270,7 +271,7 @@ class PronunciationAnalyzer {
 
       analysis[phoneme] = {
         expected: phoneme,
-        recorded: recordedPhoneme || 'omitted',
+        recorded: recordedPhoneme || 'omitido',
         accuracy,
         isCorrect: accuracy >= 80,
         commonError: accuracy < 80 ? this.identifyCommonError(phoneme, recordedPhoneme) : null
@@ -281,28 +282,29 @@ class PronunciationAnalyzer {
   }
 
   /**
-   * Identificar errores comunes
+   * Identificar erros comuns
    */
   identifyCommonError(expected, recorded) {
     const commonErrors = {
-      's': 'Confunde "s" con "z" (seseo)',
-      'z': 'Dice "s" en lugar de "z" (seseo)',
-      'r': 'Dificultad con "r" vibrante (rotacismo)',
-      'rr': 'Confunde "r" con "rr"',
-      'y': 'Confunde "y" con "ll" (yeísmo)',
-      'll': 'Confunde "ll" con "y" (yeísmo)',
-      'b': 'Omite o confunde "b" con "v"',
-      'v': 'Confunde "v" con "b"',
-      'd': 'Omite o sustituye "d"',
-      'g': 'Dificultad con "g" vibrante',
-      'j': 'Dificultad con "j" fricativa'
+      's': 'Confunde "s" com "z"',
+      'z': 'Diz "s" no lugar de "z"',
+      'r': 'Dificuldade com "r" vibrante (rotacismo)',
+      'rr': 'Confunde "r" com "rr"',
+      'lh': 'Dificuldade com "lh"',
+      'nh': 'Dificuldade com "nh"',
+      'b': 'Omite ou confunde "b" com "v"',
+      'v': 'Confunde "v" com "b"',
+      'd': 'Omite ou substitui "d"',
+      'g': 'Dificuldade com "g"',
+      'j': 'Dificuldade com "j" fricativa',
+      'ch': 'Dificuldade com "ch"'
     };
 
-    return commonErrors[expected] || 'Error de pronunciación';
+    return commonErrors[expected] || 'Erro de pronúncia';
   }
 
   /**
-   * Detectar errores específicos
+   * Detectar erros específicos
    */
   detectSpecificErrors(targetWord, recordedText) {
     const targetLower = targetWord.toLowerCase();
@@ -310,46 +312,46 @@ class PronunciationAnalyzer {
 
     const errors = [];
 
-    // Error tipo: Omisión
+    // Erro tipo: Omissão
     if (recordedLower.length < targetLower.length) {
       errors.push({
         type: 'Omission',
-        description: 'Omitió sonidos de la palabra'
+        description: 'Omitiu sons da palavra'
       });
     }
 
-    // Error tipo: Sustitución (z por s)
+    // Erro tipo: Substituição (z por s)
     if (targetLower.includes('z') && !recordedLower.includes('z')) {
       errors.push({
         type: 'Substitution',
         phoneme: 'z/s',
-        description: 'Dijo "s" en lugar de "z"'
+        description: 'Disse "s" no lugar de "z"'
       });
     }
 
-    // Error tipo: Sustitución (s por z)
+    // Erro tipo: Substituição (s por z)
     if (targetLower.includes('s') && !recordedLower.includes('s')) {
       errors.push({
         type: 'Substitution',
         phoneme: 's/z',
-        description: 'Dijo "z" en lugar de "s"'
+        description: 'Disse "z" no lugar de "s"'
       });
     }
 
-    // Error tipo: Rotacismo (r)
+    // Erro tipo: Rotacismo (r)
     if ((targetLower.includes('r') || targetLower.includes('rr')) &&
         !recordedLower.match(/r/)) {
       errors.push({
         type: 'Rhotic',
-        description: 'Dificultad con sonido "r"'
+        description: 'Dificuldade com o som "r"'
       });
     }
 
-    // Error tipo: Yeísmo (ll/y)
-    if (targetLower.includes('ll') && recordedLower.includes('y')) {
+    // Erro tipo: dificuldade com lh
+    if (targetLower.includes('lh') && !recordedLower.includes('lh')) {
       errors.push({
-        type: 'Yeism',
-        description: 'Dijo "y" en lugar de "ll"'
+        type: 'Lateral',
+        description: 'Dificuldade com "lh"'
       });
     }
 
@@ -357,25 +359,25 @@ class PronunciationAnalyzer {
   }
 
   /**
-   * Generar score final ponderado
+   * Gerar pontuação final ponderada
    */
   generateScore(phonemeComparison, similarity, errors) {
     const correctPhonemes = phonemeComparison.filter(p => p.status === 'correct').length;
     const totalPhonemes = phonemeComparison.length;
     const phonemeAccuracy = (correctPhonemes / totalPhonemes) * 100;
 
-    // Score ponderado
+    // Pontuação ponderada
     const score = Math.round(
-      (similarity * 0.4) +        // 40% similitud general
-      (phonemeAccuracy * 0.4) +   // 40% precisión fonética
-      ((100 - (errors.length * 20)) * 0.2)  // 20% ausencia de errores
+      (similarity * 0.4) +        // 40% similaridade geral
+      (phonemeAccuracy * 0.4) +   // 40% precisão fonética
+      ((100 - (errors.length * 20)) * 0.2)  // 20% ausência de erros
     );
 
     return Math.max(0, Math.min(100, score)); // Limitar 0-100
   }
 
   /**
-   * Generar feedback personalizado
+   * Gerar feedback personalizado
    */
   generateFeedback(score, errors) {
     let feedback = {};
@@ -385,31 +387,31 @@ class PronunciationAnalyzer {
     if (score >= 90) {
       emoji = '🎉';
       feedback.level = 'excellent';
-      messages.push('¡Excelente pronunciación!');
+      messages.push('Pronúncia excelente!');
     } else if (score >= 75) {
       emoji = '👍';
       feedback.level = 'good';
-      messages.push('Muy bien, necesitas pequeñas mejoras');
+      messages.push('Muito bem, pequenas melhorias ainda são possíveis');
     } else if (score >= 50) {
       emoji = '🔄';
       feedback.level = 'okay';
-      messages.push('Intenta de nuevo, más lentamente');
+      messages.push('Tente novamente, mais devagar');
     } else {
       emoji = '💪';
       feedback.level = 'needswork';
-      messages.push('Necesitas practicar este sonido más');
+      messages.push('Você precisa praticar mais este som');
     }
 
-    // Feedback específico por error
+    // Feedback específico por erro
     errors.forEach(error => {
       if (error.type === 'Omission') {
-        messages.push('✋ No pronunciaste toda la palabra');
+        messages.push('✋ Você não pronunciou a palavra toda');
       } else if (error.type === 'Substitution') {
-        messages.push(`⚠️ Cambiaste "${error.phoneme}"`);
+        messages.push(`⚠️ Você trocou "${error.phoneme}"`);
       } else if (error.type === 'Rhotic') {
-        messages.push('🔄 Trabaja la "r" vibrante');
-      } else if (error.type === 'Yeism') {
-        messages.push('🔄 Recuerda: "ll" != "y"');
+        messages.push('🔄 Trabalhe o "r" vibrante');
+      } else if (error.type === 'Lateral') {
+        messages.push('🔄 Pratique o som "lh"');
       }
     });
 
@@ -423,31 +425,31 @@ class PronunciationAnalyzer {
   }
 
   /**
-   * Consejos según score
+   * Conselhos conforme pontuação
    */
   getAdviceByScore(score) {
     if (score >= 90) {
-      return '¡Pasemos a un sonido más difícil!';
+      return 'Vamos para um som mais difícil!';
     } else if (score >= 70) {
-      return 'Repite una vez más, con más cuidado';
+      return 'Repita mais uma vez, com mais cuidado';
     } else if (score >= 50) {
-      return 'Escucha bien la palabra y hazlo más lento';
+      return 'Ouça bem a palavra e fale mais devagar';
     } else {
-      return 'Pide ayuda a tu maestro/a o terapeuta';
+      return 'Peça ajuda ao seu professor(a) ou terapeuta';
     }
   }
 
   /**
-   * Generar ejercicio adaptativo
+   * Gerar exercício adaptativo
    */
   generateAdaptiveExercise() {
     const failedPhonemes = this.userHistory.failedPhonemes;
 
-    // Si hay fonemas problemáticos, enfocarse en esos
+    // Se houver fonemas problemáticos, focar neles
     if (failedPhonemes.length > 0) {
       const targetPhoneme = failedPhonemes[0];
 
-      // Buscar palabra fácil con ese fonema
+      // Buscar palavra fácil com esse fonema
       const matchingWords = Object.entries(WORD_PHONEME_DATABASE)
         .filter(([word, data]) =>
           data.phonemes.includes(targetPhoneme) && data.difficulty === 'easy'
@@ -459,29 +461,27 @@ class PronunciationAnalyzer {
           targetPhoneme,
           word: matchingWords[0][0],
           difficulty: 'easy',
-          instruction: `Enfócate en el sonido "${targetPhoneme}"`
+          instruction: `Foque no som "${targetPhoneme}"`
         };
       }
     }
 
-    // Si va bien, aumentar dificultad
+    // Se estiver indo bem, aumentar dificuldade
     return {
       type: 'difficulty_increase',
-      instruction: 'Pasamos a una palabra más difícil'
+      instruction: 'Vamos para uma palavra mais difícil'
     };
   }
 
   /**
-   * Actualizar historial del usuario
+   * Atualizar histórico do usuário
    */
-
   updateHistoricalData(attempt) {
     this.userHistory.sessionStats.totalAttempts++;
     this.userHistory.sessionStats.totalScore += attempt.score;
     this.userHistory.sessionStats.averageScore =
       Math.round(this.userHistory.sessionStats.totalScore / this.userHistory.sessionStats.totalAttempts);
 
-    // CORRECCIÓN AQUÍ: Convertimos el objeto en un array de valores para poder usar forEach
     Object.values(attempt.detailedAnalysis).forEach((phoneme) => {
       if (phoneme.accuracy >= 80) {
         if (!this.userHistory.successfulPhonemes.includes(phoneme.expected)) {
@@ -489,16 +489,14 @@ class PronunciationAnalyzer {
         }
       } else {
         if (!this.userHistory.failedPhonemes.includes(phoneme.expected)) {
-          if (!this.userHistory.failedPhonemes.includes(phoneme.expected)) {
-            this.userHistory.failedPhonemes.push(phoneme.expected);
-          }
+          this.userHistory.failedPhonemes.push(phoneme.expected);
         }
       }
     });
-}
+  }
 
   /**
-   * Obtener reporte del progreso
+   * Obter relatório de progresso
    */
   getProgressReport() {
     return {
@@ -515,5 +513,5 @@ class PronunciationAnalyzer {
 // ========================
 // EXPORTAR PARA USO
 // ========================
-// En el HTML:
+// No HTML:
 // <script src="pronunciation-analyzer.js"></script>

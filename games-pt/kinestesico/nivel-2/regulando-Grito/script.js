@@ -1,4 +1,4 @@
-// Variables globales
+// Variáveis globais
 let currentRound = 0;
 let score = 0;
 let cameraActive = false;
@@ -9,17 +9,17 @@ let breathingDuration = 4; // segundos (adapta entre 4-6)
 let regulationAnalysis = {
     voiceVolume: 0,
     breathRate: 0,
-    detectedAnxiety: 'Bajo',
+    detectedAnxiety: 'Baixo',
     selfControl: 0
 };
 
 const totalRounds = 3;
 let analysisInterval = null;
-let breathingPhase = 0; // 0: inhale, 1: hold, 2: exhale, 3: hold
-const breathingPhases = ['Inhala', 'Mantén', 'Exhala', 'Mantén'];
+let breathingPhase = 0; // 0: inspire, 1: segure, 2: expire, 3: segure
+const breathingPhases = ['Inspire', 'Segure', 'Expire', 'Segure'];
 const breathingDurations = [4, 4, 4, 4]; // segundos para cada fase
 
-// ================== INICIALIZACIÓN ==================
+// ================== INICIALIZAÇÃO ==================
 document.addEventListener('DOMContentLoaded', () => {
     setupEventListeners();
     startNewRound();
@@ -31,13 +31,12 @@ function setupEventListeners() {
     document.getElementById('continue-button').addEventListener('click', continueToNextRound);
 }
 
-// ================== RONDAS ==================
+// ================== RODADAS ==================
 function startNewRound() {
     anxietyLevel = 20 + Math.random() * 30; // 20-50% inicial
     breathingDuration = 4;
     resetAnalysis();
 
-    // Mostrar personajes
     document.getElementById('angryBtn').disabled = false;
     document.getElementById('calmBtn').disabled = false;
     document.getElementById('feedback').classList.add('hidden');
@@ -49,40 +48,38 @@ function startNewRound() {
 function completeGame() {
     const regulationCard = document.querySelector('.regulation-card');
     regulationCard.innerHTML = `
-        <h2>¡Actividad Completada! 🎉</h2>
+        <h2>Atividade Concluída! 🎉</h2>
         <div style="text-align: center; margin: 30px 0;">
             <div style="font-size: 100px; margin-bottom: 20px;">😌</div>
             <div style="font-size: 80px;">🌿</div>
         </div>
         <div class="feedback correct">
-            <p style="font-size: 28px; margin: 20px 0;">Tu puntaje final: ${score} puntos</p>
-            <p style="font-size: 16px;">¡Excelente regulación emocional y autocontrol!</p>
+            <p style="font-size: 28px; margin: 20px 0;">Sua pontuação final: ${score} pontos</p>
+            <p style="font-size: 16px;">Excelente regulação emocional e autocontrole!</p>
         </div>
         <div class="action-controls">
             <button class="action-button primary" onclick="location.reload()">
-                <i class="fas fa-redo"></i> Jugar de Nuevo
+                <i class="fas fa-redo"></i> Jogar Novamente
             </button>
             <button class="action-button primary" onclick="goToMainPage()">
-                <i class="fas fa-home"></i> Volver al Menú
+                <i class="fas fa-home"></i> Voltar ao Menu
             </button>
         </div>
     `;
 }
 
-// ================== INTERFAZ ==================
+// ================== INTERFACE ==================
 function updateUI() {
     document.getElementById('current-round').textContent = currentRound + 1;
     document.getElementById('total-rounds').textContent = totalRounds;
-    document.getElementById('score').textContent = score + ' puntos';
-    document.getElementById('score-display').textContent = score + ' puntos';
+    document.getElementById('score').textContent = score + ' pontos';
+    document.getElementById('score-display').textContent = score + ' pontos';
 
     const progress = ((currentRound + 1) / totalRounds) * 100;
     document.getElementById('progress-fill').style.width = progress + '%';
 
-    // Actualizar indicador de ansiedad
     updateAnxietyIndicator();
 
-    // Resetear secciones
     document.getElementById('breathingGuide').style.display = 'none';
     document.getElementById('analysisSection').style.display = 'none';
     document.getElementById('cameraSection').style.display = 'none';
@@ -92,14 +89,14 @@ function updateAnxietyIndicator() {
     const percentage = Math.min(100, anxietyLevel);
     document.getElementById('anxietyBar').style.width = percentage + '%';
 
-    let level = 'Bajo';
+    let level = 'Baixo';
     if (percentage > 70) level = 'Alto';
-    else if (percentage > 40) level = 'Medio';
+    else if (percentage > 40) level = 'Médio';
 
     document.getElementById('anxietyLevel').textContent = level;
 }
 
-// ================== SELECCIÓN DE PERSONAJE ==================
+// ================== SELEÇÃO DE PERSONAGEM ==================
 function selectCharacter(choice) {
     const isCorrect = choice === 'calm';
 
@@ -111,18 +108,16 @@ function selectCharacter(choice) {
 
     if (isCorrect) {
         score += 10;
-        feedbackText.textContent = '¡Correcto! Este niño está calmado. 😊';
+        feedbackText.textContent = 'Correto! Essa criança está calma. 😊';
         feedbackElement.className = 'feedback correct';
 
-        // Mostrar guía de respiración
         setTimeout(() => {
             startBreathingGuide();
         }, 500);
     } else {
-        feedbackText.textContent = 'No, ese niño está enojado. Intenta con el otro. 😠';
+        feedbackText.textContent = 'Não, essa criança está brava. Tente com a outra. 😠';
         feedbackElement.className = 'feedback incorrect';
 
-        // Permitir reintentar
         setTimeout(() => {
             document.getElementById('angryBtn').disabled = false;
             document.getElementById('calmBtn').disabled = false;
@@ -130,11 +125,11 @@ function selectCharacter(choice) {
     }
 
     feedbackElement.classList.remove('hidden');
-    document.getElementById('score').textContent = score + ' puntos';
-    document.getElementById('score-display').textContent = score + ' puntos';
+    document.getElementById('score').textContent = score + ' pontos';
+    document.getElementById('score-display').textContent = score + ' pontos';
 }
 
-// ================== GUÍA DE RESPIRACIÓN ==================
+// ================== GUIA DE RESPIRAÇÃO ==================
 function startBreathingGuide() {
     document.getElementById('breathingGuide').style.display = 'block';
     document.getElementById('analysisSection').style.display = 'block';
@@ -143,12 +138,11 @@ function startBreathingGuide() {
     breathingActive = true;
     analysisActive = true;
 
-    // Iniciar ciclo de respiración
     performBreathingCycle();
 }
 
 async function performBreathingCycle() {
-    const cycles = 3; // 3 ciclos de respiración
+    const cycles = 3; // 3 ciclos de respiração
 
     for (let cycle = 0; cycle < cycles; cycle++) {
         for (let phase = 0; phase < 4; phase++) {
@@ -160,29 +154,24 @@ async function performBreathingCycle() {
             document.getElementById('breathInstruction').textContent = phaseText;
             document.getElementById('breathDuration').textContent = `${phaseText}: ${phaseDuration} segundos`;
 
-            // Iniciar análisis
             startBreathingAnalysis(phaseDuration);
 
-            // Esperar duración de la fase
             await new Promise(resolve => setTimeout(resolve, phaseDuration * 1000));
         }
     }
 
-    // Terminar respiración
     breathingActive = false;
-    document.getElementById('breathInstruction').textContent = 'Bien hecho 😊';
+    document.getElementById('breathInstruction').textContent = 'Muito bem 😊';
 
-    // Mostrar botón continuar
     setTimeout(() => {
         document.getElementById('continue-button').style.display = 'inline-flex';
     }, 1000);
 }
 
-// ================== ANÁLISIS DE RESPIRACIÓN ==================
+// ================== ANÁLISE DE RESPIRAÇÃO ==================
 function startBreathingAnalysis(duration) {
     if (!analysisActive) return;
 
-    // Simulación de análisis de respiración y volumen
     const startTime = Date.now();
 
     const analysisCheck = setInterval(() => {
@@ -198,25 +187,23 @@ function startBreathingAnalysis(duration) {
             return;
         }
 
-        // Simular detección de métricas
-        const voiceVolume = 30 + Math.random() * 40; // 30-70%
-        const breathRate = 40 + Math.random() * 50; // 40-90% (bien si es calmado)
-        const selfControl = 60 + Math.random() * 35; // 60-95%
+        const voiceVolume = 30 + Math.random() * 40;
+        const breathRate = 40 + Math.random() * 50;
+        const selfControl = 60 + Math.random() * 35;
 
         regulationAnalysis.voiceVolume = Math.round(voiceVolume);
         regulationAnalysis.breathRate = Math.round(breathRate);
         regulationAnalysis.selfControl = Math.round(selfControl);
 
-        // Calcular ansiedad detectada
         const detectedAnxietyValue = Math.max(0, 100 - breathRate);
-        anxietyLevel = Math.max(0, anxietyLevel - 5); // Reducir ansiedad
+        anxietyLevel = Math.max(0, anxietyLevel - 5);
 
         if (detectedAnxietyValue > 70) {
             regulationAnalysis.detectedAnxiety = 'Alto';
         } else if (detectedAnxietyValue > 40) {
-            regulationAnalysis.detectedAnxiety = 'Medio';
+            regulationAnalysis.detectedAnxiety = 'Médio';
         } else {
-            regulationAnalysis.detectedAnxiety = 'Bajo';
+            regulationAnalysis.detectedAnxiety = 'Baixo';
         }
 
         updateAnalysisDisplay();
@@ -240,20 +227,19 @@ function checkAdaptation() {
     const notice = document.getElementById('adaptationNotice');
     const text = document.getElementById('adaptationText');
 
-    // Cambiar velocidad según ansiedad
     if (anxietyLevel > 70) {
         notice.classList.remove('hidden');
-        text.textContent = '⚠️ Se detectó ansiedad alta. Se recomienda una pausa...';
+        text.textContent = '⚠️ Foi detectada ansiedade elevada. Recomenda-se uma pausa...';
 
         if (breathingDuration < 6) {
-            breathingDuration = 6; // Ralentizar respiración
+            breathingDuration = 6;
         }
     } else if (regulationAnalysis.voiceVolume > 70) {
         notice.classList.remove('hidden');
-        text.textContent = '💡 Tu voz está muy fuerte. Intenta hablar más suavemente...';
+        text.textContent = '💡 Sua voz está muito alta. Tente falar mais suavemente...';
     } else if (regulationAnalysis.breathRate < 50) {
         notice.classList.remove('hidden');
-        text.textContent = '🫁 Respira más profundamente. Sigue el ritmo de la guía...';
+        text.textContent = '🫁 Respire mais fundo. Siga o ritmo do guia...';
     } else {
         notice.classList.add('hidden');
     }
@@ -263,12 +249,12 @@ function resetAnalysis() {
     regulationAnalysis = {
         voiceVolume: 0,
         breathRate: 0,
-        detectedAnxiety: 'Bajo',
+        detectedAnxiety: 'Baixo',
         selfControl: 0
     };
 }
 
-// ================== CÁMARA ==================
+// ================== CÂMERA ==================
 async function startCamera() {
     try {
         const stream = await navigator.mediaDevices.getUserMedia({
@@ -285,7 +271,7 @@ async function startCamera() {
         cameraActive = true;
         video.play();
     } catch (err) {
-        alert('No se pudo acceder a la cámara: ' + err.message);
+        alert('Não foi possível acessar a câmera: ' + err.message);
     }
 }
 
@@ -301,18 +287,17 @@ function stopCamera() {
     cameraActive = false;
 }
 
-// ================== CONTINUAR A SIGUIENTE RONDA ==================
+// ================== CONTINUAR PARA A PRÓXIMA RODADA ==================
 function continueToNextRound() {
     stopCamera();
     breathingActive = false;
     analysisActive = false;
 
-    // Agregar puntos adicionales basados en regulación
     const regulationBonus = Math.round((regulationAnalysis.selfControl + regulationAnalysis.breathRate) / 2 / 10);
     score += regulationBonus;
 
-    document.getElementById('score').textContent = score + ' puntos';
-    document.getElementById('score-display').textContent = score + ' puntos';
+    document.getElementById('score').textContent = score + ' pontos';
+    document.getElementById('score-display').textContent = score + ' pontos';
 
     if (currentRound + 1 >= totalRounds) {
         completeGame();
@@ -322,7 +307,7 @@ function continueToNextRound() {
     }
 }
 
-// ================== NAVEGACIÓN ==================
+// ================== NAVEGAÇÃO ==================
 function goToMainPage() {
     if (cameraActive) stopCamera();
     window.location.href = 'https://plekdev.github.io/BlueMinds/selectores/selector-kinestesico.html';

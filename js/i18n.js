@@ -145,11 +145,11 @@ const BLUEMINDS_TRANSLATIONS = {
     "sel.vis_desc":        "Aprende a través de imágenes y representaciones",
 
     // ── JUEGOS AUDITIVO ───────────────────────────────────────────────
-    "game.cadena_palabras":     "La Cadena de Palabras",
+    "A Corrente de Palavras":     "La Cadena de Palabras",
     "game.cadena_desc":         "Escucha una cadena de palabras y selecciona las imágenes en orden correcto",
     "game.eco_palabras":        "El Eco de las Palabras",
     "game.eco_desc":            "Repite las palabras que escuchas con precisión",
-    "game.cadena_palabras_2":   "La Cadena de Palabras 2",
+    "A Corrente de Palavras_2":   "La Cadena de Palabras 2",
     "game.cadena_2_desc":       "Versión adaptativa con IA que se ajusta a tu nivel de memoria auditiva",
     "game.completa_oracion_aud": "Completa la Oración Auditiva",
     "game.completa_aud_desc":   "Escucha oraciones incompletas y elige la palabra que las completa",
@@ -415,11 +415,11 @@ const BLUEMINDS_TRANSLATIONS = {
     "sel.vis_desc":        "Learn through images and representations",
 
     // ── AUDITORY GAMES ────────────────────────────────────────────────
-    "game.cadena_palabras":     "The Word Chain",
+    "A Corrente de Palavras":     "The Word Chain",
     "game.cadena_desc":         "Listen to a word chain and select the images in correct order",
     "game.eco_palabras":        "The Echo of Words",
     "game.eco_desc":            "Repeat the words you hear with precision",
-    "game.cadena_palabras_2":   "The Word Chain 2",
+    "A Corrente de Palavras_2":   "The Word Chain 2",
     "game.cadena_2_desc":       "Adaptive version with AI that adjusts to your auditory memory level",
     "game.completa_oracion_aud": "Complete the Auditory Sentence",
     "game.completa_aud_desc":   "Listen to incomplete sentences and choose the word that completes them",

@@ -1,5 +1,5 @@
 // ========================
-// ANALIZADOR DE MEMORIA AUDITIVA
+// ANALISADOR DE MEMÓRIA AUDITIVA
 // ========================
 
 
@@ -19,10 +19,10 @@ class AuditoryMemoryAnalyzer {
     analyze(expectedSequence, selectedSequence, timeElapsed) {
         const startTime = performance.now();
 
-        // Verificar si el orden es correcto
+        // Verificar se a ordem está correta
         const isCorrect = JSON.stringify(expectedSequence) === JSON.stringify(selectedSequence);
 
-        // Calcular accuracy parcial (cuántos en orden correcto)
+        // Calcular precisão parcial (quantas na ordem correta)
         let partialMatches = 0;
         for (let i = 0; i < Math.min(expectedSequence.length, selectedSequence.length); i++) {
             if (expectedSequence[i] === selectedSequence[i]) {
@@ -33,13 +33,13 @@ class AuditoryMemoryAnalyzer {
         }
         const accuracy = (partialMatches / expectedSequence.length) * 100;
 
-        // Calcular velocidad de procesamiento (ms por palabra)
+        // Calcular velocidade de processamento (ms por palavra)
         const processingSpeed = timeElapsed / expectedSequence.length;
 
-        // Generar score
+        // Gerar pontuação
         const score = this.generateScore(accuracy, isCorrect, processingSpeed, selectedSequence.length);
 
-        // Registrar intento
+        // Registrar tentativa
         const attempt = {
             timestamp: new Date(),
             expectedSequence: expectedSequence,
@@ -68,22 +68,22 @@ class AuditoryMemoryAnalyzer {
     }
 
     generateScore(accuracy, isCorrect, processingSpeed, sequenceLength) {
-        // Puntaje base según accuracy
+        // Pontuação base pela precisão
         let baseScore = accuracy;
 
-        // Bonus por respuesta correcta
+        // Bônus por resposta correta
         if (isCorrect) {
             baseScore += 20;
         }
 
-        // Ajuste por velocidad (respuestas más rápidas)
+        // Ajuste por velocidade (respostas mais rápidas)
         if (processingSpeed < 2000) {
             baseScore += 10;
         } else if (processingSpeed < 5000) {
             baseScore += 5;
         }
 
-        // Ajuste por dificultad (más palabras = más difícil)
+        // Ajuste por dificuldade (mais palavras = mais difícil)
         if (sequenceLength === 4) {
             baseScore += 5;
         } else if (sequenceLength === 5) {
@@ -100,23 +100,23 @@ class AuditoryMemoryAnalyzer {
 
         if (isCorrect) {
             emoji = '🎉';
-            message = '¡Perfecto! Orden correcto';
-            details.push('Recordaste todas las palabras en orden');
+            message = 'Perfeito! Ordem correta';
+            details.push('Você lembrou todas as palavras em ordem');
         } else if (accuracy >= 75) {
             emoji = '👍';
-            message = 'Muy bien, casi lo tienes';
-            details.push('Acertaste ' + partialMatches + ' de ' + totalWords + ' palabras');
-            details.push('Intenta nuevamente con más atención');
+            message = 'Muito bem, quase lá';
+            details.push('Você acertou ' + partialMatches + ' de ' + totalWords + ' palavras');
+            details.push('Tente novamente com mais atenção');
         } else if (accuracy >= 50) {
             emoji = '📝';
-            message = 'Necesitas practicar más';
-            details.push('Recordaste ' + partialMatches + ' palabras');
-            details.push('Escucha de nuevo con mucha atención');
+            message = 'Você precisa praticar mais';
+            details.push('Você lembrou ' + partialMatches + ' palavras');
+            details.push('Ouça novamente com muita atenção');
         } else {
             emoji = '💪';
-            message = 'Sigue intentando';
-            details.push('La memoria auditiva se mejora con práctica');
-            details.push('Presiona "Repetir" para intentar de nuevo');
+            message = 'Continue tentando';
+            details.push('A memória auditiva melhora com a prática');
+            details.push('Pressione "Repetir" para tentar de novo');
         }
 
         return {
@@ -128,10 +128,10 @@ class AuditoryMemoryAnalyzer {
 
     generateAnalysis(attempt) {
         return {
-            exactness: attempt.isCorrect ? 'Exacto' : 'Incompleto',
+            exactness: attempt.isCorrect ? 'Exato' : 'Incompleto',
             memorized: attempt.partialMatches + '/' + attempt.expectedSequence.length,
             responseTime: Math.round(attempt.timeElapsed) + 'ms',
-            processingSpeed: Math.round(attempt.processingSpeed) + 'ms/palabra',
+            processingSpeed: Math.round(attempt.processingSpeed) + 'ms/palavra',
             score: attempt.score
         };
     }
@@ -160,7 +160,7 @@ class AuditoryMemoryAnalyzer {
 }
 
 // ========================
-// VARIABLES DEL JUEGO
+// VARIÁVEIS DO JOGO
 // ========================
 
 let currentRound = 0;
@@ -177,48 +177,48 @@ let roundStartTime = 0;
 const analyzer = new AuditoryMemoryAnalyzer();
 const totalRounds = 5;
 
-// Base de datos de palabras con imágenes
+// Banco de dados de palavras com imagens
 const wordDatabase = {
-    'manzana': 'https://img.freepik.com/vector-premium/dibujos-animados-clipart-manzana-dibujo-ilustracion_871209-13267.jpg?w=2000',
+    'maçã': 'https://img.freepik.com/vector-premium/dibujos-animados-clipart-manzana-dibujo-ilustracion_871209-13267.jpg?w=2000',
     'pera': 'https://img.freepik.com/vector-gratis/fruta-pera-aislada-sobre-fondo-blanco_1308-117166.jpg?semt=ais_hybrid&w=740',
     'uva': 'https://static.vecteezy.com/system/resources/previews/021/964/649/large_2x/grapes-fruit-cartoon-colored-clipart-illustration-free-vector.jpg',
-    'plátano': 'https://static.vecteezy.com/system/resources/previews/004/557/519/original/fruit-banana-cartoon-object-vector.jpg',
-    'naranja': 'https://img.freepik.com/vector-premium/ilustracion-vectorial-dibujos-animados-color-naranja_871209-3168.jpg?w=2000',
-    'fresa': 'https://i.pinimg.com/originals/c8/32/6a/c8326ac10514ba82a4ee79bcd8992c17.jpg',
-    'sandía': 'https://static.vecteezy.com/system/resources/previews/007/570/246/original/cartoon-watermelon-slice-fruits-vector.jpg',
-    'limón': 'https://static.vecteezy.com/system/resources/previews/004/485/242/original/lemon-fruit-illustrations-free-vector.jpg'
+    'banana': 'https://static.vecteezy.com/system/resources/previews/004/557/519/original/fruit-banana-cartoon-object-vector.jpg',
+    'laranja': 'https://img.freepik.com/vector-premium/ilustracion-vectorial-dibujos-animados-color-naranja_871209-3168.jpg?w=2000',
+    'morango': 'https://i.pinimg.com/originals/c8/32/6a/c8326ac10514ba82a4ee79bcd8992c17.jpg',
+    'melancia': 'https://static.vecteezy.com/system/resources/previews/007/570/246/original/cartoon-watermelon-slice-fruits-vector.jpg',
+    'limão': 'https://static.vecteezy.com/system/resources/previews/004/485/242/original/lemon-fruit-illustrations-free-vector.jpg'
 };
 
 // ========================
-// INICIALIZACIÓN
+// INICIALIZAÇÃO
 // ========================
 
 document.addEventListener('DOMContentLoaded', async function() {
-// 1. Intentar cargar el récord personal
+// 1. Tentar carregar o recorde pessoal
     try {
-        const gameId = 'cadena-palabras-1'; // ID único para este juego
+        const gameId = 'cadena-palabras-1'; // ID único para este jogo
         const bestScore = await api.getBestScore(gameId);
 
-        // Buscamos un lugar donde mostrarlo, por ejemplo junto al puntaje actual
+        // Buscamos um lugar para exibir, por exemplo junto à pontuação atual
         const scoreContainer = document.querySelector('.score-container');
         if (scoreContainer) {
             const highSubstitute = document.createElement('div');
             highSubstitute.className = 'high-score-tag';
-            highSubstitute.innerHTML = `⭐ Récord: <span id="high-score">${bestScore}</span> pts`;
+            highSubstitute.innerHTML = `⭐ Recorde: <span id="high-score">${bestScore}</span> pts`;
             highSubstitute.style = "font-size: 0.8rem; color: #f59e0b; font-weight: bold; margin-top: 5px;";
             scoreContainer.appendChild(highSubstitute);
         }
     } catch (error) {
-        console.log("No se pudo cargar el récord (posiblemente modo invitado)");
+        console.log("Não foi possível carregar o recorde (possivelmente modo visitante)");
     }
     startNewRound();
 });
 
 function startNewRound() {
-    // Cancelar cualquier síntesis de voz en progreso
+    // Cancelar qualquer síntese de voz em andamento
     speechSynthesis.cancel();
 
-    // Ajustar dificultad según ronda
+    // Ajustar dificuldade conforme a rodada
     if (currentRound < 2) {
         difficulty = 'easy';
         sequenceLength = 3;
@@ -230,7 +230,7 @@ function startNewRound() {
         sequenceLength = 5;
     }
 
-    // Limpiar UI completamente
+    // Limpar UI completamente
     clearSelection();
     document.getElementById('feedback').classList.remove('show');
     document.getElementById('feedback').style.display = 'none';
@@ -250,21 +250,21 @@ function startNewRound() {
 function updateUI() {
     document.getElementById('current-round').textContent = currentRound + 1;
     document.getElementById('total-rounds').textContent = totalRounds;
-    document.getElementById('score').textContent = score + ' puntos';
-    document.getElementById('score-display').textContent = score + ' puntos';
+    document.getElementById('score').textContent = score + ' pontos';
+    document.getElementById('score-display').textContent = score + ' pontos';
 
     const progress = ((currentRound + 1) / totalRounds) * 100;
     document.getElementById('progress-fill').style.width = progress + '%';
 
     const badgeElement = document.getElementById('difficulty-badge');
     let diffText = 'Fácil';
-    if (difficulty === 'medium') diffText = 'Medio';
+    if (difficulty === 'medium') diffText = 'Médio';
     if (difficulty === 'hard') diffText = 'Difícil';
-    badgeElement.textContent = 'Dificultad: ' + diffText;
+    badgeElement.textContent = 'Dificuldade: ' + diffText;
     badgeElement.className = 'difficulty-badge ' + difficulty;
 
     const instructionElement = document.getElementById('instruction-text');
-    let instructionText = 'Escucha ' + sequenceLength + ' palabras y selecciona las imágenes en orden';
+    let instructionText = 'Ouça ' + sequenceLength + ' palavras e selecione as imagens em ordem';
     instructionElement.textContent = instructionText;
 }
 
@@ -272,7 +272,7 @@ function generateNewSequence() {
     const keys = Object.keys(wordDatabase);
     currentSequence = [];
 
-    // Seleccionar palabras aleatorias para la cadena
+    // Selecionar palavras aleatórias para a sequência
     while (currentSequence.length < sequenceLength) {
         const randomWord = keys[Math.floor(Math.random() * keys.length)];
         if (!currentSequence.includes(randomWord)) {
@@ -280,7 +280,7 @@ function generateNewSequence() {
         }
     }
 
-    // Generar todas las opciones (cadena + distractores)
+    // Gerar todas as opções (sequência + distratores)
     allWords = [...currentSequence];
 
     while (allWords.length < 4) {
@@ -290,7 +290,7 @@ function generateNewSequence() {
         }
     }
 
-    // Mezclar las opciones
+    // Embaralhar as opções
     allWords = allWords.sort(() => Math.random() - 0.5);
 
     renderImages();
@@ -339,7 +339,7 @@ function updateSelectedSequence() {
     const container = document.getElementById('selected-items');
 
     if (selectedSequence.length === 0) {
-        container.innerHTML = '<span style="color: #9CA3AF;">Selecciona las imágenes en orden</span>';
+        container.innerHTML = '<span style="color: #9CA3AF;">Selecione as imagens em ordem</span>';
         return;
     }
 
@@ -355,7 +355,7 @@ function removeFromSelection(index) {
     selectedSequence.splice(index, 1);
     updateSelectedSequence();
 
-    // Actualizar cards visuales
+    // Atualizar cards visuais
     const cards = document.querySelectorAll('.image-card');
     cards.forEach(card => card.classList.remove('selected', 'incorrect'));
 
@@ -382,7 +382,7 @@ function clearSelection() {
 }
 
 function playSequence() {
-    if (gameStarted && isAnalyzing) return; // Evitar doble click
+    if (gameStarted && isAnalyzing) return; // Evitar clique duplo
 
     gameStarted = true;
     roundStartTime = performance.now();
@@ -390,19 +390,20 @@ function playSequence() {
     const sequenceDisplay = document.getElementById('sequence-display');
     sequenceDisplay.style.display = 'flex';
 
-    // Cancelamos cualquier voz previa por seguridad
+    // Cancelamos qualquer voz anterior por segurança
     window.speechSynthesis.cancel();
 
     const speechRate = difficulty === 'hard' ? 1.0 : (difficulty === 'medium' ? 0.85 : 0.7);
+
     playSequenceAudio(currentSequence, 0, speechRate);
 }
 
-// 1. Función para obtener la voz de forma segura
-function getSpanishVoice() {
+// 1. Função para obter a voz de forma segura
+function getPortugueseVoice() {
     const voices = window.speechSynthesis.getVoices();
-    // Prioridad: México, luego España, luego cualquier español
-    return voices.find(v => v.lang === 'es-MX') ||
-           voices.find(v => v.lang.includes('es')) ||
+    // Prioridade: Brasil, depois Portugal, depois qualquer português
+    return voices.find(v => v.lang === 'pt-BR') ||
+           voices.find(v => v.lang.includes('pt')) ||
            voices[0];
 }
 
@@ -418,13 +419,13 @@ function playSequenceAudio(words, index, speechRate) {
     const sequenceDisplay = document.getElementById('sequence-display');
     const sequenceText = document.getElementById('sequence-text');
 
-    // Mostramos el contenedor y la palabra
+    // Mostramos o container e a palavra
     sequenceDisplay.style.display = 'flex';
     sequenceText.textContent = words[index];
 
-    // --- EFECTO VISUAL (Neuro-feedback) ---
+    // --- EFEITO VISUAL (Neuro-feedback) ---
     sequenceText.style.transform = 'scale(1.5)';
-    sequenceText.style.color = '#FF5733'; // Color llamativo
+    sequenceText.style.color = '#FF5733'; // Cor chamativa
     sequenceText.style.transition = 'all 0.3s ease';
 
     setTimeout(() => {
@@ -432,7 +433,7 @@ function playSequenceAudio(words, index, speechRate) {
         sequenceText.style.color = '#0066CC';
     }, 400);
 
-    // --- INTENTO DE VOZ (Si funciona, genial; si no, el niño lee) ---
+    // --- TENTATIVA DE VOZ (Se funcionar, ótimo; se não, a criança lê) ---
     try {
         window.speechSynthesis.cancel();
         const utterance = new SpeechSynthesisUtterance(words[index]);
@@ -440,20 +441,20 @@ function playSequenceAudio(words, index, speechRate) {
         utterance.rate = speechRate;
         window.speechSynthesis.speak(utterance);
     } catch (e) {
-        console.warn("Speech API no soportada en este navegador.");
+        console.warn("API de voz não suportada neste navegador.");
     }
 
-    // Siguiente palabra basándonos en el tiempo (independiente de si sonó o no)
+    // Próxima palavra baseada no tempo (independente de ter tocado ou não)
     setTimeout(() => {
         playSequenceAudio(words, index + 1, speechRate);
-    }, 1200); // 1.2 segundos por palabra para dar tiempo a procesar
+    }, 1200); // 1.2 segundos por palavra para dar tempo de processar
 }
 
-// 2. IMPORTANTE: Forzar la carga de voces al inicio
+// 2. IMPORTANTE: Forçar o carregamento de vozes no início
 window.speechSynthesis.getVoices();
 if (speechSynthesis.onvoiceschanged !== undefined) {
     speechSynthesis.onvoiceschanged = () => {
-        console.log("Voces cargadas: ", window.speechSynthesis.getVoices().length);
+        console.log("Vozes carregadas: ", window.speechSynthesis.getVoices().length);
     };
 }
 
@@ -473,12 +474,12 @@ function checkAnswer() {
     // Mostrar feedback
     showFeedback(result);
 
-    // Actualizar puntuación
+    // Atualizar pontuação
     score += result.score;
-    document.getElementById('score').textContent = score + ' puntos';
-    document.getElementById('score-display').textContent = score + ' puntos';
+    document.getElementById('score').textContent = score + ' pontos';
+    document.getElementById('score-display').textContent = score + ' pontos';
 
-    // Marcar respuestas incorrectas
+    // Marcar respostas incorretas
     if (!result.isCorrect) {
         const cards = document.querySelectorAll('.image-card');
         selectedSequence.forEach(word => {
@@ -493,9 +494,9 @@ function checkAnswer() {
 
     document.getElementById('check-button').style.display = 'none';
 
-    // Pasar a siguiente ronda
+    // Passar para a próxima rodada
     setTimeout(() => {
-        // Limpiar feedback antes de cambiar de ronda
+        // Limpar feedback antes de mudar de rodada
         document.getElementById('feedback').classList.remove('show');
         document.getElementById('feedback').style.display = 'none';
         isAnalyzing = false;
@@ -518,24 +519,26 @@ function showFeedback(result) {
     feedbackMessage.textContent = result.feedback.emoji + ' ' + result.feedback.message;
     feedbackDetail.textContent = result.feedback.details.join(' • ');
 
-    let analysisHTML = '<div class="stat-row"><span class="stat-label">Exactitud:</span><span class="stat-value">' + result.accuracy.toFixed(0) + '%</span></div>';
+    let analysisHTML = '<div class="stat-row"><span class="stat-label">Precisão:</span><span class="stat-value">' + result.accuracy.toFixed(0) + '%</span></div>';
     analysisHTML += '<div class="stat-row"><span class="stat-label">Memorizadas:</span><span class="stat-value">' + result.analysis.memorized + '</span></div>';
-    analysisHTML += '<div class="stat-row"><span class="stat-label">Tiempo:</span><span class="stat-value">' + result.analysis.responseTime + '</span></div>';
-    analysisHTML += '<div class="stat-row"><span class="stat-label">Velocidad:</span><span class="stat-value">' + result.analysis.processingSpeed + '</span></div>';
-    analysisHTML += '<div class="stat-row"><span class="stat-label">Puntos:</span><span class="stat-value">' + result.score + ' pts</span></div>';
+    analysisHTML += '<div class="stat-row"><span class="stat-label">Tempo:</span><span class="stat-value">' + result.analysis.responseTime + '</span></div>';
+    analysisHTML += '<div class="stat-row"><span class="stat-label">Velocidade:</span><span class="stat-value">' + result.analysis.processingSpeed + '</span></div>';
+    analysisHTML += '<div class="stat-row"><span class="stat-label">Pontos:</span><span class="stat-value">' + result.score + ' pts</span></div>';
 
     analysisBox.innerHTML = analysisHTML;
 
     feedbackElement.className = result.isCorrect ? 'feedback show correct' : 'feedback show incorrect';
     feedbackElement.style.display = 'block';
 }
+
 const API_URL = 'https://crude-sailfish-blueminds-65b642e8.koyeb.app/api';
+
 async function completeGame() {
     const mainCard = document.getElementById('main-card');
     const report = analyzer.getSessionReport();
 
-    // --- NUEVO: Lógica de guardado en Backend ---
-    const token = localStorage.getItem('token'); // Recuperamos el JWT
+    // --- NOVO: Lógica de salvamento no Backend ---
+    const token = localStorage.getItem('token'); // Recuperamos o JWT
 
     const gameData = {
         gameId: 'cadena-palabras-1',
@@ -548,29 +551,29 @@ async function completeGame() {
 
         try {
           await api.saveGameResults(gameData);
-          console.log('Progreso guardado exitosamente');
+          console.log('Progresso salvo com sucesso');
         } catch (error) {
-            console.error('❌ Error al conectar con el servidor:', error);
+            console.error('❌ Erro ao conectar com o servidor:', error);
         }
-    // --- FIN DE LÓGICA DE BACKEND ---
+    // --- FIM DA LÓGICA DE BACKEND ---
 
-    // Tu código original de UI (se mantiene igual)
+    // Código original de UI (mantido igual)
     let html = '<div class="game-completed">';
-    html += '<h2 style="margin-bottom: 20px; color: #0066CC;">¡Juego Completado!</h2>';
+    html += '<h2 style="margin-bottom: 20px; color: #0066CC;">Jogo Concluído!</h2>';
     html += '<div class="final-score">';
-    html += '<h2>Puntuación Final:</h2>';
+    html += '<h2>Pontuação Final:</h2>';
     html += '<div class="score-number">' + score + '</div>';
-    html += '<p>puntos</p>';
+    html += '<p>pontos</p>';
     html += '</div>';
     html += '<div class="analysis-box">';
-    html += '<div class="stat-row"><span class="stat-label">Respuestas Correctas:</span><span class="stat-value">' + report.correctAttempts + '/' + report.totalAttempts + '</span></div>';
-    html += '<div class="stat-row"><span class="stat-label">Exactitud Promedio:</span><span class="stat-value">' + report.averageAccuracy + '%</span></div>';
-    html += '<div class="stat-row"><span class="stat-label">Puntuación de Memoria:</span><span class="stat-value">' + report.memoryScore + '%</span></div>';
-    html += '<div class="stat-row"><span class="stat-label">Velocidad Promedio:</span><span class="stat-value">' + report.averageResponseTime + 'ms</span></div>';
+    html += '<div class="stat-row"><span class="stat-label">Respostas Corretas:</span><span class="stat-value">' + report.correctAttempts + '/' + report.totalAttempts + '</span></div>';
+    html += '<div class="stat-row"><span class="stat-label">Precisão Média:</span><span class="stat-value">' + report.averageAccuracy + '%</span></div>';
+    html += '<div class="stat-row"><span class="stat-label">Pontuação de Memória:</span><span class="stat-value">' + report.memoryScore + '%</span></div>';
+    html += '<div class="stat-row"><span class="stat-label">Velocidade Média:</span><span class="stat-value">' + report.averageResponseTime + 'ms</span></div>';
     html += '</div>';
     html += '<div class="options-container" style="margin-top: 20px;">';
-    html += '<button class="option-button primary" onclick="location.reload()"><i class="fas fa-redo"></i> Jugar de Nuevo</button>';
-    html += '<button class="option-button blue" onclick="goToMainPage()"><i class="fas fa-arrow-left"></i> Volver</button>';
+    html += '<button class="option-button primary" onclick="location.reload()"><i class="fas fa-redo"></i> Jogar Novamente</button>';
+    html += '<button class="option-button blue" onclick="goToMainPage()"><i class="fas fa-arrow-left"></i> Voltar</button>';
     html += '</div>';
     html += '</div>';
 
@@ -580,7 +583,8 @@ async function completeGame() {
 function goToMainPage() {
     window.location.href = '../../../../selectores/selector-auditivo.html';
 }
-// Precargar voces para evitar que la primera palabra falle
+
+// Pré-carregar vozes para evitar que a primeira palavra falhe
 window.speechSynthesis.getVoices();
 if (speechSynthesis.onvoiceschanged !== undefined) {
   speechSynthesis.onvoiceschanged = () => speechSynthesis.getVoices();

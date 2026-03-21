@@ -1,11 +1,11 @@
-// Variables globales
+// Variáveis globais
 let currentRound = 0;
 let score = 0;
 let currentMovement = null;
 let isShowingMovement = false;
 let hasPlayed = false;
 let cameraActive = false;
-let difficulty = 1; // 1-3 stars
+let difficulty = 1; // 1-3 estrelas
 let movementAnalysisData = {
     movementQuality: 0,
     armAmplitude: 0,
@@ -15,82 +15,82 @@ let movementAnalysisData = {
 
 const movements = [
     {
-        name: "Levanta los brazos",
-        instruction: "levanta los brazos hacia arriba",
+        name: "Levanta os braços",
+        instruction: "levante os braços para cima",
         animation: "raise-arms",
         color: "primary",
         difficulty: 1,
         guide: {
-            hands: "Sube los brazos hasta la cabeza",
-            body: "Mantén el cuerpo recto",
-            movement: "Movimiento lento y controlado"
+            hands: "Suba os braços até a cabeça",
+            body: "Mantenha o corpo reto",
+            movement: "Movimento lento e controlado"
         }
     },
     {
-        name: "Baja los brazos",
-        instruction: "baja los brazos hacia abajo",
+        name: "Abaixa os braços",
+        instruction: "abaixe os braços para baixo",
         animation: "lower-arms",
         color: "blue",
         difficulty: 1,
         guide: {
-            hands: "Baja los brazos al costado",
-            body: "Mantén el cuerpo recto",
-            movement: "Movimiento suave"
+            hands: "Abaixe os braços ao lado do corpo",
+            body: "Mantenha o corpo reto",
+            movement: "Movimento suave"
         }
     },
     {
-        name: "Salta",
-        instruction: "salta hacia arriba",
+        name: "Pula",
+        instruction: "pule para cima",
         animation: "jump",
         color: "red",
         difficulty: 2,
         guide: {
-            hands: "Los brazos se mueven con el cuerpo",
-            body: "Flexiona las rodillas",
-            movement: "Salto dinámico"
+            hands: "Os braços se movem com o corpo",
+            body: "Dobre os joelhos",
+            movement: "Salto dinâmico"
         }
     },
     {
-        name: "Gira a la derecha",
-        instruction: "gira el cuerpo a la derecha",
+        name: "Gira para a direita",
+        instruction: "gire o corpo para a direita",
         animation: "turn-right",
         color: "purple",
         difficulty: 2,
         guide: {
-            hands: "Brazos naturales",
-            body: "Gira todo el cuerpo",
-            movement: "Rotación completa"
+            hands: "Braços naturais",
+            body: "Gire todo o corpo",
+            movement: "Rotação completa"
         }
     },
     {
-        name: "Agáchate",
-        instruction: "agáchate hacia abajo",
+        name: "Agacha",
+        instruction: "agache para baixo",
         animation: "squat",
         color: "accent",
         difficulty: 3,
         guide: {
-            hands: "Brazos hacia adelante o costados",
-            body: "Flexiona las rodillas profundamente",
-            movement: "Movimiento controlado"
+            hands: "Braços para frente ou ao lado",
+            body: "Dobre bastante os joelhos",
+            movement: "Movimento controlado"
         }
     },
     {
-        name: "Saluda",
-        instruction: "saluda con la mano",
+        name: "Acena",
+        instruction: "acene com a mão",
         animation: "wave",
         color: "primary",
         difficulty: 1,
         guide: {
-            hands: "Mueve la mano de arriba a abajo",
-            body: "Mantén el cuerpo estable",
-            movement: "Movimiento suave y amistoso"
+            hands: "Mova a mão de cima para baixo",
+            body: "Mantenha o corpo estável",
+            movement: "Movimento suave e amigável"
         }
     },
 ];
 
 const totalRounds = 5;
 
-// ================== INICIALIZACIÓN ==================
+// ================== INICIALIZAÇÃO ==================
 document.addEventListener('DOMContentLoaded', () => {
     setupEventListeners();
     startNewRound();
@@ -101,7 +101,7 @@ function setupEventListeners() {
     document.getElementById('done-button').addEventListener('click', completeMovement);
 }
 
-// ================== RONDAS ==================
+// ================== RODADAS ==================
 function startNewRound() {
     const randomMovement = movements[Math.floor(Math.random() * movements.length)];
     currentMovement = randomMovement;
@@ -115,7 +115,7 @@ function startNewRound() {
 function completeGame() {
     const movementCard = document.querySelector('.movement-card');
     movementCard.innerHTML = `
-        <h2>¡Juego Completado! 🎉</h2>
+        <h2>Jogo Concluído! 🎉</h2>
         <div class="avatar-container">
             <div id="avatar-celebrate" class="avatar celebrate">
                 <div class="avatar-head"></div>
@@ -128,52 +128,45 @@ function completeGame() {
             </div>
         </div>
         <div class="feedback correct">
-            <p style="font-size: 28px; margin: 20px 0;">Tu puntaje final: ${score} puntos</p>
-            <p style="font-size: 16px;">¡Excelente coordinación motora e imitación!</p>
+            <p style="font-size: 28px; margin: 20px 0;">Sua pontuação final: ${score} pontos</p>
+            <p style="font-size: 16px;">Excelente coordenação motora e imitação!</p>
         </div>
         <div class="action-controls">
             <button class="action-button primary" onclick="location.reload()">
-                <i class="fas fa-redo"></i> Jugar de Nuevo
+                <i class="fas fa-redo"></i> Jogar Novamente
             </button>
             <button class="action-button blue" onclick="goToMainPage()">
-                <i class="fas fa-home"></i> Volver al Menú
+                <i class="fas fa-home"></i> Voltar ao Menu
             </button>
         </div>
     `;
 }
 
-// ================== INTERFAZ ==================
+// ================== INTERFACE ==================
 function updateUI() {
     document.getElementById('current-round').textContent = currentRound + 1;
     document.getElementById('total-rounds').textContent = totalRounds;
-    document.getElementById('score').textContent = score + ' puntos';
-    document.getElementById('score-display').textContent = score + ' puntos';
+    document.getElementById('score').textContent = score + ' pontos';
+    document.getElementById('score-display').textContent = score + ' pontos';
 
     const progress = ((currentRound + 1) / totalRounds) * 100;
     document.getElementById('progress-fill').style.width = progress + '%';
 
-    // Resetear avatar
     const avatar = document.getElementById('avatar-leader');
     avatar.className = 'avatar leader';
 
-    // Actualizar instrucción
-    document.getElementById('instruction-text').textContent = "Escucha la instrucción";
+    document.getElementById('instruction-text').textContent = "Ouça a instrução";
 
-    // Actualizar dificultad
     updateDifficultyDisplay();
-
-    // Actualizar guía visual
     updateVisualGuide();
 
-    // Resetear botones
     const playButton = document.getElementById('play-button');
-    playButton.innerHTML = '<i class="fas fa-play"></i> Mostrar Movimiento';
+    playButton.innerHTML = '<i class="fas fa-play"></i> Mostrar Movimento';
     playButton.disabled = false;
 
     const doneButton = document.getElementById('done-button');
     doneButton.disabled = true;
 
-    // Ocultar feedback y análisis
     document.getElementById('feedback').classList.add('hidden');
     document.getElementById('aiAnalysis').style.display = 'none';
     document.getElementById('adaptationNotice').classList.add('hidden');
@@ -195,7 +188,6 @@ function updateVisualGuide() {
     document.getElementById('guide-body').textContent = currentMovement.guide.body;
     document.getElementById('guide-movement').textContent = currentMovement.guide.movement;
 
-    // Mostrar guía si la dificultad es alta
     const guide = document.getElementById('visual-guide');
     if (currentMovement.difficulty >= 2) {
         guide.classList.remove('hidden');
@@ -204,7 +196,7 @@ function updateVisualGuide() {
     }
 }
 
-// ================== MOSTRAR MOVIMIENTO ==================
+// ================== MOSTRAR MOVIMENTO ==================
 function showMovement() {
     if (isShowingMovement) return;
 
@@ -218,20 +210,16 @@ function showMovement() {
     const repeatButton = document.getElementById('repeat-button');
     repeatButton.style.display = 'none';
 
-    // Mostrar instrucción
     document.getElementById('instruction-text').textContent = currentMovement.name;
 
-    // Aplicar animación al avatar
     const avatar = document.getElementById('avatar-leader');
     avatar.classList.add(currentMovement.animation);
 
-    // Reproducir instrucción de audio
     const utterance = new SpeechSynthesisUtterance(currentMovement.instruction);
     utterance.lang = 'pt-BR';
     utterance.rate = 0.9;
     speechSynthesis.speak(utterance);
 
-    // Duración de la animación
     const animationDuration = currentMovement.animation === 'jump' ||
                                currentMovement.animation === 'squat' ? 3000 : 2000;
 
@@ -246,7 +234,7 @@ function showMovement() {
     }, animationDuration);
 }
 
-// ================== CÁMARA ==================
+// ================== CÂMERA ==================
 async function startCamera() {
     try {
         const stream = await navigator.mediaDevices.getUserMedia({
@@ -263,11 +251,10 @@ async function startCamera() {
         cameraActive = true;
         video.play();
 
-        // Iniciar análisis
         analyzeMovement();
         document.getElementById('aiAnalysis').style.display = 'block';
     } catch (err) {
-        alert('No se pudo acceder a la cámara: ' + err.message);
+        alert('Não foi possível acessar a câmera: ' + err.message);
     }
 }
 
@@ -283,11 +270,10 @@ function stopCamera() {
     cameraActive = false;
 }
 
-// ================== ANÁLISIS DE MOVIMIENTO ==================
+// ================== ANÁLISE DE MOVIMENTO ==================
 function analyzeMovement() {
     if (!cameraActive) return;
 
-    // Simulación de análisis (en producción se usaría TensorFlow.js o similar)
     const simulatedAnalysis = {
         movementQuality: Math.floor(60 + Math.random() * 40),
         armAmplitude: Math.floor(65 + Math.random() * 35),
@@ -317,21 +303,20 @@ function checkAdaptation() {
 
     if (quality < 40) {
         notice.classList.remove('hidden');
-        text.textContent = '⚠️ Intenta hacer el movimiento más claramente. Muévete un poco más lentamente.';
+        text.textContent = '⚠️ Tente fazer o movimento de forma mais clara. Mova-se um pouco mais devagar.';
         shouldAdapt = true;
     } else if (coordination < 35) {
         notice.classList.remove('hidden');
-        text.textContent = '💡 Parece que el movimiento es complejo. Te mostraré una versión simplificada...';
+        text.textContent = '💡 O movimento parece complexo. Vou mostrar uma versão simplificada...';
         shouldAdapt = true;
     } else if (quality < 60) {
         notice.classList.remove('hidden');
-        text.textContent = '👍 ¡Vas bien! Trata de hacer el movimiento con más amplitud.';
+        text.textContent = '👍 Você está indo bem! Tente fazer o movimento com mais amplitude.';
         shouldAdapt = true;
     } else {
         notice.classList.add('hidden');
     }
 
-    // Adaptar dificultad
     if (shouldAdapt && difficulty > 1) {
         reduceDifficulty();
     }
@@ -340,7 +325,7 @@ function checkAdaptation() {
 function reduceDifficulty() {
     if (difficulty > 1) {
         difficulty--;
-        console.log('Dificultad reducida a:', difficulty);
+        console.log('Dificuldade reduzida para:', difficulty);
     }
 }
 
@@ -353,17 +338,15 @@ function resetAnalysis() {
     };
 }
 
-// ================== RESPUESTAS ==================
+// ================== RESPOSTAS ==================
 function completeMovement() {
     if (!hasPlayed) return;
 
     stopCamera();
 
-    // Validación mejorada basada en análisis
     let isCorrect = false;
 
     if (cameraActive || movementAnalysisData.movementQuality > 0) {
-        // Si la cámara estuvo activa, usar análisis
         const qualityScore = (
             movementAnalysisData.movementQuality +
             movementAnalysisData.coordination +
@@ -372,7 +355,6 @@ function completeMovement() {
 
         isCorrect = qualityScore > 65;
     } else {
-        // Validación por defecto
         isCorrect = Math.random() > 0.3;
     }
 
@@ -380,20 +362,19 @@ function completeMovement() {
     const feedbackText = document.getElementById('feedback-text');
 
     if (isCorrect) {
-        score += (20 * difficulty); // Más puntos por mayor dificultad
-        feedbackText.textContent = "¡Excelente imitación! 🎉 Muy buena coordinación";
+        score += (20 * difficulty);
+        feedbackText.textContent = "Excelente imitação! 🎉 Ótima coordenação";
         feedbackElement.className = 'feedback correct';
     } else {
-        feedbackText.textContent = "Muy cerca, intenta nuevamente con más precisión";
+        feedbackText.textContent = "Quase lá, tente novamente com mais precisão";
         feedbackElement.className = 'feedback incorrect';
     }
 
     feedbackElement.classList.remove('hidden');
 
-    document.getElementById('score').textContent = score + ' puntos';
-    document.getElementById('score-display').textContent = score + ' puntos';
+    document.getElementById('score').textContent = score + ' pontos';
+    document.getElementById('score-display').textContent = score + ' pontos';
 
-    // Deshabilitar botones
     document.getElementById('play-button').disabled = true;
     document.getElementById('done-button').disabled = true;
 
@@ -407,7 +388,7 @@ function completeMovement() {
     }, 2500);
 }
 
-// ================== NAVEGACIÓN ==================
+// ================== NAVEGAÇÃO ==================
 function goToMainPage() {
     window.location.href = 'https://plekdev.github.io/BlueMinds/selectores/selector-kinestesico.html';
 }

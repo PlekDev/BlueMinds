@@ -1,4 +1,4 @@
-// Variables globales
+// Variáveis globais
 let currentRound = 0;
 let score = 0;
 let currentExercise = null;
@@ -6,13 +6,13 @@ let selectedImage = null;
 let difficulty = 'normal';
 let wrongAttempts = 0;
 let hintUsed = false;
-let readingErrors = {}; // Rastrear errores por categoría
+let readingErrors = {};
 let responseTime = 0;
 let startTime = 0;
-let classificationPattern = []; // Patrón de clasificación del usuario
+let classificationPattern = [];
 let totalReadingTime = 0;
 
-// Analytics para adaptación IA
+// Analytics para adaptação IA
 const analytics = {
     errors: {
         semantic: 0,
@@ -24,128 +24,128 @@ const analytics = {
     correctFirstAttempt: 0
 };
 
-// Palabras por dificultad - MEJORADO CON VARIACIONES
+// Palavras por dificuldade
 const wordBanks = {
     easy: [
         {
-            sentence: "El gato duerme.",
+            sentence: "O gato dorme.",
             correctImageIndex: 0,
             difficultWords: ['gato'],
             category: 'animals',
             errorType: 'semantic',
-            explanation: "La oración describe a un gato durmiendo. Es una acción simple y clara.",
+            explanation: "A frase descreve um gato dormindo. É uma ação simples e clara.",
             images: [
-                { src: 'https://img2.clipart-library.com/27/cat-sleeping-clipart/cat-sleeping-clipart-3.jpg?w=300&h=200&fit=crop', label: 'Gato durmiendo' },
-                { src: 'https://image.shutterstock.com/image-vector/little-doggy-cute-puppy-playing-600w-255443107.jpg?w=300&h=200&fit=crop', label: 'Perro jugando' },
-                { src: 'https://static.vecteezy.com/system/resources/previews/003/286/369/original/cartoon-character-exotic-shorthair-cat-running-vector.jpg?w=300&h=200&fit=crop', label: 'Gato corriendo' }
+                { src: 'https://img2.clipart-library.com/27/cat-sleeping-clipart/cat-sleeping-clipart-3.jpg?w=300&h=200&fit=crop', label: 'Gato dormindo' },
+                { src: 'https://image.shutterstock.com/image-vector/little-doggy-cute-puppy-playing-600w-255443107.jpg?w=300&h=200&fit=crop', label: 'Cachorro brincando' },
+                { src: 'https://static.vecteezy.com/system/resources/previews/003/286/369/original/cartoon-character-exotic-shorthair-cat-running-vector.jpg?w=300&h=200&fit=crop', label: 'Gato correndo' }
             ]
         },
         {
-            sentence: "El niño juega en el parque.",
+            sentence: "O menino brinca no parque.",
             correctImageIndex: 1,
             difficultWords: ['parque'],
             category: 'places',
             errorType: 'semantic',
-            explanation: "La oración habla de un niño jugando. El parque es el lugar donde ocurre la acción.",
+            explanation: "A frase fala de um menino brincando. O parque é o lugar onde a ação acontece.",
             images: [
-                { src: 'https://thumbs.dreamstime.com/z/caricatura-de-un-ni%C3%B1o-que-barre-el-suelo-ni%C3%B1os-haciendo-tareas-dom%C3%A9sticas-en-concepto-casa-dibujo-198013814.jpg?w=300&h=200&fit=crop', label: 'Niño en casa' },
-                { src: 'https://static.vecteezy.com/system/resources/previews/008/666/296/non_2x/kids-playing-outdoor-in-park-vector.jpg?w=300&h=200&fit=crop', label: 'Niño en parque' },
-                { src: 'https://static.vecteezy.com/system/resources/previews/002/538/755/large_2x/happy-cute-cartoon-school-children-vector.jpg?w=300&h=200&fit=crop', label: 'Niño en escuela' }
+                { src: 'https://thumbs.dreamstime.com/z/caricatura-de-un-ni%C3%B1o-que-barre-el-suelo-ni%C3%B1os-haciendo-tareas-dom%C3%A9sticas-en-concepto-casa-dibujo-198013814.jpg?w=300&h=200&fit=crop', label: 'Menino em casa' },
+                { src: 'https://static.vecteezy.com/system/resources/previews/008/666/296/non_2x/kids-playing-outdoor-in-park-vector.jpg?w=300&h=200&fit=crop', label: 'Menino no parque' },
+                { src: 'https://static.vecteezy.com/system/resources/previews/002/538/755/large_2x/happy-cute-cartoon-school-children-vector.jpg?w=300&h=200&fit=crop', label: 'Menino na escola' }
             ]
         },
         {
-            sentence: "El pajarito canta.",
+            sentence: "O passarinho canta.",
             correctImageIndex: 2,
-            difficultWords: ['pajarito'],
+            difficultWords: ['passarinho'],
             category: 'animals',
             errorType: 'semantic',
-            explanation: "Un pajarito es un pájaro pequeño. La acción es cantar.",
+            explanation: "Um passarinho é um pássaro pequeno. A ação é cantar.",
             images: [
-                { src: 'https://static.vecteezy.com/system/resources/previews/005/162/515/original/cartoon-blue-bird-sitting-in-a-nest-free-vector.jpg?w=300&h=200&fit=crop', label: 'Pajaro en nido' },
-                { src: 'https://img.freepik.com/vector-premium/pajaro-azul-dibujos-animados-sentado-rama-arbol_29190-5361.jpg?w=300&h=200&fit=crop', label: 'Pajaro en rama' },
-                { src: 'https://img.freepik.com/vector-premium/ilustracion-vectorial-dibujos-animados-pajaro-lindo-cantando_869472-1107.jpg?w=300&h=200&fit=crop', label: 'Pajaro cantando' }
+                { src: 'https://static.vecteezy.com/system/resources/previews/005/162/515/original/cartoon-blue-bird-sitting-in-a-nest-free-vector.jpg?w=300&h=200&fit=crop', label: 'Pássaro no ninho' },
+                { src: 'https://img.freepik.com/vector-premium/pajaro-azul-dibujos-animados-sentado-rama-arbol_29190-5361.jpg?w=300&h=200&fit=crop', label: 'Pássaro no galho' },
+                { src: 'https://img.freepik.com/vector-premium/ilustracion-vectorial-dibujos-animados-pajaro-lindo-cantando_869472-1107.jpg?w=300&h=200&fit=crop', label: 'Pássaro cantando' }
             ]
         }
     ],
     normal: [
         {
-            sentence: "La mariposa vuela entre las flores.",
+            sentence: "A borboleta voa entre as flores.",
             correctImageIndex: 1,
-            difficultWords: ['mariposa', 'flores'],
+            difficultWords: ['borboleta', 'flores'],
             category: 'nature',
             errorType: 'semantic',
-            explanation: "Una mariposa es un insecto colorido que vuela. Está entre flores naturalmente.",
+            explanation: "Uma borboleta é um inseto colorido que voa. Ela fica entre flores naturalmente.",
             images: [
-                { src: 'https://img.freepik.com/vector-premium/lindo-gato-flor-vector-dibujos-animados-sobre-fondo-blanco_1026278-7253.jpg?w=300&h=200&fit=crop', label: 'Gato en flores' },
-                { src: 'https://img.freepik.com/vector-premium/mariposas-vuelo-flor-jardin_1308-4021.jpg?w=300&h=200&fit=crop', label: 'Mariposa en flores' },
-                { src: 'https://static.vecteezy.com/system/resources/previews/017/675/147/original/cute-cartoon-postcard-sunny-lawn-with-bees-flying-under-red-daisy-flowers-and-grass-isolated-on-white-background-bees-are-collecting-honey-in-the-sunny-summer-day-vector.jpg?w=300&h=200&fit=crop', label: 'Abeja en flores' }
+                { src: 'https://img.freepik.com/vector-premium/lindo-gato-flor-vector-dibujos-animados-sobre-fondo-blanco_1026278-7253.jpg?w=300&h=200&fit=crop', label: 'Gato nas flores' },
+                { src: 'https://img.freepik.com/vector-premium/mariposas-vuelo-flor-jardin_1308-4021.jpg?w=300&h=200&fit=crop', label: 'Borboleta nas flores' },
+                { src: 'https://static.vecteezy.com/system/resources/previews/017/675/147/original/cute-cartoon-postcard-sunny-lawn-with-bees-flying-under-red-daisy-flowers-and-grass-isolated-on-white-background-bees-are-collecting-honey-in-the-sunny-summer-day-vector.jpg?w=300&h=200&fit=crop', label: 'Abelha nas flores' }
             ]
         },
         {
-            sentence: "El elefante camina lentamente por la sabana.",
+            sentence: "O elefante caminha lentamente pela savana.",
             correctImageIndex: 0,
-            difficultWords: ['elefante', 'sabana'],
+            difficultWords: ['elefante', 'savana'],
             category: 'animals',
             errorType: 'semantic',
-            explanation: "Un elefante es un animal grande. La sabana es su hábitat natural.",
+            explanation: "Um elefante é um animal grande. A savana é o seu habitat natural.",
             images: [
-                { src: 'https://i.pinimg.com/736x/9a/e4/39/9ae43949a771f9fb650c7786fed63cdc--elephants.jpg?w=300&h=200&fit=crop', label: 'Elefante en sabana' },
-                { src: 'https://img.freepik.com/vector-premium/feliz-leon-dibujos-animados-sabana_133260-14519.jpg?w=300&h=200&fit=crop', label: 'León en sabana' },
-                { src: 'https://static.vecteezy.com/system/resources/previews/060/831/743/non_2x/giraffe-eating-leaves-from-tree-with-green-foliage-in-simple-nature-background-illustration-vector.jpg?w=300&h=200&fit=crop', label: 'Jirafa comiendo' }
+                { src: 'https://i.pinimg.com/736x/9a/e4/39/9ae43949a771f9fb650c7786fed63cdc--elephants.jpg?w=300&h=200&fit=crop', label: 'Elefante na savana' },
+                { src: 'https://img.freepik.com/vector-premium/feliz-leon-dibujos-animados-sabana_133260-14519.jpg?w=300&h=200&fit=crop', label: 'Leão na savana' },
+                { src: 'https://static.vecteezy.com/system/resources/previews/060/831/743/non_2x/giraffe-eating-leaves-from-tree-with-green-foliage-in-simple-nature-background-illustration-vector.jpg?w=300&h=200&fit=crop', label: 'Girafa comendo' }
             ]
         },
         {
-            sentence: "El cocodrilo nada en el río.",
+            sentence: "O crocodilo nada no rio.",
             correctImageIndex: 2,
-            difficultWords: ['cocodrilo'],
+            difficultWords: ['crocodilo'],
             category: 'animals',
             errorType: 'semantic',
-            explanation: "Un cocodrilo es un reptil que vive en el agua. Nada es su actividad principal.",
+            explanation: "Um crocodilo é um réptil que vive na água. Nadar é sua atividade principal.",
             images: [
-                { src: 'https://static.vecteezy.com/system/resources/previews/003/278/420/large_2x/animal-character-funny-crocodile-in-cartoon-style-vector.jpg?w=300&h=200&fit=crop', label: 'Cocodrilo en tierra' },
-                { src: 'https://static.vecteezy.com/system/resources/previews/021/458/217/non_2x/cute-green-snake-cartoon-on-white-background-vector.jpg?w=300&h=200&fit=crop', label: 'Serpiente en río' },
-                { src: 'https://img.freepik.com/vector-premium/cocodrilo-agua-cocodrilo-anfibio-reptil-salvaje-verde-enojado-salvaje-animal-natacion-dibujos-animados-fondo_80590-4822.jpg?w=300&h=200&fit=crop', label: 'Cocodrilo nadando' }
+                { src: 'https://static.vecteezy.com/system/resources/previews/003/278/420/large_2x/animal-character-funny-crocodile-in-cartoon-style-vector.jpg?w=300&h=200&fit=crop', label: 'Crocodilo em terra' },
+                { src: 'https://static.vecteezy.com/system/resources/previews/021/458/217/non_2x/cute-green-snake-cartoon-on-white-background-vector.jpg?w=300&h=200&fit=crop', label: 'Cobra no rio' },
+                { src: 'https://img.freepik.com/vector-premium/cocodrilo-agua-cocodrilo-anfibio-reptil-salvaje-verde-enojado-salvaje-animal-natacion-dibujos-animados-fondo_80590-4822.jpg?w=300&h=200&fit=crop', label: 'Crocodilo nadando' }
             ]
         }
     ],
     hard: [
         {
-            sentence: "La majestuosa orquesta sinfónica interpretaba una sonata extraordinaria.",
+            sentence: "A majestosa orquestra sinfônica interpretava uma sonata extraordinária.",
             correctImageIndex: 1,
-            difficultWords: ['majestuosa', 'orquesta', 'sinfónica', 'interpretaba', 'sonata', 'extraordinaria'],
+            difficultWords: ['majestosa', 'orquestra', 'sinfônica', 'interpretava', 'sonata', 'extraordinária'],
             category: 'arts',
             errorType: 'phonetic',
-            explanation: "Describe músicos tocando instrumento juntos. Las palabras complejas hacen la lectura más desafiante.",
+            explanation: "Descreve músicos tocando instrumentos juntos. As palavras complexas tornam a leitura mais desafiadora.",
             images: [
-                { src: 'https://static.vecteezy.com/system/resources/previews/016/704/376/original/cartoon-illustration-acoustic-guitar-colorful-musical-instrument-vector.jpg?w=300&h=200&fit=crop', label: 'Guitarra sola' },
-                { src: 'https://img.freepik.com/vector-premium/conjunto-grupo-orquesta-conductor-escenario_7496-856.jpg?w=300&h=200&fit=crop', label: 'Orquesta tocando' },
-                { src: 'https://static.vecteezy.com/system/resources/previews/016/269/586/original/open-air-concert-illustration-concept-on-white-background-vector.jpg?w=300&h=200&fit=crop', label: 'Concierto moderno' }
+                { src: 'https://static.vecteezy.com/system/resources/previews/016/704/376/original/cartoon-illustration-acoustic-guitar-colorful-musical-instrument-vector.jpg?w=300&h=200&fit=crop', label: 'Guitarra sozinha' },
+                { src: 'https://img.freepik.com/vector-premium/conjunto-grupo-orquesta-conductor-escenario_7496-856.jpg?w=300&h=200&fit=crop', label: 'Orquestra tocando' },
+                { src: 'https://static.vecteezy.com/system/resources/previews/016/269/586/original/open-air-concert-illustration-concept-on-white-background-vector.jpg?w=300&h=200&fit=crop', label: 'Show moderno' }
             ]
         },
         {
-            sentence: "El hipopótamo se sumerge profundamente en el pantano cenagoso.",
+            sentence: "O hipopótamo mergulha profundamente no pântano lodoso.",
             correctImageIndex: 0,
-            difficultWords: ['hipopótamo', 'sumerge', 'profundamente', 'pantano', 'cenagoso'],
+            difficultWords: ['hipopótamo', 'mergulha', 'profundamente', 'pântano', 'lodoso'],
             category: 'animals',
             errorType: 'visual',
-            explanation: "Describe un hipopótamo en su ambiente acuático. Palabras complejas para vocabulario avanzado.",
+            explanation: "Descreve um hipopótamo no seu ambiente aquático. Palavras complexas para vocabulário avançado.",
             images: [
-                { src: 'https://static.vecteezy.com/system/resources/previews/005/561/609/non_2x/hippo-cartoon-colored-illustration-free-vector.jpg?w=300&h=200&fit=crop', label: 'Hipopótamo en agua' },
+                { src: 'https://static.vecteezy.com/system/resources/previews/005/561/609/non_2x/hippo-cartoon-colored-illustration-free-vector.jpg?w=300&h=200&fit=crop', label: 'Hipopótamo na água' },
                 { src: 'https://static.vecteezy.com/system/resources/previews/044/841/151/original/cartoon-elephant-animal-illustration-vector.jpg?w=300&h=200&fit=crop', label: 'Elefante' },
                 { src: 'https://png.pngtree.com/png-clipart/20220823/original/pngtree-the-cute-baby-rhino-with-the-excited-expression-png-image_8451466.png?w=300&h=200&fit=crop', label: 'Rinoceronte' }
             ]
         },
         {
-            sentence: "El diligente investigador examinaba meticulosamente los artefactos arqueológicos.",
+            sentence: "O diligente pesquisador examinava meticulosamente os artefatos arqueológicos.",
             correctImageIndex: 2,
-            difficultWords: ['diligente', 'investigador', 'examinaba', 'meticulosamente', 'artefactos', 'arqueológicos'],
+            difficultWords: ['diligente', 'pesquisador', 'examinava', 'meticulosamente', 'artefatos', 'arqueológicos'],
             category: 'professions',
             errorType: 'phonetic',
-            explanation: "Describe un arqueólogo trabajando. Vocabulario académico para estimular pensamiento crítico.",
+            explanation: "Descreve um arqueólogo trabalhando. Vocabulário acadêmico para estimular o pensamento crítico.",
             images: [
                 { src: 'https://static.vecteezy.com/system/resources/previews/000/299/564/large_2x/childrens-doing-activities-in-library-vector.jpg?w=300&h=200&fit=crop', label: 'Biblioteca' },
-                { src: 'https://c8.alamy.com/compes/2gak438/diseno-de-dibujos-animados-de-cientifico-de-pie-en-el-laboratorio-2gak438.jpg?w=300&h=200&fit=crop', label: 'Laboratorio científico' },
-                { src: 'https://img.freepik.com/vector-premium/ninos-arqueologos-ninos-arqueologia-dibujos-animados-nino-arqueologo-o-paleontologo-historia-excavacion-ninos-que-trabajan-explorando-fosiles-antiguos-suelo-ilustracion-vectorial-reciente_81894-14923.jpg?w=300&h=200&fit=crop', label: 'Arqueólogo excavando' }
+                { src: 'https://c8.alamy.com/compes/2gak438/diseno-de-dibujos-animados-de-cientifico-de-pie-en-el-laboratorio-2gak438.jpg?w=300&h=200&fit=crop', label: 'Laboratório científico' },
+                { src: 'https://img.freepik.com/vector-premium/ninos-arqueologos-ninos-arqueologia-dibujos-animados-nino-arqueologo-o-paleontologo-historia-excavacion-ninos-que-trabajan-explorando-fosiles-antiguos-suelo-ilustracion-vectorial-reciente_81894-14923.jpg?w=300&h=200&fit=crop', label: 'Arqueólogo escavando' }
             ]
         }
     ]
@@ -167,36 +167,36 @@ function setupEventListeners() {
     document.getElementById('read-button').addEventListener('click', readSentence);
 }
 
-// Utilidad para dividir palabras en sílabas
+// Utilitário para dividir palavras em sílabas
 function splitSyllables(word) {
     const syllableMap = {
-        'mariposa': 'ma-ri-po-sa',
-        'teléfono': 'te-lé-fo-no',
+        'borboleta': 'bor-bo-le-ta',
+        'telefone': 'te-le-fo-ne',
         'bicicleta': 'bi-ci-cle-ta',
         'elefante': 'e-le-fan-te',
-        'pajaro': 'pa-ja-ro',
-        'cocodrilo': 'co-co-dri-lo',
-        'canguro': 'can-gu-ro',
+        'passarinho': 'pas-sa-ri-nho',
+        'crocodilo': 'cro-co-di-lo',
+        'canguru': 'can-gu-ru',
         'hipopótamo': 'hi-po-pó-ta-mo',
-        'dinosaurio': 'di-no-sau-rio',
-        'pinguino': 'pin-güi-no',
-        'majestuosa': 'ma-jes-tu-o-sa',
-        'orquesta': 'or-ques-ta',
-        'sinfónica': 'sin-fó-ni-ca',
-        'interpretaba': 'in-ter-pre-ta-ba',
+        'dinossauro': 'di-nos-sau-ro',
+        'pinguim': 'pin-guim',
+        'majestosa': 'ma-jes-to-sa',
+        'orquestra': 'or-ques-tra',
+        'sinfônica': 'sin-fô-ni-ca',
+        'interpretava': 'in-ter-pre-ta-va',
         'sonata': 'so-na-ta',
-        'extraordinaria': 'ex-traor-di-na-ria',
+        'extraordinária': 'ex-tra-or-di-ná-ria',
         'diligente': 'di-li-gen-te',
-        'investigador': 'in-ves-ti-ga-dor',
-        'examinaba': 'e-xa-mi-na-ba',
+        'pesquisador': 'pes-qui-sa-dor',
+        'examinava': 'e-xa-mi-na-va',
         'meticulosamente': 'me-ti-cu-lo-sa-men-te',
-        'artefactos': 'ar-te-fac-tos',
+        'artefatos': 'ar-te-fa-tos',
         'arqueológicos': 'ar-que-o-ló-gi-cos'
     };
     return syllableMap[word.toLowerCase()] || word;
 }
 
-// Seleccionar pool por dificultad adaptativa
+// Selecionar pool por dificuldade adaptativa
 function selectDifficultyPool() {
     const avgResponseTime = analytics.responseTimes.length > 0
         ? analytics.responseTimes.reduce((a, b) => a + b, 0) / analytics.responseTimes.length
@@ -204,7 +204,6 @@ function selectDifficultyPool() {
 
     const errorRate = (analytics.errors.semantic + analytics.errors.phonetic + analytics.errors.visual) / Math.max(currentRound, 1);
 
-    // Lógica adaptativa mejorada
     if (wrongAttempts >= 2 || errorRate > 0.4 || avgResponseTime > 15000) {
         difficulty = 'easy';
         return wordBanks.easy;
@@ -217,7 +216,7 @@ function selectDifficultyPool() {
     }
 }
 
-// Iniciar nueva ronda
+// Iniciar nova rodada
 function startNewRound() {
     const wordBank = selectDifficultyPool();
     const randomIndex = Math.floor(Math.random() * wordBank.length);
@@ -232,20 +231,18 @@ function startNewRound() {
     updateDifficulty();
 }
 
-// Actualizar UI general
+// Atualizar UI geral
 function updateUI() {
     document.getElementById('current-round').textContent = currentRound + 1;
     document.getElementById('total-rounds').textContent = totalRounds;
-    document.getElementById('score').textContent = score + ' puntos';
-    document.getElementById('score-display').textContent = score + ' puntos';
+    document.getElementById('score').textContent = score + ' pontos';
+    document.getElementById('score-display').textContent = score + ' pontos';
 
     const progress = ((currentRound + 1) / totalRounds) * 100;
     document.getElementById('progress-fill').style.width = progress + '%';
 
-    // Mostrar oración
     document.getElementById('sentence-display').textContent = currentExercise.sentence;
 
-    // Mostrar palabras difíciles
     if (currentExercise.difficultWords.length > 0) {
         const difficultWordsDiv = document.getElementById('difficult-words');
         difficultWordsDiv.innerHTML = '';
@@ -265,7 +262,6 @@ function updateUI() {
         document.getElementById('word-difficulty').classList.remove('hidden');
     }
 
-    // Mostrar imágenes
     const imagesContainer = document.getElementById('images-container');
     imagesContainer.innerHTML = '';
 
@@ -280,12 +276,11 @@ function updateUI() {
         imagesContainer.appendChild(imageCard);
     });
 
-    // Limpiar feedback
     document.getElementById('feedback').classList.add('hidden');
     document.getElementById('explanation').classList.add('hidden');
 }
 
-// Seleccionar imagen
+// Selecionar imagem
 function selectImage(index, element) {
     document.querySelectorAll('.image-card').forEach(card => {
         card.classList.remove('selected');
@@ -295,7 +290,7 @@ function selectImage(index, element) {
     selectedImage = index;
 }
 
-// Leer oración en voz alta
+// Ler frase em voz alta
 function readSentence() {
     const utterance = new SpeechSynthesisUtterance(currentExercise.sentence);
     utterance.lang = 'pt-BR';
@@ -312,7 +307,7 @@ function readSentence() {
     window.speechSynthesis.speak(utterance);
 }
 
-// Hablar palabra individual
+// Falar palavra individual
 function speakWord(word) {
     const utterance = new SpeechSynthesisUtterance(word);
     utterance.lang = 'pt-BR';
@@ -322,10 +317,10 @@ function speakWord(word) {
     window.speechSynthesis.speak(utterance);
 }
 
-// Mostrar pista inteligente
+// Mostrar dica inteligente
 function showHint() {
     if (hintUsed) {
-        showFeedback("Ya usaste la pista", false);
+        showFeedback("Você já usou a dica", false);
         return;
     }
 
@@ -336,23 +331,22 @@ function showHint() {
     correctCard.style.boxShadow = '0 0 20px rgba(34, 197, 94, 0.5)';
     correctCard.style.borderColor = 'rgba(34, 197, 94, 0.5)';
 
-    showFeedback("💡 La imagen correcta está destacada con un brillo verde", true);
+    showFeedback("💡 A imagem correta está destacada com um brilho verde", true);
 }
 
-// Verificar respuesta CON ANALYTICS
+// Verificar resposta COM ANALYTICS
 function checkAnswer() {
     responseTime = Date.now() - startTime;
     analytics.responseTimes.push(responseTime);
 
     if (selectedImage === null) {
-        showFeedback("Debes seleccionar una imagen", false);
+        showFeedback("Você deve selecionar uma imagem", false);
         return;
     }
 
     const isCorrect = selectedImage === currentExercise.correctImageIndex;
 
     if (isCorrect) {
-        // Registrar clasificación correcta
         classificationPattern.push({
             category: currentExercise.category,
             correct: true,
@@ -366,11 +360,11 @@ function checkAnswer() {
 
         let points = 20;
         if (hintUsed) points = 15;
-        if (responseTime > 10000) points -= 5; // Penalizar si tardó mucho
+        if (responseTime > 10000) points -= 5;
 
         score += points;
 
-        showFeedback(`¡Correcto! +${points} puntos 🎉`, true);
+        showFeedback(`Correto! +${points} pontos 🎉`, true);
 
         const correctCard = document.querySelectorAll('.image-card')[currentExercise.correctImageIndex];
         correctCard.classList.add('correct');
@@ -395,7 +389,6 @@ function checkAnswer() {
             }
         }, 3000);
     } else {
-        // Registrar error de clasificación
         classificationPattern.push({
             category: currentExercise.category,
             correct: false,
@@ -403,7 +396,6 @@ function checkAnswer() {
             timeMs: responseTime
         });
 
-        // Registrar tipo de error
         if (currentExercise.errorType === 'semantic') {
             analytics.errors.semantic++;
         } else if (currentExercise.errorType === 'phonetic') {
@@ -413,7 +405,7 @@ function checkAnswer() {
         }
 
         wrongAttempts++;
-        showFeedback("Incorrecto. Intenta de nuevo", false);
+        showFeedback("Incorreto. Tente novamente", false);
 
         const incorrectCard = document.querySelectorAll('.image-card')[selectedImage];
         incorrectCard.classList.add('incorrect');
@@ -421,17 +413,17 @@ function checkAnswer() {
         updateDifficulty();
     }
 
-    document.getElementById('score').textContent = score + ' puntos';
-    document.getElementById('score-display').textContent = score + ' puntos';
+    document.getElementById('score').textContent = score + ' pontos';
+    document.getElementById('score-display').textContent = score + ' pontos';
 }
 
-// Mostrar explicación
+// Mostrar explicação
 function showExplanation() {
     document.getElementById('explanation-text').textContent = currentExercise.explanation;
     document.getElementById('explanation').classList.remove('hidden');
 }
 
-// Reiniciar ronda
+// Reiniciar rodada
 function resetRound() {
     selectedImage = null;
     document.querySelectorAll('.image-card').forEach(card => {
@@ -453,7 +445,7 @@ function showFeedback(message, isCorrect) {
     feedbackElement.classList.remove('hidden');
 }
 
-// Actualizar dificultad
+// Atualizar dificuldade
 function updateDifficulty() {
     let newDifficulty = 'normal';
 
@@ -467,34 +459,31 @@ function updateDifficulty() {
     const badgeTexts = {
         'easy': '🎯 Fácil',
         'normal': 'Normal',
-        'hard': '⭐ Avanzado'
+        'hard': '⭐ Avançado'
     };
     badge.textContent = badgeTexts[newDifficulty];
 }
 
-// Completar juego CON ANÁLISIS DETALLADO
+// Completar jogo COM ANÁLISE DETALHADA
 function completeGame() {
-    // Calcular estadísticas
     const avgResponseTime = (analytics.responseTimes.reduce((a, b) => a + b, 0) / analytics.responseTimes.length / 1000).toFixed(1);
     const totalErrors = analytics.errors.semantic + analytics.errors.phonetic + analytics.errors.visual;
 
-    // Identificar tipo de error más frecuente
-    let mainErrorType = 'Ninguno';
+    let mainErrorType = 'Nenhum';
     let maxErrors = 0;
     if (analytics.errors.semantic > maxErrors) {
         maxErrors = analytics.errors.semantic;
-        mainErrorType = 'Comprensión Semántica';
+        mainErrorType = 'Compreensão Semântica';
     }
     if (analytics.errors.phonetic > maxErrors) {
         maxErrors = analytics.errors.phonetic;
-        mainErrorType = 'Pronunciación/Fonética';
+        mainErrorType = 'Pronúncia/Fonética';
     }
     if (analytics.errors.visual > maxErrors) {
         maxErrors = analytics.errors.visual;
-        mainErrorType = 'Memoria Visual';
+        mainErrorType = 'Memória Visual';
     }
 
-    // Análisis de patrón de clasificación
     const categoryPerformance = {};
     classificationPattern.forEach(item => {
         if (!categoryPerformance[item.category]) {
@@ -510,35 +499,35 @@ function completeGame() {
 
     const leeCard = document.querySelector('.lee-card');
     leeCard.innerHTML = `
-        <h2>¡Juego Completado! 🏆</h2>
+        <h2>Jogo Concluído! 🏆</h2>
         <div class="feedback correct" style="margin-top: 20px;">
-            <p><strong>Tu puntaje final:</strong> ${score} puntos</p>
+            <p><strong>Sua pontuação final:</strong> ${score} pontos</p>
         </div>
         <div class="explanation" style="margin-top: 20px;">
-            <h3>📊 Análisis de Desempeño</h3>
-            <p><strong>Tiempo promedio de respuesta:</strong> ${avgResponseTime}s</p>
-            <p><strong>Aciertos al primer intento:</strong> ${analytics.correctFirstAttempt}/${totalRounds}</p>
-            <p><strong>Errores totales:</strong> ${totalErrors}</p>
-            ${totalErrors > 0 ? `<p><strong>Tipo de error más frecuente:</strong> ${mainErrorType} (${maxErrors})</p>` : '<p><strong>¡Sin errores! Excelente desempeño.</strong></p>'}
-            <p><strong>Categoría más fuerte:</strong> ${bestCategory ? bestCategory[0].toUpperCase() : 'N/A'}</p>
+            <h3>📊 Análise de Desempenho</h3>
+            <p><strong>Tempo médio de resposta:</strong> ${avgResponseTime}s</p>
+            <p><strong>Acertos na primeira tentativa:</strong> ${analytics.correctFirstAttempt}/${totalRounds}</p>
+            <p><strong>Erros totais:</strong> ${totalErrors}</p>
+            ${totalErrors > 0 ? `<p><strong>Tipo de erro mais frequente:</strong> ${mainErrorType} (${maxErrors})</p>` : '<p><strong>Sem erros! Excelente desempenho.</strong></p>'}
+            <p><strong>Categoria mais forte:</strong> ${bestCategory ? bestCategory[0].toUpperCase() : 'N/A'}</p>
             <p style="margin-top: 10px; font-size: 14px; color: #555;">
-                ${score >= 90 ? '🌟 ¡Excelente! Demuestras gran comprensión lectora y asociación visual.' :
-                  score >= 70 ? '✨ ¡Buen trabajo! Continúa practicando para mejorar.' :
-                  '💪 Necesitas más práctica. ¡Puedes lograrlo!'}
+                ${score >= 90 ? '🌟 Excelente! Você demonstra ótima compreensão leitora e associação visual.' :
+                  score >= 70 ? '✨ Bom trabalho! Continue praticando para melhorar.' :
+                  '💪 Precisa de mais prática. Você consegue!'}
             </p>
         </div>
         <div class="action-controls" style="margin-top: 30px;">
             <button class="action-button primary" onclick="location.reload()">
-                <i class="fas fa-redo"></i> Jugar de Nuevo
+                <i class="fas fa-redo"></i> Jogar Novamente
             </button>
             <button class="action-button blue" onclick="goToMainPage()">
-                <i class="fas fa-home"></i> Volver al Menú
+                <i class="fas fa-home"></i> Voltar ao Menu
             </button>
         </div>
     `;
 }
 
-// Volver a página principal
+// Voltar à página principal
 function goToMainPage() {
     window.location.href = 'https://plekdev.github.io/BlueMinds/selectores/selector-lecto-escritor.html';
 }

@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>El Ritmo de las Sílabas - Neuro Play World</title>
+    <title>O Ritmo das Sílabas - Neuro Play World</title>
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="style.css">
@@ -13,34 +13,34 @@
         <header class="game-header">
             <div class="back-button">
                 <button onclick="goToMainPage()">
-                    <i class="fas fa-arrow-left"></i> Volver
+                    <i class="fas fa-arrow-left"></i> Voltar
                 </button>
             </div>
-            <h1 class="game-title">El Ritmo de las Sílabas</h1>
+            <h1 class="game-title">O Ritmo das Sílabas</h1>
             <div class="game-info">
-                <span id="score-display">0 puntos</span>
+                <span id="score-display">0 pontos</span>
             </div>
         </header>
 
         <main class="game-content">
-            <!-- Progress -->
+            <!-- Progresso -->
             <div class="progress-card">
                 <div class="progress-header">
-                    <span>Ronda <span id="current-round">1</span> de <span id="total-rounds">5</span></span>
-                    <span id="score">0 puntos</span>
+                    <span>Rodada <span id="current-round">1</span> de <span id="total-rounds">5</span></span>
+                    <span id="score">0 pontos</span>
                 </div>
                 <div class="progress-bar">
                     <div id="progress-fill" class="progress-fill"></div>
                 </div>
             </div>
 
-            <!-- Main Game Card -->
+            <!-- Card Principal do Jogo -->
             <div class="rhythm-card">
-                <h2>Sigue el Ritmo de las Sílabas 🎵</h2>
+                <h2>Siga o Ritmo das Sílabas 🎵</h2>
 
-                <!-- Difficulty Level -->
+                <!-- Nível de Dificuldade -->
                 <div class="difficulty-level">
-                    <span>Velocidad:</span>
+                    <span>Velocidade:</span>
                     <div class="speed-indicator">
                         <span class="speed-dot active" id="speed1"></span>
                         <span class="speed-dot" id="speed2"></span>
@@ -48,59 +48,59 @@
                     </div>
                 </div>
 
-                <!-- Syllable Display -->
+                <!-- Exibição de Sílabas -->
                 <div class="syllable-stage">
                     <div id="syllables-container" class="syllables-container">
-                        <!-- Las sílabas se generarán dinámicamente -->
+                        <!-- As sílabas serão geradas dinamicamente -->
                     </div>
                 </div>
 
-                <!-- Tap Detection Area -->
+                <!-- Área de Toque -->
                 <div class="tap-area" id="tapArea">
                     <div class="tap-instruction">
-                        👏 haz click aqui las veces del ritmo
+                        👏 Clique aqui no ritmo
                     </div>
                     <div class="tap-feedback" id="tapFeedback"></div>
                 </div>
 
-                <!-- Audio Analysis -->
+                <!-- Análise de Áudio -->
                 <div class="audio-analysis" id="audioAnalysis" style="display: none;">
-                    <h4>🎤 Análisis de Ritmo</h4>
+                    <h4>🎤 Análise de Ritmo</h4>
                     <div class="analysis-metrics">
                         <div class="metric">
                             <span class="metric-label">Ritmo Detectado:</span>
                             <span class="metric-value" id="rhythmDetected">--%</span>
                         </div>
                         <div class="metric">
-                            <span class="metric-label">Precisión Motora:</span>
+                            <span class="metric-label">Precisão Motora:</span>
                             <span class="metric-value" id="motorPrecision">--%</span>
                         </div>
                         <div class="metric">
-                            <span class="metric-label">Repetición de Sílabas:</span>
+                            <span class="metric-label">Repetição de Sílabas:</span>
                             <span class="metric-value" id="syllableRepetition">--%</span>
                         </div>
                     </div>
                 </div>
 
-                <!-- Controls -->
+                <!-- Controles -->
                 <div class="action-controls">
                     <button id="start-button" class="action-button primary">
-                        <i class="fas fa-play"></i> Escuchar Palabra
+                        <i class="fas fa-play"></i> Ouvir Palavra
                     </button>
                 </div>
 
-                <!-- Speech Recognition -->
+                <!-- Reconhecimento de Fala -->
                 <div class="speech-section" id="speechSection" style="display: none;">
-                    <h4>🎤 Repite la Palabra</h4>
+                    <h4>🎤 Repita a Palavra</h4>
                     <button id="listen-button" class="listen-button">
-                        <i class="fas fa-microphone"></i> Escuchar
+                        <i class="fas fa-microphone"></i> Ouvir
                     </button>
                     <div id="speech-feedback" class="speech-feedback hidden">
                         <span id="speech-text"></span>
                     </div>
                 </div>
 
-                <!-- Adaptation Notice -->
+                <!-- Aviso de Adaptação -->
                 <div id="adaptationNotice" class="adaptation-notice hidden">
                     <i class="fas fa-lightbulb"></i>
                     <span id="adaptationText"></span>
@@ -112,10 +112,10 @@
                 </div>
             </div>
 
-            <!-- Instructions -->
+            <!-- Instruções -->
             <div class="instructions-card">
                 <p>
-                    💡 <span class="font-bold">Cómo jugar:</span> Escucha la palabra dividida en sílabas. Sigue el ritmo haciendo click, y luego repite la palabra completa.
+                    💡 <span class="font-bold">Como jogar:</span> Ouça a palavra dividida em sílabas. Siga o ritmo clicando, e depois repita a palavra completa.
                 </p>
             </div>
         </main>

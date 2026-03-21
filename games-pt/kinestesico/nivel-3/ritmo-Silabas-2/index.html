@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ritmo de las Sílabas Simple - Neuro Play World</title>
+    <title>Ritmo das Sílabas Simples - Neuro Play World</title>
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="style.css">
@@ -13,63 +13,63 @@
         <header class="game-header">
             <div class="back-button">
                 <button onclick="goToMainPage()">
-                    <i class="fas fa-arrow-left"></i> Volver
+                    <i class="fas fa-arrow-left"></i> Voltar
                 </button>
             </div>
-            <h1 class="game-title">Ritmo de las Sílabas</h1>
+            <h1 class="game-title">Ritmo das Sílabas</h1>
             <div class="game-info">
-                <span id="score-display">0 puntos</span>
+                <span id="score-display">0 pontos</span>
             </div>
         </header>
 
         <main class="game-content">
-            <!-- Progress -->
+            <!-- Progresso -->
             <div class="progress-card">
                 <div class="progress-header">
-                    <span>Ronda <span id="current-round">1</span> de <span id="total-rounds">3</span></span>
-                    <span id="score">0 puntos</span>
+                    <span>Rodada <span id="current-round">1</span> de <span id="total-rounds">3</span></span>
+                    <span id="score">0 pontos</span>
                 </div>
                 <div class="progress-bar">
                     <div id="progress-fill" class="progress-fill"></div>
                 </div>
             </div>
 
-            <!-- Main Game Card -->
+            <!-- Card Principal do Jogo -->
             <div class="rhythm-card">
-                <h2>Sigue el Ritmo 🎵</h2>
+                <h2>Siga o Ritmo 🎵</h2>
 
-                <!-- Syllable Display -->
+                <!-- Exibição de Sílabas -->
                 <div class="syllable-stage">
                     <div id="syllables-container" class="syllables-container">
-                        <!-- Las sílabas se generarán dinámicamente -->
+                        <!-- As sílabas serão geradas dinamicamente -->
                     </div>
                 </div>
 
-                <!-- Tap Detection Area -->
+                <!-- Área de Toque -->
                 <div class="tap-area" id="tapArea">
                     <div class="tap-instruction">
-                        👏 Haz clic aquí al ritmo
+                        👏 Clique aqui no ritmo
                     </div>
                     <div class="tap-feedback" id="tapFeedback"></div>
                 </div>
 
-                <!-- Simple Feedback -->
+                <!-- Feedback Simples -->
                 <div id="feedback" class="feedback hidden">
                     <span id="feedback-text"></span>
                 </div>
 
-                <!-- Controls -->
+                <!-- Controles -->
                 <div class="action-controls">
                     <button id="start-button" class="action-button primary">
-                        <i class="fas fa-play"></i> Escuchar Palabra
+                        <i class="fas fa-play"></i> Ouvir Palavra
                     </button>
                 </div>
 
-                <!-- Speech Recognition -->
+                <!-- Reconhecimento de Fala -->
                 <div class="speech-section" id="speechSection" style="display: none;">
-                    <h4>🎤 Repite la Palabra</h4>
+                    <h4>🎤 Repita a Palavra</h4>
                     <button id="listen-button" class="listen-button">
-                        <i class="fas fa-microphone"></i> Escuchar
+                        <i class="fas fa-microphone"></i> Ouvir
                     </button>
                     <div id="speech-feedback" class="speech-feedback hidden">
                         <span id="speech-text"></span>
@@ -77,10 +77,10 @@
                 </div>
             </div>
 
-            <!-- Instructions -->
+            <!-- Instruções -->
             <div class="instructions-card">
                 <p>
-                    💡 <span class="font-bold">Cómo jugar:</span> Escucha la palabra. Haz clic al ritmo de las sílabas y luego repite la palabra.
+                    💡 <span class="font-bold">Como jogar:</span> Ouça a palavra. Clique no ritmo das sílabas e depois repita a palavra.
                 </p>
             </div>
         </main>

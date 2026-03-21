@@ -1,4 +1,4 @@
-// ===== SISTEMA DE IA ADAPTATIVO PARA CONSTRUCCIÓN SINTÁCTICA CON AUDIO =====
+// ===== SISTEMA DE IA ADAPTATIVO PARA CONSTRUÇÃO SINTÁTICA COM ÁUDIO =====
 
 class AudioManager {
     constructor() {
@@ -9,27 +9,14 @@ class AudioManager {
 
     speak(text, rate = 1, pitch = 1) {
         if (!this.audioEnabled) return;
-
-        // Cancelar cualquier audio en progreso
         this.synth.cancel();
-
         const utterance = new SpeechSynthesisUtterance(text);
         utterance.rate = rate;
         utterance.pitch = pitch;
         utterance.lang = 'pt-BR';
-
-        utterance.onstart = () => {
-            this.isSpeaking = true;
-        };
-
-        utterance.onend = () => {
-            this.isSpeaking = false;
-        };
-
-        utterance.onerror = () => {
-            this.isSpeaking = false;
-        };
-
+        utterance.onstart = () => { this.isSpeaking = true; };
+        utterance.onend = () => { this.isSpeaking = false; };
+        utterance.onerror = () => { this.isSpeaking = false; };
         this.synth.speak(utterance);
     }
 
@@ -48,7 +35,6 @@ class AISyntaxGame {
         this.showFeedback = false;
         this.audioManager = new AudioManager();
 
-        // Parámetros de IA
         this.syntaxScore = 0;
         this.difficulty = 'easy';
         this.consecutiveCorrect = 0;
@@ -56,7 +42,6 @@ class AISyntaxGame {
         this.attentionTime = 0;
         this.startTime = 0;
 
-        // Análisis de errores
         this.syntaxErrors = {
             wrongOrder: 0,
             wrongWord: 0,
@@ -67,76 +52,71 @@ class AISyntaxGame {
         this.wordStats = {};
         this.sentenceStats = {};
 
-        // Niveles de dificultad
         this.difficultyLevels = {
             easy: { wordCount: 3, examples: true },
             medium: { wordCount: 4, examples: false },
             hard: { wordCount: 5, examples: false }
         };
 
-        // Base de oraciones con descripciones de audio
         this.sentences = [
             {
-                words: ["El", "gato", "duerme"],
-                correct: ["El", "gato", "duerme"],
+                words: ["O", "gato", "dorme"],
+                correct: ["O", "gato", "dorme"],
                 complexity: 'easy',
                 type: 'SVO',
                 image: "🐱💤",
-                audioDescription: "Se muestra un gato. ¿Cuál es el animal en la imagen?",
-                audioInstruction: "Forma la oración correcta haciendo clic en las palabras en el orden adecuado"
+                audioDescription: "Aparece um gato. Qual é o animal na imagem?",
+                audioInstruction: "Monte a frase correta clicando nas palavras na ordem adequada"
             },
             {
-                words: ["perro", "El", "corre"],
-                correct: ["El", "perro", "corre"],
+                words: ["cachorro", "O", "corre"],
+                correct: ["O", "cachorro", "corre"],
                 complexity: 'easy',
                 type: 'SV',
                 image: "🐕",
-                audioDescription: "Se muestra un perro. ¿Cuál es este animal?",
-                audioInstruction: "Haz clic en las palabras para formar: El perro corre"
+                audioDescription: "Aparece um cachorro. Qual é esse animal?",
+                audioInstruction: "Clique nas palavras para formar: O cachorro corre"
             },
             {
-                words: ["vuela", "pájaro", "El"],
-                correct: ["El", "pájaro", "vuela"],
+                words: ["voa", "pássaro", "O"],
+                correct: ["O", "pássaro", "voa"],
                 complexity: 'easy',
                 type: 'SV',
                 image: "🦅",
-                audioDescription: "Se muestra un pájaro volando. ¿Qué animal ves?",
-                audioInstruction: "Ordena las palabras para decir que el pájaro vuela"
+                audioDescription: "Aparece um pássaro voando. Que animal você vê?",
+                audioInstruction: "Ordene as palavras para dizer que o pássaro voa"
             },
-
             {
-                words: ["niña", "come", "La", "manzana"],
-                correct: ["La", "niña", "come", "manzana"],
+                words: ["menina", "come", "A", "maçã"],
+                correct: ["A", "menina", "come", "maçã"],
                 complexity: 'medium',
                 type: 'SVO',
                 image: "👧🍎",
-                audioDescription: "Se muestra una niña comiendo una manzana. ¿Quién aparece en la imagen?",
-                audioInstruction: "Forma la oración con cuatro palabras sobre la niña"
+                audioDescription: "Aparece uma menina comendo uma maçã. Quem aparece na imagem?",
+                audioInstruction: "Monte a frase com quatro palavras sobre a menina"
             },
             {
-                words: ["bonita", "Una", "casa", "es"],
-                correct: ["Una", "casa", "es", "bonita"],
+                words: ["bonita", "Uma", "casa", "é"],
+                correct: ["Uma", "casa", "é", "bonita"],
                 complexity: 'medium',
                 type: 'SVC',
                 image: "🏠",
-                audioDescription: "Se muestra una casa. ¿Cómo es esta casa?",
-                audioInstruction: "Completa la frase sobre las características de la casa"
+                audioDescription: "Aparece uma casa. Como é essa casa?",
+                audioInstruction: "Complete a frase sobre as características da casa"
             },
-
             {
-                words: ["niños", "parque", "Los", "en", "juegan"],
-                correct: ["Los", "niños", "juegan", "en", "parque"],
+                words: ["crianças", "parque", "As", "no", "brincam"],
+                correct: ["As", "crianças", "brincam", "no", "parque"],
                 complexity: 'hard',
                 type: 'SVLP',
                 image: "👦🛝👦",
-                audioDescription: "Se muestran niños jugando en el parque. ¿Dónde están jugando?",
-                audioInstruction: "Forma la oración de cinco palabras sobre dónde juegan los niños"
+                audioDescription: "Aparecem crianças brincando no parque. Onde estão brincando?",
+                audioInstruction: "Monte a frase de cinco palavras sobre onde as crianças brincam"
             }
         ];
 
         this.totalRounds = 5;
 
-        // Inicializar estadísticas
         this.sentences.forEach(sent => {
             this.sentenceStats[sent.correct.join(' ')] = {
                 attempts: 0,
@@ -146,48 +126,36 @@ class AISyntaxGame {
         });
     }
 
-    // ===== AUDIO PARA INSTRUCCIONES INICIALES =====
     announceGameStart() {
-        const message = `Bienvenido al Detective de Errores. Tu objetivo es formar oraciones correctas haciendo clic en las palabras en el orden adecuado. Tienes cinco rondas para completar. ¡Buena suerte!`;
+        const message = `Bem-vindo ao Detetive de Erros. Seu objetivo é montar frases corretas clicando nas palavras na ordem adequada. Você tem cinco rodadas para completar. Boa sorte!`;
         this.audioManager.speak(message, 0.9);
     }
 
-    // ===== AUDIO PARA DESCRIPCIÓN DE IMAGEN =====
     announceImageDescription() {
         if (this.currentSentence) {
             this.audioManager.speak(this.currentSentence.audioDescription, 0.95, 1.1);
         }
     }
 
-    // ===== AUDIO PARA INSTRUCCIONES DE RONDA =====
     announceRoundInstruction() {
-        const roundMessage = `Ronda ${this.currentRound + 1} de ${this.totalRounds}. ${this.currentSentence.audioInstruction}`;
+        const roundMessage = `Rodada ${this.currentRound + 1} de ${this.totalRounds}. ${this.currentSentence.audioInstruction}`;
         setTimeout(() => {
             this.audioManager.speak(roundMessage, 0.9);
         }, 500);
     }
 
-    // ===== ANÁLISIS DE ERRORES SINTÁCTICOS =====
     analyzeError(selected, correct) {
-        const selectedStr = selected.join(' ');
-        const correctStr = correct.join(' ');
-
         let errorType = '';
 
         if (new Set(selected).size === new Set(correct).size &&
             selected.every(w => correct.includes(w))) {
-
             errorType = 'wrongOrder';
             this.syntaxErrors.wrongOrder++;
-
             const isInverted = selected.every((w, i) => w === correct[correct.length - 1 - i]);
-            if (isInverted) {
-                this.syntaxErrors.inversionPattern = true;
-            }
+            if (isInverted) this.syntaxErrors.inversionPattern = true;
         } else {
             errorType = 'wrongWord';
             this.syntaxErrors.wrongWord++;
-
             selected.forEach((word, idx) => {
                 if (word !== correct[idx] && !this.syntaxErrors.blockedWords.includes(word)) {
                     this.syntaxErrors.blockedWords.push(word);
@@ -198,15 +166,10 @@ class AISyntaxGame {
         return errorType;
     }
 
-    // ===== DETECCIÓN DE BLOQUEOS =====
     detectBlocking() {
-        if (this.consecutiveWrong >= 3) {
-            return true;
-        }
-        return false;
+        return this.consecutiveWrong >= 3;
     }
 
-    // ===== CÁLCULO DE PUNTUACIÓN SINTÁCTICA =====
     calculateSyntaxScore() {
         const totalAttempts = this.currentRound + 1;
         const correctCount = Math.floor((this.score / 20));
@@ -214,26 +177,24 @@ class AISyntaxGame {
         return this.syntaxScore;
     }
 
-    // ===== AJUSTE AUTOMÁTICO DE DIFICULTAD =====
     adjustDifficulty() {
         this.calculateSyntaxScore();
 
         if (this.consecutiveCorrect >= 3 && this.syntaxScore >= 75) {
             if (this.difficulty === 'easy') {
                 this.difficulty = 'medium';
-                this.audioManager.speak('¡Excelente! Pasamos al nivel medio.', 0.9);
+                this.audioManager.speak('Excelente! Passamos para o nível médio.', 0.9);
             } else if (this.difficulty === 'medium') {
                 this.difficulty = 'hard';
-                this.audioManager.speak('¡Muy bien! Ahora el nivel difícil.', 0.9);
+                this.audioManager.speak('Muito bem! Agora o nível difícil.', 0.9);
             }
-        }
-        else if (this.detectBlocking() || this.syntaxScore < 50) {
+        } else if (this.detectBlocking() || this.syntaxScore < 50) {
             if (this.difficulty === 'hard') {
                 this.difficulty = 'medium';
-                this.audioManager.speak('Volvemos al nivel medio para seguir practicando.', 0.9);
+                this.audioManager.speak('Voltamos ao nível médio para continuar praticando.', 0.9);
             } else if (this.difficulty === 'medium') {
                 this.difficulty = 'easy';
-                this.audioManager.speak('Practicemos el nivel fácil.', 0.9);
+                this.audioManager.speak('Vamos praticar o nível fácil.', 0.9);
             }
             this.consecutiveWrong = 0;
         }
@@ -244,21 +205,16 @@ class AISyntaxGame {
     showDifficultyIndicator() {
         const indicator = document.getElementById('difficulty-indicator');
         const levels = {
-            easy: '⭐ Dificultad: FÁCIL (3 palabras)',
-            medium: '⭐⭐ Dificultad: MEDIO (4 palabras)',
-            hard: '⭐⭐⭐ Dificultad: DIFÍCIL (5 palabras)'
+            easy: '⭐ Dificuldade: FÁCIL (3 palavras)',
+            medium: '⭐⭐ Dificuldade: MÉDIO (4 palavras)',
+            hard: '⭐⭐⭐ Dificuldade: DIFÍCIL (5 palavras)'
         };
-
         indicator.textContent = levels[this.difficulty];
         indicator.style.display = 'block';
     }
 
-    // ===== SELECCIÓN INTELIGENTE DE ORACIONES =====
     selectNextSentence() {
-        const sentencesByDifficulty = this.sentences.filter(
-            s => s.complexity === this.difficulty
-        );
-
+        const sentencesByDifficulty = this.sentences.filter(s => s.complexity === this.difficulty);
         if (sentencesByDifficulty.length === 0) {
             return this.sentences[Math.floor(Math.random() * this.sentences.length)];
         }
@@ -275,24 +231,18 @@ class AISyntaxGame {
         return sentencesByDifficulty[Math.floor(Math.random() * sentencesByDifficulty.length)];
     }
 
-    // ===== MOSTRAR EJEMPLO MODELO =====
     showModelExample() {
         const shouldShow = this.difficulty === 'easy' && this.consecutiveWrong >= 1;
-
         if (shouldShow) {
             const modelEl = document.getElementById('model-example');
-            modelEl.innerHTML = `
-                <strong>💡 Ejemplo modelo:</strong>
-                "${this.currentSentence.correct.join(' ')}" es una oración con orden ${this.currentSentence.type}
-            `;
+            modelEl.innerHTML = `<strong>💡 Exemplo modelo:</strong> "${this.currentSentence.correct.join(' ')}" é uma frase com ordem ${this.currentSentence.type}`;
             modelEl.style.display = 'block';
-            this.audioManager.speak(`Ejemplo: ${this.currentSentence.correct.join(' ')}`, 1);
+            this.audioManager.speak(`Exemplo: ${this.currentSentence.correct.join(' ')}`, 1);
         } else {
             document.getElementById('model-example').style.display = 'none';
         }
     }
 
-    // ===== INICIO DEL JUEGO =====
     startNewRound() {
         this.currentSentence = this.selectNextSentence();
         this.selectedWords = [];
@@ -302,7 +252,6 @@ class AISyntaxGame {
         this.updateUI();
         this.showModelExample();
 
-        // Audio secuencial
         setTimeout(() => this.announceImageDescription(), 300);
         setTimeout(() => this.announceRoundInstruction(), 2000);
     }
@@ -310,8 +259,8 @@ class AISyntaxGame {
     updateUI() {
         document.getElementById('current-round').textContent = this.currentRound + 1;
         document.getElementById('total-rounds').textContent = this.totalRounds;
-        document.getElementById('score').textContent = this.score + ' puntos';
-        document.getElementById('score-display').textContent = this.score + ' puntos';
+        document.getElementById('score').textContent = this.score + ' pontos';
+        document.getElementById('score-display').textContent = this.score + ' pontos';
 
         const progress = ((this.currentRound + 1) / this.totalRounds) * 100;
         document.getElementById('progress-fill').style.width = progress + '%';
@@ -319,23 +268,17 @@ class AISyntaxGame {
         const sentenceDisplay = document.getElementById('sentence-display');
         sentenceDisplay.innerHTML = '';
 
-        // Mostrar imagen
         const imageEl = document.createElement('div');
         imageEl.style.fontSize = '60px';
         imageEl.textContent = this.currentSentence.image;
         sentenceDisplay.appendChild(imageEl);
 
         const wordsContainer = document.createElement('div');
-        wordsContainer.style.width = '100%';
-        wordsContainer.style.display = 'flex';
-        wordsContainer.style.flexWrap = 'wrap';
-        wordsContainer.style.gap = '8px';
-        wordsContainer.style.justifyContent = 'center';
+        wordsContainer.style.cssText = 'width:100%;display:flex;flex-wrap:wrap;gap:8px;justify-content:center;';
 
         for (let i = 0; i < this.currentSentence.correct.length; i++) {
             const slot = document.createElement('div');
             slot.className = 'word-slot';
-
             if (this.selectedWords[i]) {
                 slot.textContent = this.selectedWords[i];
                 if (this.selectedWords[i] === this.currentSentence.correct[i]) {
@@ -358,8 +301,7 @@ class AISyntaxGame {
         wordsBank.innerHTML = '';
 
         const shuffledWords = [...this.currentSentence.words].sort(() => Math.random() - 0.5);
-
-        shuffledWords.forEach((word) => {
+        shuffledWords.forEach(word => {
             const button = document.createElement('button');
             button.className = 'word-button';
             button.textContent = word;
@@ -383,17 +325,16 @@ class AISyntaxGame {
 
     resetSentence() {
         this.selectedWords = [];
-        this.audioManager.speak('Reiniciado. Intenta de nuevo.', 0.9);
+        this.audioManager.speak('Reiniciado. Tente novamente.', 0.9);
         this.updateUI();
     }
 
-    // ===== VERIFICACIÓN Y ANÁLISIS =====
     checkSentence() {
         if (this.selectedWords.length !== this.currentSentence.correct.length) {
             const feedbackElement = document.getElementById('feedback');
-            feedbackElement.textContent = 'Debes completar toda la oración';
+            feedbackElement.textContent = 'Você deve completar toda a frase';
             feedbackElement.className = 'feedback incorrect show';
-            this.audioManager.speak('Debes seleccionar todas las palabras', 0.9);
+            this.audioManager.speak('Você deve selecionar todas as palavras', 0.9);
             return;
         }
 
@@ -401,7 +342,6 @@ class AISyntaxGame {
         const isCorrect = JSON.stringify(this.selectedWords) === JSON.stringify(this.currentSentence.correct);
         const feedbackElement = document.getElementById('feedback');
         const feedbackText = document.getElementById('feedback-text');
-
         const sentenceKey = this.currentSentence.correct.join(' ');
         this.sentenceStats[sentenceKey].attempts++;
 
@@ -410,24 +350,21 @@ class AISyntaxGame {
             this.consecutiveCorrect++;
             this.consecutiveWrong = 0;
             this.sentenceStats[sentenceKey].correct++;
-
-            feedbackText.textContent = `¡Correcto! 🎉 ${this.currentSentence.image} Orden: ${this.currentSentence.type}`;
+            feedbackText.textContent = `Correto! 🎉 ${this.currentSentence.image} Ordem: ${this.currentSentence.type}`;
             feedbackElement.className = 'feedback correct show';
-            this.audioManager.speak(`¡Correcto! La oración es: ${this.currentSentence.correct.join(' ')}`, 0.95);
+            this.audioManager.speak(`Correto! A frase é: ${this.currentSentence.correct.join(' ')}`, 0.95);
         } else {
             const errorType = this.analyzeError(this.selectedWords, this.currentSentence.correct);
             this.consecutiveWrong++;
             this.consecutiveCorrect = 0;
             this.sentenceStats[sentenceKey].errors.push(errorType);
-
-            feedbackText.textContent = `No es correcto. Intenta de nuevo 😊`;
+            feedbackText.textContent = `Não está correto. Tente novamente 😊`;
             feedbackElement.className = 'feedback incorrect show';
-            this.audioManager.speak(`Incorrecto. La respuesta correcta es: ${this.currentSentence.correct.join(' ')}. Intenta de nuevo.`, 0.9);
+            this.audioManager.speak(`Incorreto. A resposta correta é: ${this.currentSentence.correct.join(' ')}. Tente novamente.`, 0.9);
         }
 
-        this.showFeedback = true;
-        document.getElementById('score').textContent = this.score + ' puntos';
-        document.getElementById('score-display').textContent = this.score + ' puntos';
+        document.getElementById('score').textContent = this.score + ' pontos';
+        document.getElementById('score-display').textContent = this.score + ' pontos';
 
         this.adjustDifficulty();
         this.showAIAnalysis();
@@ -442,133 +379,104 @@ class AISyntaxGame {
         }, 3000);
     }
 
-    // ===== ANÁLISIS EN TIEMPO REAL =====
     showAIAnalysis() {
         const analysisEl = document.getElementById('ai-analysis');
         const analysisText = document.getElementById('analysis-text');
-
         let analysis = '';
 
         if (this.attentionTime < 2) {
-            analysis += '⚡ Respuesta muy rápida (impulsiva). ';
+            analysis += '⚡ Resposta muito rápida (impulsiva). ';
         } else if (this.attentionTime > 8) {
-            analysis += '🤔 Sostuvo la atención > 8s (concentración prolongada). ';
+            analysis += '🤔 Sustentou a atenção > 8s (concentração prolongada). ';
         }
-
         if (this.syntaxErrors.inversionPattern) {
-            analysis += '🔄 Patrón detectado: inversión sistemática de palabras. ';
+            analysis += '🔄 Padrão detectado: inversão sistemática de palavras. ';
         }
-
         if (this.syntaxErrors.blockedWords.length > 0) {
-            analysis += `🚫 Palabras problemáticas: ${this.syntaxErrors.blockedWords.slice(0, 2).join(', ')}. `;
+            analysis += `🚫 Palavras problemáticas: ${this.syntaxErrors.blockedWords.slice(0, 2).join(', ')}. `;
         }
-
         if (this.consecutiveCorrect > 0) {
-            analysis += `✅ ${this.consecutiveCorrect} acierto(s) consecutivo(s). `;
+            analysis += `✅ ${this.consecutiveCorrect} acerto(s) consecutivo(s). `;
         }
         if (this.consecutiveWrong > 0) {
-            analysis += `❌ ${this.consecutiveWrong} error(es) consecutivo(s). `;
+            analysis += `❌ ${this.consecutiveWrong} erro(s) consecutivo(s). `;
         }
-
         if (this.difficulty === 'hard') {
-            analysis += '📈 Nivel: DIFÍCIL. ';
+            analysis += '📈 Nível: DIFÍCIL. ';
         } else if (this.difficulty === 'easy') {
-            analysis += '📉 Nivel: FÁCIL. ';
+            analysis += '📉 Nível: FÁCIL. ';
         } else {
-            analysis += '➡️ Nivel: MEDIO. ';
+            analysis += '➡️ Nível: MÉDIO. ';
         }
 
-        analysisText.textContent = analysis || 'Construcción sintáctica en desarrollo...';
+        analysisText.textContent = analysis || 'Construção sintática em desenvolvimento...';
         analysisEl.classList.add('show');
     }
 
-    // ===== REPORTE FINAL =====
     completeGame() {
         const gameCard = document.querySelector('.game-card');
         const avgAccuracy = ((this.score / (this.totalRounds * 20)) * 100).toFixed(1);
         const finalSyntaxScore = this.calculateSyntaxScore().toFixed(0);
 
-        let performanceMessage = '¡Excelente construcción sintáctica! 🏆';
-        let mainWeakness = 'Ninguna detectada';
+        let performanceMessage = 'Excelente construção sintática! 🏆';
+        let mainWeakness = 'Nenhuma detectada';
 
         if (avgAccuracy < 60) {
-            performanceMessage = '¡Sigue practicando la construcción de oraciones! 💪';
+            performanceMessage = 'Continue praticando a construção de frases! 💪';
         } else if (avgAccuracy < 80) {
-            performanceMessage = '¡Muy buen trabajo! Tu sintaxis mejora. 🌟';
+            performanceMessage = 'Muito bom trabalho! Sua sintaxe está melhorando. 🌟';
         }
 
         if (this.syntaxErrors.blockedWords.length > 0) {
             mainWeakness = this.syntaxErrors.blockedWords.slice(0, 2).join(', ');
         }
 
-        // Audio final
-        const finalMessage = `Juego completado. Tu puntaje final es de ${this.score} puntos con una precisión de ${avgAccuracy} por ciento. ${performanceMessage}`;
+        const finalMessage = `Jogo concluído. Sua pontuação final é de ${this.score} pontos com uma precisão de ${avgAccuracy} por cento. ${performanceMessage}`;
         this.audioManager.speak(finalMessage, 0.9);
 
         gameCard.innerHTML = `
-            <h2>¡Juego Completado!</h2>
+            <h2>Jogo Concluído!</h2>
             <div style="font-size: 80px; margin: 30px 0;">🎉</div>
-
             <div style="background: linear-gradient(135deg, #0066CC 0%, #0099FF 100%); color: white; padding: 20px; border-radius: 12px; margin: 20px 0;">
-                <div style="font-size: 24px; font-weight: 700; margin-bottom: 10px;">Tu puntaje final: ${this.score} puntos</div>
-                <div style="font-size: 18px; opacity: 0.9;">Precisión: ${avgAccuracy}%</div>
+                <div style="font-size: 24px; font-weight: 700; margin-bottom: 10px;">Sua pontuação final: ${this.score} pontos</div>
+                <div style="font-size: 18px; opacity: 0.9;">Precisão: ${avgAccuracy}%</div>
             </div>
-
             <div style="background: rgba(0, 102, 204, 0.1); border-left: 4px solid #0066CC; padding: 15px; border-radius: 8px; margin: 20px 0; text-align: left; color: #1F2937; font-size: 14px;">
-                <strong>📊 Análisis Final de IA - Construcción Sintáctica:</strong>
+                <strong>📊 Análise Final de IA - Construção Sintática:</strong>
                 <div style="margin-top: 10px; line-height: 1.8;">
-                    <div>✓ Puntuación sintáctica: ${finalSyntaxScore}%</div>
-                    <div>✓ Errores de orden: ${this.syntaxErrors.wrongOrder}</div>
-                    <div>✓ Errores de palabra: ${this.syntaxErrors.wrongWord}</div>
-                    <div>✓ Palabras a practicar: ${mainWeakness}</div>
-                    <div>✓ Patrón de inversión detectado: ${this.syntaxErrors.inversionPattern ? 'Sí' : 'No'}</div>
-                    <div>✓ Nivel final: ${this.difficulty.toUpperCase()}</div>
+                    <div>✓ Pontuação sintática: ${finalSyntaxScore}%</div>
+                    <div>✓ Erros de ordem: ${this.syntaxErrors.wrongOrder}</div>
+                    <div>✓ Erros de palavra: ${this.syntaxErrors.wrongWord}</div>
+                    <div>✓ Palavras para praticar: ${mainWeakness}</div>
+                    <div>✓ Padrão de inversão detectado: ${this.syntaxErrors.inversionPattern ? 'Sim' : 'Não'}</div>
+                    <div>✓ Nível final: ${this.difficulty.toUpperCase()}</div>
                 </div>
             </div>
-
-            <div style="color: var(--primary-blue); font-size: 18px; font-weight: 600; margin: 15px 0;">
-                ${performanceMessage}
-            </div>
-
+            <div style="color: var(--primary-blue); font-size: 18px; font-weight: 600; margin: 15px 0;">${performanceMessage}</div>
             <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; margin-top: 20px;">
-                <button style="background: linear-gradient(135deg, #0066CC 0%, #0099FF 100%); color: white; padding: 15px; border: none; border-radius: 12px; font-size: 16px; font-weight: 700; cursor: pointer; transition: transform 0.2s;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'" onclick="location.reload()">
-                    Jugar de Nuevo
-                </button>
-                <button style="background-color: #00B4D8; color: white; padding: 15px; border: none; border-radius: 12px; font-size: 16px; font-weight: 700; cursor: pointer; transition: transform 0.2s;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'" onclick="goToMainPage()">
-                    Volver al Menú
-                </button>
+                <button style="background: linear-gradient(135deg, #0066CC 0%, #0099FF 100%); color: white; padding: 15px; border: none; border-radius: 12px; font-size: 16px; font-weight: 700; cursor: pointer;" onclick="location.reload()">Jogar Novamente</button>
+                <button style="background-color: #00B4D8; color: white; padding: 15px; border: none; border-radius: 12px; font-size: 16px; font-weight: 700; cursor: pointer;" onclick="goToMainPage()">Voltar ao Menu</button>
             </div>
         `;
     }
 }
 
-// ===== INICIALIZACIÓN =====
 const game = new AISyntaxGame();
 
 document.addEventListener('DOMContentLoaded', () => {
     game.announceGameStart();
-    setTimeout(() => {
-        game.startNewRound();
-    }, 3000);
+    setTimeout(() => { game.startNewRound(); }, 3000);
 });
 
-// ===== FUNCIONES GLOBALES =====
-function checkSentence() {
-    game.checkSentence();
-}
-
-function resetSentence() {
-    game.resetSentence();
-}
+function checkSentence() { game.checkSentence(); }
+function resetSentence() { game.resetSentence(); }
 
 function toggleAudio() {
     const enabled = game.audioManager.toggleAudio();
     const btn = document.getElementById('audio-toggle');
-    if (btn) {
-        btn.innerHTML = enabled ? '<i class="fas fa-volume-up"></i>' : '<i class="fas fa-volume-mute"></i>';
-    }
+    if (btn) btn.innerHTML = enabled ? '<i class="fas fa-volume-up"></i>' : '<i class="fas fa-volume-mute"></i>';
 }
 
 function goToMainPage() {
-   window.location.href = 'https://plekdev.github.io/BlueMinds/selectores/selector-visual.html';
+    window.location.href = 'https://plekdev.github.io/BlueMinds/selectores/selector-visual.html';
 }

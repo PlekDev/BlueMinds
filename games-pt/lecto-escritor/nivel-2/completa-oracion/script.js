@@ -1,4 +1,4 @@
-// Variables globales
+// Variáveis globais
 let currentRound = 0;
 let score = 0;
 let currentExercise = null;
@@ -9,9 +9,9 @@ let hintUsed = false;
 let startTime = 0;
 let comprehensionLevel = 'normal';
 let visualMemoryLevel = 'normal';
-let spellingErrors = {}; // Rastrear errores ortográficos
+let spellingErrors = {};
 
-// Algoritmo para calcular similaridad (distancia de Levenshtein)
+// Algoritmo de distância de Levenshtein para tolerância ortográfica
 function levenshteinDistance(a, b) {
     const aLower = a.toLowerCase().trim();
     const bLower = b.toLowerCase().trim();
@@ -42,31 +42,31 @@ const exercises = {
     easy: [
         {
             image: 'https://img.freepik.com/vector-premium/lindo-gato-naranja-durmiendo-clipart-ninos-personaje-gato-dibujos-animados_594975-459.jpg?w=400&h=300&fit=crop',
-            before: 'El',
-            after: 'duerme en la casa.',
+            before: 'O',
+            after: 'dorme na casa.',
             correctAnswer: 'gato',
-            alternatives: ['gatos', 'gata', 'gatillo'],
-            explanation: 'La imagen muestra un gato durmiendo. Completamos con la palabra singular "gato".',
-            wordType: 'sustantivo',
+            alternatives: ['gatos', 'gata', 'gatinho'],
+            explanation: 'A imagem mostra um gato dormindo. Completamos com a palavra singular "gato".',
+            wordType: 'substantivo',
             difficulty: 1
         },
         {
             image: 'https://img.freepik.com/vector-premium/ilustracion-vectorial-dibujos-animados-pajaro-lindo-cantando_869472-1107.jpg?w=400&h=300&fit=crop',
-            before: 'El pájaro',
-            after: 'en la rama.',
+            before: 'O pássaro',
+            after: 'no galho.',
             correctAnswer: 'canta',
-            alternatives: ['cantio', 'cantan', 'cantaré'],
-            explanation: 'Un pájaro singular necesita verbo singular. "Canta" es el verbo correcto en presente.',
+            alternatives: ['cantou', 'cantam', 'cantarei'],
+            explanation: 'Um pássaro singular precisa de verbo singular. "Canta" é o verbo correto no presente.',
             wordType: 'verbo',
             difficulty: 1
         },
         {
             image: 'https://image.freepik.com/vector-gratis/pelota-deportiva-roja-pelota-goma-o-cuero-dibujos-animados-que-ninos-jueguen-al-aire-libre-juegos-ninos-ilustracion-vectorial-plana_81894-5611.jpg?w=400&h=300&fit=crop',
-            before: 'La pelota es',
+            before: 'A bola é',
             after: '.',
-            correctAnswer: 'roja',
-            alternatives: ['rojito', 'rojos', 'rojas'],
-            explanation: 'Pelota es femenino singular. El adjetivo debe concordar: "roja".',
+            correctAnswer: 'vermelha',
+            alternatives: ['vermelhinha', 'vermelhos', 'vermelhas'],
+            explanation: 'Bola é feminino singular. O adjetivo deve concordar: "vermelha".',
             wordType: 'adjetivo',
             difficulty: 1
         }
@@ -74,31 +74,31 @@ const exercises = {
     normal: [
         {
             image: 'https://image.freepik.com/vector-gratis/ninos-jugando-parque_23-2147584893.jpg?w=400&h=300&fit=crop',
-            before: 'Los niños',
-            after: 'en el parque todos los días.',
-            correctAnswer: 'juegan',
-            alternatives: ['juega', 'volavan', 'comieron'],
-            explanation: 'Niños es plural. El verbo debe ser "juegan" (plural, presente indicativo).',
+            before: 'Os meninos',
+            after: 'no parque todos os dias.',
+            correctAnswer: 'brincam',
+            alternatives: ['brinca', 'voavam', 'comeram'],
+            explanation: 'Meninos é plural. O verbo deve ser "brincam" (plural, presente do indicativo).',
             wordType: 'verbo conjugado',
             difficulty: 2
         },
         {
             image: 'https://img.freepik.com/vector-premium/dibujo-mariposa-flores-mariposas-flores_730620-512566.jpg?w=400&h=300&fit=crop',
-            before: 'La mariposa',
-            after: 'sobre las flores con sus alas hermosas.',
+            before: 'A borboleta',
+            after: 'sobre as flores com suas asas bonitas.',
             correctAnswer: 'descansa',
-            alternatives: ['descansan', 'panzo', 'descansito'],
-            explanation: 'Mariposa es singular. "Descansa" es la forma correcta en tercera persona singular.',
+            alternatives: ['descansam', 'barriga', 'descansinho'],
+            explanation: 'Borboleta é singular. "Descansa" é a forma correta na terceira pessoa do singular.',
             wordType: 'verbo conjugado',
             difficulty: 2
         },
         {
             image: 'https://static.vecteezy.com/system/resources/previews/044/841/151/original/cartoon-elephant-animal-illustration-vector.jpg?w=400&h=300&fit=crop',
-            before: 'El elefante es un animal',
+            before: 'O elefante é um animal',
             after: '.',
             correctAnswer: 'gigante',
-            alternatives: ['chiquito', 'mediano', 'enormes'],
-            explanation: 'Necesitamos un adjetivo singular que describe al elefante. "Gigante" es perfecto.',
+            alternatives: ['pequenino', 'médio', 'enormes'],
+            explanation: 'Precisamos de um adjetivo singular que descreva o elefante. "Gigante" é perfeito.',
             wordType: 'adjetivo',
             difficulty: 2
         }
@@ -106,31 +106,31 @@ const exercises = {
     hard: [
         {
             image: 'https://img.freepik.com/premium-vector/cute-conductor-leading-orchestra-cartoon-vector_1022901-101517.jpg?w=400&h=300&fit=crop',
-            before: 'La orquesta sinfónica',
-            after: 'una sonata extraordinaria en el concierto.',
-            correctAnswer: 'interpretaba',
-            alternatives: ['interpreta', 'interpretó', 'interpretarán'],
-            explanation: 'Necesita pretérito imperfecto. "Interpretaba" describe una acción pasada en progreso.',
-            wordType: 'verbo complejo',
+            before: 'A orquestra sinfônica',
+            after: 'uma sonata extraordinária no concerto.',
+            correctAnswer: 'interpretava',
+            alternatives: ['interpreta', 'interpretou', 'interpretarão'],
+            explanation: 'Precisa do pretérito imperfeito. "Interpretava" descreve uma ação passada em andamento.',
+            wordType: 'verbo complexo',
             difficulty: 3
         },
         {
             image: 'https://img.freepik.com/vector-premium/ninos-arqueologos-ninos-arqueologia-dibujos-animados-nino-arqueologo-o-paleontologo-historia-excavacion-ninos-que-trabajan-explorando-fosiles-antiguos-suelo-ilustracion-vectorial-reciente_81894-14923.jpg?w=400&h=300&fit=crop',
-            before: 'El investigador',
-            after: 'los artefactos arqueológicos con precisión científica.',
-            correctAnswer: 'examinaba',
-            alternatives: ['examina', 'examinó', 'examinaría'],
-            explanation: 'Pretérito imperfecto describe una acción pasada repetida. "Examinaba" es correcto.',
-            wordType: 'verbo complejo',
+            before: 'O pesquisador',
+            after: 'os artefatos arqueológicos com precisão científica.',
+            correctAnswer: 'examinava',
+            alternatives: ['examina', 'examinou', 'examinaria'],
+            explanation: 'O pretérito imperfeito descreve uma ação passada repetida. "Examinava" é correto.',
+            wordType: 'verbo complexo',
             difficulty: 3
         },
         {
             image: 'https://static.vecteezy.com/system/resources/previews/005/520/150/non_2x/cartoon-drawing-of-a-construction-worker-vector.jpg?w=400&h=300&fit=crop',
-            before: 'Aunque el trabajo fue',
-            after: ', el equipo persistió en alcanzar el objetivo.',
-            correctAnswer: 'arduo',
-            alternatives: ['ardua', 'tacuo', 'arduos'],
-            explanation: 'Trabajo es masculino singular. "Arduo" es el adjetivo que concuerda correctamente.',
+            before: 'Embora o trabalho fosse',
+            after: ', a equipe persistiu em alcançar o objetivo.',
+            correctAnswer: 'árduo',
+            alternatives: ['árdua', 'fácil', 'árduas'],
+            explanation: 'Trabalho é masculino singular. "Árduo" é o adjetivo que concorda corretamente.',
             wordType: 'adjetivo formal',
             difficulty: 3
         }
@@ -139,7 +139,7 @@ const exercises = {
 
 const totalRounds = 5;
 
-// Inicializar el juego
+// Inicializar o jogo
 document.addEventListener('DOMContentLoaded', () => {
     setupEventListeners();
     startNewRound();
@@ -160,7 +160,7 @@ function setupEventListeners() {
     });
 }
 
-// Seleccionar pool de dificultad
+// Selecionar pool de dificuldade
 function selectDifficultyPool() {
     if (wrongAttempts >= 2) {
         difficulty = 'easy';
@@ -174,7 +174,7 @@ function selectDifficultyPool() {
     }
 }
 
-// Iniciar nueva ronda
+// Iniciar nova rodada
 function startNewRound() {
     const difficultyPool = selectDifficultyPool();
     const randomIndex = Math.floor(Math.random() * difficultyPool.length);
@@ -189,45 +189,39 @@ function startNewRound() {
     updateDifficulty();
 }
 
-// Actualizar interfaz
+// Atualizar interface
 function updateUI() {
     document.getElementById('current-round').textContent = currentRound + 1;
     document.getElementById('total-rounds').textContent = totalRounds;
-    document.getElementById('score').textContent = score + ' puntos';
-    document.getElementById('score-display').textContent = score + ' puntos';
+    document.getElementById('score').textContent = score + ' pontos';
+    document.getElementById('score-display').textContent = score + ' pontos';
 
     const progress = ((currentRound + 1) / totalRounds) * 100;
     document.getElementById('progress-fill').style.width = progress + '%';
 
-    // Mostrar imagen
     document.getElementById('exercise-image').src = currentExercise.image;
 
-    // Mostrar oración
     document.getElementById('sentence-before').textContent = currentExercise.before + ' ';
     document.getElementById('sentence-after').textContent = ' ' + currentExercise.after;
 
-    // Limpiar input
     const answerInput = document.getElementById('answer-input');
     answerInput.value = '';
     answerInput.classList.remove('correct', 'incorrect');
     answerInput.focus();
 
-    // Mostrar sugerencias de palabras
     showSuggestions();
 
-    // Limpiar feedback
     document.getElementById('feedback').classList.add('hidden');
     document.getElementById('explanation').classList.add('hidden');
     document.getElementById('spelling-hint').classList.add('hidden');
     document.getElementById('analysis-info').classList.add('hidden');
 }
 
-// Mostrar sugerencias de palabras
+// Mostrar sugestões de palavras
 function showSuggestions() {
     const suggestionsList = document.getElementById('suggestions-list');
     suggestionsList.innerHTML = '';
 
-    // Mostrar alternativas correctas e incorrectas
     const allSuggestions = [currentExercise.correctAnswer, ...currentExercise.alternatives];
     const shuffled = allSuggestions.sort(() => Math.random() - 0.5);
 
@@ -245,41 +239,37 @@ function showSuggestions() {
     document.getElementById('word-suggestions').classList.remove('hidden');
 }
 
-// Mostrar pista
+// Mostrar dica
 function showHint() {
     if (hintUsed) {
-        showFeedback("Ya usaste la pista", false);
+        showFeedback("Você já usou a dica", false);
         return;
     }
 
     hintUsed = true;
 
-    // Mostrar pista de ortografía
-    const hint = currentExercise.correctAnswer[0] + '*'.repeat(currentExercise.correctAnswer.length - 1);
-    document.getElementById('spelling-text').textContent = `La palabra comienza con "${currentExercise.correctAnswer[0]}" y tiene ${currentExercise.correctAnswer.length} letras.`;
+    document.getElementById('spelling-text').textContent = `A palavra começa com "${currentExercise.correctAnswer[0]}" e tem ${currentExercise.correctAnswer.length} letras.`;
     document.getElementById('spelling-hint').classList.remove('hidden');
 
-    showFeedback("💡 Pista mostrada", true);
+    showFeedback("💡 Dica exibida", true);
 }
 
-// Verificar respuesta
+// Verificar resposta
 function checkAnswer() {
     const userInputTrimmed = userAnswer.trim();
 
     if (!userInputTrimmed) {
-        showFeedback("Por favor, escribe una respuesta", false);
+        showFeedback("Por favor, escreva uma resposta", false);
         return;
     }
 
-    // Calcular similaridad
     const distance = levenshteinDistance(userInputTrimmed, currentExercise.correctAnswer);
     const maxDistance = Math.max(userInputTrimmed.length, currentExercise.correctAnswer.length);
     const similarity = 1 - (distance / maxDistance);
 
-    const isCorrect = similarity >= 0.85; // 85% de similitud
+    const isCorrect = similarity >= 0.85;
 
     if (isCorrect) {
-        // Calcular tiempo de respuesta
         const responseTime = (Date.now() - startTime) / 1000;
 
         let points = 20;
@@ -288,12 +278,11 @@ function checkAnswer() {
 
         score += points;
 
-        showFeedback(`¡Correcto! +${points} puntos 🎉`, true);
+        showFeedback(`Correto! +${points} pontos 🎉`, true);
 
         const answerInput = document.getElementById('answer-input');
         answerInput.classList.add('correct');
 
-        // Mostrar análisis
         analyzePerformance(responseTime);
 
         setTimeout(() => {
@@ -318,11 +307,10 @@ function checkAnswer() {
     } else {
         wrongAttempts++;
 
-        // Registrar error ortográfico
         const key = currentExercise.wordType;
         spellingErrors[key] = (spellingErrors[key] || 0) + 1;
 
-        showFeedback(`Incorrecto. La respuesta es: "${currentExercise.correctAnswer}"`, false);
+        showFeedback(`Incorreto. A resposta é: "${currentExercise.correctAnswer}"`, false);
 
         const answerInput = document.getElementById('answer-input');
         answerInput.classList.add('incorrect');
@@ -330,43 +318,40 @@ function checkAnswer() {
         updateDifficulty();
     }
 
-    document.getElementById('score').textContent = score + ' puntos';
-    document.getElementById('score-display').textContent = score + ' puntos';
+    document.getElementById('score').textContent = score + ' pontos';
+    document.getElementById('score-display').textContent = score + ' pontos';
 }
 
-// Analizar desempeño
+// Analisar desempenho
 function analyzePerformance(responseTime) {
-    // Analizar comprensión lectora
     if (wrongAttempts === 0) {
         comprehensionLevel = 'Excelente';
     } else if (wrongAttempts === 1) {
         comprehensionLevel = 'Normal';
     } else {
-        comprehensionLevel = 'Necesita apoyo';
+        comprehensionLevel = 'Precisa de apoio';
     }
 
-    // Analizar memoria visual (basada en velocidad)
     if (responseTime < 10) {
         visualMemoryLevel = 'Excelente';
     } else if (responseTime < 20) {
         visualMemoryLevel = 'Normal';
     } else {
-        visualMemoryLevel = 'Necesita práctica';
+        visualMemoryLevel = 'Precisa de prática';
     }
 
-    // Mostrar análisis
     document.getElementById('comprehension-level').textContent = comprehensionLevel;
     document.getElementById('visual-memory').textContent = visualMemoryLevel;
     document.getElementById('analysis-info').classList.remove('hidden');
 }
 
-// Mostrar explicación
+// Mostrar explicação
 function showExplanation() {
     document.getElementById('explanation-text').textContent = currentExercise.explanation;
     document.getElementById('explanation').classList.remove('hidden');
 }
 
-// Reiniciar ronda
+// Reiniciar rodada
 function resetRound() {
     userAnswer = '';
     const answerInput = document.getElementById('answer-input');
@@ -392,7 +377,7 @@ function showFeedback(message, isCorrect) {
     feedbackElement.classList.remove('hidden');
 }
 
-// Actualizar dificultad
+// Atualizar dificuldade
 function updateDifficulty() {
     let newDifficulty = 'normal';
 
@@ -406,12 +391,12 @@ function updateDifficulty() {
     const badgeTexts = {
         'easy': '🎯 Fácil',
         'normal': 'Normal',
-        'hard': '⭐ Avanzado'
+        'hard': '⭐ Avançado'
     };
     badge.textContent = badgeTexts[newDifficulty];
 }
 
-// Completar juego
+// Completar jogo
 function completeGame() {
     const errorSummary = Object.entries(spellingErrors)
         .sort((a, b) => b[1] - a[1])
@@ -421,29 +406,29 @@ function completeGame() {
 
     const completaCard = document.querySelector('.completa-card');
     completaCard.innerHTML = `
-        <h2>¡Juego Completado! 🏆</h2>
+        <h2>Jogo Concluído! 🏆</h2>
         <div class="feedback correct" style="margin-top: 20px;">
-            <p><strong>Tu puntaje final:</strong> ${score} puntos</p>
+            <p><strong>Sua pontuação final:</strong> ${score} pontos</p>
         </div>
         <div class="explanation" style="margin-top: 20px;">
-            <h3>Resumen de tu desempeño</h3>
-            <p><strong>Comprensión lectora:</strong> ${comprehensionLevel}</p>
-            <p><strong>Memoria visual:</strong> ${visualMemoryLevel}</p>
-            ${errorSummary ? `<p><strong>Áreas para mejorar:</strong> ${errorSummary}</p>` : ''}
-            <p style="margin-top: 10px; font-size: 14px;">¡Continúa practicando para mejorar tu escritura y comprensión!</p>
+            <h3>Resumo do seu desempenho</h3>
+            <p><strong>Compreensão leitora:</strong> ${comprehensionLevel}</p>
+            <p><strong>Memória visual:</strong> ${visualMemoryLevel}</p>
+            ${errorSummary ? `<p><strong>Áreas para melhorar:</strong> ${errorSummary}</p>` : ''}
+            <p style="margin-top: 10px; font-size: 14px;">Continue praticando para melhorar sua escrita e compreensão!</p>
         </div>
         <div class="action-controls" style="margin-top: 30px;">
             <button class="action-button primary" onclick="location.reload()">
-                <i class="fas fa-redo"></i> Jugar de Nuevo
+                <i class="fas fa-redo"></i> Jogar Novamente
             </button>
             <button class="action-button blue" onclick="goToMainPage()">
-                <i class="fas fa-home"></i> Volver al Menú
+                <i class="fas fa-home"></i> Voltar ao Menu
             </button>
         </div>
     `;
 }
 
-// Función para volver a la página principal
+// Função para voltar à página principal
 function goToMainPage() {
     window.location.href = 'https://plekdev.github.io/BlueMinds/selectores/selector-lecto-escritor.html';
 }

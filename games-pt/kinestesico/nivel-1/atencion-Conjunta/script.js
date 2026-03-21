@@ -1,4 +1,4 @@
-// Variables globales
+// Variáveis globais
 let currentRound = 0;
 let score = 0;
 let currentWord = null;
@@ -8,14 +8,14 @@ let eyeGazeData = {
     gazeFollowing: 0,
     soundResponse: 0,
     attentionStability: 0,
-    distractibility: 'Baja'
+    distractibility: 'Baixa'
 };
 
 const words = [
-    { word: "Mira", emoji: "👀", soundUrl: "data:audio/wav;base64,UklGRiYAAABXQVZFZm10IBAAAAABAAEAQB8AAAB9AAACABAAZGF0YQIAAAAAAA==" },
-    { word: "Escucha", emoji: "👂", soundUrl: "data:audio/wav;base64,UklGRiYAAABXQVZFZm10IBAAAAABAAEAQB8AAAB9AAACABAAZGF0YQIAAAAAAA==" },
-    { word: "Salta", emoji: "⬆️", soundUrl: "data:audio/wav;base64,UklGRiYAAABXQVZFZm10IBAAAAABAAEAQB8AAAB9AAACABAAZGF0YQIAAAAAAA==" },
-    { word: "Sonríe", emoji: "😊", soundUrl: "data:audio/wav;base64,UklGRiYAAABXQVZFZm10IBAAAAABAAEAQB8AAAB9AAACABAAZGF0YQIAAAAAAA==" },
+    { word: "Olha", emoji: "👀", soundUrl: "data:audio/wav;base64,UklGRiYAAABXQVZFZm10IBAAAAABAAEAQB8AAAB9AAACABAAZGF0YQIAAAAAAA==" },
+    { word: "Escuta", emoji: "👂", soundUrl: "data:audio/wav;base64,UklGRiYAAABXQVZFZm10IBAAAAABAAEAQB8AAAB9AAACABAAZGF0YQIAAAAAAA==" },
+    { word: "Pula", emoji: "⬆️", soundUrl: "data:audio/wav;base64,UklGRiYAAABXQVZFZm10IBAAAAABAAEAQB8AAAB9AAACABAAZGF0YQIAAAAAAA==" },
+    { word: "Sorri", emoji: "😊", soundUrl: "data:audio/wav;base64,UklGRiYAAABXQVZFZm10IBAAAAABAAEAQB8AAAB9AAACABAAZGF0YQIAAAAAAA==" },
     { word: "Canta", emoji: "🎵", soundUrl: "data:audio/wav;base64,UklGRiYAAABXQVZFZm10IBAAAAABAAEAQB8AAAB9AAACABAAZGF0YQIAAAAAAA==" },
 ];
 
@@ -23,7 +23,7 @@ const totalRounds = 5;
 let objectPosition = { x: 50, y: 50 };
 let analysisInterval = null;
 
-// ================== INICIALIZACIÓN ==================
+// ================== INICIALIZAÇÃO ==================
 document.addEventListener('DOMContentLoaded', () => {
     setupEventListeners();
     startNewRound();
@@ -35,7 +35,7 @@ function setupEventListeners() {
     document.getElementById('moving-object').addEventListener('click', onObjectClicked);
 }
 
-// ================== RONDAS ==================
+// ================== RODADAS ==================
 function startNewRound() {
     const randomWord = words[Math.floor(Math.random() * words.length)];
     currentWord = randomWord;
@@ -48,54 +48,50 @@ function startNewRound() {
 function completeGame() {
     const attentionCard = document.querySelector('.attention-card');
     attentionCard.innerHTML = `
-        <h2>¡Actividad Completada! 🎉</h2>
+        <h2>Atividade Concluída! 🎉</h2>
         <div class="object-stage" style="display: flex; align-items: center; justify-content: center;">
             <div style="font-size: 80px; animation: bounce 1s ease-in-out infinite;">🌟</div>
         </div>
         <div class="feedback correct">
-            <p style="font-size: 28px; margin: 20px 0;">Tu puntaje final: ${score} puntos</p>
-            <p style="font-size: 16px;">¡Excelente atención conjunta e integración multisensorial!</p>
+            <p style="font-size: 28px; margin: 20px 0;">Sua pontuação final: ${score} pontos</p>
+            <p style="font-size: 16px;">Excelente atenção conjunta e integração multissensorial!</p>
         </div>
         <div class="action-controls">
             <button class="action-button primary" onclick="location.reload()">
-                <i class="fas fa-redo"></i> Jugar de Nuevo
+                <i class="fas fa-redo"></i> Jogar Novamente
             </button>
             <button class="action-button secondary" onclick="goToMainPage()">
-                <i class="fas fa-home"></i> Volver al Menú
+                <i class="fas fa-home"></i> Voltar ao Menu
             </button>
         </div>
     `;
 }
 
-// ================== INTERFAZ ==================
+// ================== INTERFACE ==================
 function updateUI() {
     document.getElementById('current-round').textContent = currentRound + 1;
     document.getElementById('total-rounds').textContent = totalRounds;
-    document.getElementById('score').textContent = score + ' puntos';
-    document.getElementById('score-display').textContent = score + ' puntos';
+    document.getElementById('score').textContent = score + ' pontos';
+    document.getElementById('score-display').textContent = score + ' pontos';
 
     const progress = ((currentRound + 1) / totalRounds) * 100;
     document.getElementById('progress-fill').style.width = progress + '%';
 
-    // Actualizar palabra y emoji
     document.getElementById('object-label').textContent = currentWord.emoji;
 
-    // Resetear posición del objeto
     moveObjectToRandomPosition();
 
-    // Resetear botones
     const startButton = document.getElementById('start-button');
-    startButton.innerHTML = '<i class="fas fa-play"></i> Iniciar Actividad';
+    startButton.innerHTML = '<i class="fas fa-play"></i> Iniciar Atividade';
     startButton.disabled = false;
 
-    // Ocultar secciones
     document.getElementById('analysisSection').style.display = 'none';
     document.getElementById('speechSection').style.display = 'none';
     document.getElementById('feedback').classList.add('hidden');
     document.getElementById('adaptationNotice').classList.add('hidden');
 }
 
-// ================== MOVIMIENTO DEL OBJETO ==================
+// ================== MOVIMENTO DO OBJETO ==================
 function moveObjectToRandomPosition() {
     const stage = document.querySelector('.object-stage');
     const object = document.getElementById('moving-object');
@@ -139,39 +135,32 @@ function moveObjectAlongPath() {
 function onObjectClicked() {
     if (movementInProgress) {
         score += 10;
-        document.getElementById('score').textContent = score + ' puntos';
-        document.getElementById('score-display').textContent = score + ' puntos';
+        document.getElementById('score').textContent = score + ' pontos';
+        document.getElementById('score-display').textContent = score + ' pontos';
     }
 }
 
-// ================== ACTIVIDAD PRINCIPAL ==================
+// ================== ATIVIDADE PRINCIPAL ==================
 async function startActivity() {
     if (movementInProgress) return;
 
     movementInProgress = true;
     const startButton = document.getElementById('start-button');
-    startButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> En progreso...';
+    startButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Em andamento...';
     startButton.disabled = true;
 
-    // Mostrar análisis
     document.getElementById('analysisSection').style.display = 'block';
 
-    // Reproducir sonido
     playWordSound();
-
-    // Mover objeto
     moveObjectAlongPath();
 
-    // Iniciar análisis de gaze si cámara está activa
     if (cameraActive) {
         startEyeTrackingAnalysis();
     }
 
-    // Duración de la actividad
     setTimeout(() => {
         movementInProgress = false;
 
-        // Mostrar sección de speech
         document.getElementById('speechSection').style.display = 'block';
 
         startButton.innerHTML = '<i class="fas fa-redo"></i> Repetir';
@@ -188,7 +177,7 @@ function playWordSound() {
     speechSynthesis.speak(utterance);
 }
 
-// ================== CÁMARA ==================
+// ================== CÂMERA ==================
 async function startCamera() {
     try {
         const stream = await navigator.mediaDevices.getUserMedia({
@@ -205,7 +194,7 @@ async function startCamera() {
         cameraActive = true;
         video.play();
     } catch (err) {
-        alert('No se pudo acceder a la cámara: ' + err.message);
+        alert('Não foi possível acessar a câmera: ' + err.message);
     }
 }
 
@@ -223,7 +212,7 @@ function stopCamera() {
     if (analysisInterval) clearInterval(analysisInterval);
 }
 
-// ================== ANÁLISIS DE SEGUIMIENTO VISUAL ==================
+// ================== ANÁLISE DE RASTREAMENTO VISUAL ==================
 function startEyeTrackingAnalysis() {
     const gazePoint = document.getElementById('gazePoint');
 
@@ -233,7 +222,6 @@ function startEyeTrackingAnalysis() {
             return;
         }
 
-        // Simulación de seguimiento ocular
         const objectElement = document.getElementById('moving-object');
         const stage = document.querySelector('.object-stage');
         const stageRect = stage.getBoundingClientRect();
@@ -242,7 +230,6 @@ function startEyeTrackingAnalysis() {
         const objectCenterX = objectRect.left - stageRect.left + objectRect.width / 2;
         const objectCenterY = objectRect.top - stageRect.top + objectRect.height / 2;
 
-        // Simular gaze con variación
         const gazeX = objectCenterX + (Math.random() - 0.5) * 80;
         const gazeY = objectCenterY + (Math.random() - 0.5) * 80;
 
@@ -255,7 +242,6 @@ function startEyeTrackingAnalysis() {
 }
 
 function updateEyeTrackingMetrics(targetX, targetY, gazeX, gazeY) {
-    // Calcular distancia entre mirada y objeto
     const distance = Math.sqrt(Math.pow(targetX - gazeX, 2) + Math.pow(targetY - gazeY, 2));
     const maxDistance = 200;
     const gazeFollowing = Math.max(0, 100 - (distance / maxDistance) * 100);
@@ -263,9 +249,8 @@ function updateEyeTrackingMetrics(targetX, targetY, gazeX, gazeY) {
     eyeGazeData.gazeFollowing = Math.round(gazeFollowing);
     eyeGazeData.soundResponse = Math.round(75 + Math.random() * 25);
     eyeGazeData.attentionStability = Math.round(70 + Math.random() * 30);
-    eyeGazeData.distractibility = eyeGazeData.attentionStability > 75 ? 'Baja' : 'Media';
+    eyeGazeData.distractibility = eyeGazeData.attentionStability > 75 ? 'Baixa' : 'Média';
 
-    // Actualizar visualización
     document.getElementById('gazeFollowing').textContent = eyeGazeData.gazeFollowing + '%';
     document.getElementById('gazeFollowingProgress').style.width = eyeGazeData.gazeFollowing + '%';
 
@@ -277,7 +262,6 @@ function updateEyeTrackingMetrics(targetX, targetY, gazeX, gazeY) {
 
     document.getElementById('distractibility').textContent = eyeGazeData.distractibility;
 
-    // Verificar adaptación
     checkAdaptation();
 }
 
@@ -287,10 +271,10 @@ function checkAdaptation() {
 
     if (eyeGazeData.gazeFollowing < 50) {
         notice.classList.remove('hidden');
-        text.textContent = '💡 Aumentando contraste visual para mejor seguimiento...';
+        text.textContent = '💡 Aumentando contraste visual para melhor rastreamento...';
     } else if (eyeGazeData.attentionStability < 60) {
         notice.classList.remove('hidden');
-        text.textContent = '🎵 Usando sonidos más claros para mejor respuesta auditiva...';
+        text.textContent = '🎵 Usando sons mais claros para melhor resposta auditiva...';
     } else {
         notice.classList.add('hidden');
     }
@@ -301,22 +285,22 @@ function resetEyeGazeData() {
         gazeFollowing: 0,
         soundResponse: 0,
         attentionStability: 0,
-        distractibility: 'Baja'
+        distractibility: 'Baixa'
     };
 }
 
-// ================== RECONOCIMIENTO DE VOZ ==================
+// ================== RECONHECIMENTO DE FALA ==================
 async function startSpeechRecognition() {
     const listenButton = document.getElementById('listen-button');
     listenButton.disabled = true;
-    listenButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Escuchando...';
+    listenButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Ouvindo...';
 
     const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
 
     if (!SpeechRecognition) {
-        showSpeechFeedback('Tu navegador no soporta reconocimiento de voz', false);
+        showSpeechFeedback('Seu navegador não suporta reconhecimento de voz', false);
         listenButton.disabled = false;
-        listenButton.innerHTML = '<i class="fas fa-microphone"></i> Escuchar';
+        listenButton.innerHTML = '<i class="fas fa-microphone"></i> Ouvir';
         return;
     }
 
@@ -326,7 +310,7 @@ async function startSpeechRecognition() {
     recognition.interimResults = false;
 
     recognition.onstart = () => {
-        console.log('Escuchando...');
+        console.log('Ouvindo...');
     };
 
     recognition.onresult = (event) => {
@@ -337,27 +321,26 @@ async function startSpeechRecognition() {
 
         if (isSimilar) {
             score += 20;
-            showSpeechFeedback('¡Excelente! 🎉 Repetiste bien la palabra', true);
+            showSpeechFeedback('Excelente! 🎉 Você repetiu a palavra corretamente', true);
         } else {
-            showSpeechFeedback(`Escuchamos: "${transcript}". Intenta de nuevo`, false);
+            showSpeechFeedback(`Ouvimos: "${transcript}". Tente novamente`, false);
         }
 
-        document.getElementById('score').textContent = score + ' puntos';
-        document.getElementById('score-display').textContent = score + ' puntos';
+        document.getElementById('score').textContent = score + ' pontos';
+        document.getElementById('score-display').textContent = score + ' pontos';
 
         listenButton.disabled = false;
-        listenButton.innerHTML = '<i class="fas fa-microphone"></i> Escuchar';
+        listenButton.innerHTML = '<i class="fas fa-microphone"></i> Ouvir';
     };
 
     recognition.onerror = (event) => {
-        showSpeechFeedback('Error en el reconocimiento de voz', false);
+        showSpeechFeedback('Erro no reconhecimento de voz', false);
         listenButton.disabled = false;
-        listenButton.innerHTML = '<i class="fas fa-microphone"></i> Escuchar';
+        listenButton.innerHTML = '<i class="fas fa-microphone"></i> Ouvir';
     };
 
     recognition.start();
 
-    // Timeout de 5 segundos
     setTimeout(() => {
         if (listenButton.disabled) {
             recognition.stop();
@@ -385,7 +368,7 @@ function showSpeechFeedback(message, isCorrect) {
     }
 }
 
-// ================== NAVEGACIÓN ==================
+// ================== NAVEGAÇÃO ==================
 function goToMainPage() {
     if (cameraActive) stopCamera();
     window.location.href = 'https://plekdev.github.io/BlueMinds/selectores/selector-kinestesico.html';

@@ -1,4 +1,4 @@
-// Variables globales
+// Variáveis globais
 let currentRound = 0;
 let score = 0;
 let currentSentence = null;
@@ -8,46 +8,46 @@ let draggedElement = null;
 let difficulty = 'normal';
 let wrongAttempts = 0;
 let hintUsed = false;
-let hintLevel = 0; // 0 = sin pista, 1 = pista visual, 2 = primera palabra marcada
+let hintLevel = 0; // 0 = sem dica, 1 = dica visual, 2 = primeira palavra marcada
 
 const sentences = [
     {
         words: [
-            { text: "El", color: "blue" },
-            { text: "perro", color: "red" },
+            { text: "O", color: "blue" },
+            { text: "cachorro", color: "red" },
             { text: "corre", color: "green" }
         ],
         image: "https://img.freepik.com/vector-premium/lindo-perrito-corriendo-ilustracion-dibujos-animados-vector_2699-745.jpg"
     },
     {
         words: [
-            { text: "La", color: "blue" },
-            { text: "niña", color: "red" },
-            { text: "salta", color: "green" }
+            { text: "A", color: "blue" },
+            { text: "menina", color: "red" },
+            { text: "pula", color: "green" }
         ],
         image: "https://img.freepik.com/vector-premium/nina-saltando-aislado-blanco_253263-210.jpg?w=2000"
     },
     {
         words: [
-            { text: "El", color: "blue" },
+            { text: "O", color: "blue" },
             { text: "gato", color: "red" },
-            { text: "duerme", color: "green" }
+            { text: "dorme", color: "green" }
         ],
         image: "https://img.freepik.com/vector-premium/dibujo-dibujos-animados-gato-durmiendo_29937-9676.jpg?w=2000"
     },
     {
         words: [
-            { text: "El", color: "blue" },
-            { text: "pájaro", color: "red" },
-            { text: "vuela", color: "green" }
+            { text: "O", color: "blue" },
+            { text: "pássaro", color: "red" },
+            { text: "voa", color: "green" }
         ],
         image: "https://th.bing.com/th/id/R.ce83d3472f6439efaade884fc47b6f1e?rik=L55fb4CfQuAcOQ&riu=http%3a%2f%2fst.depositphotos.com%2f1199300%2f1509%2fv%2f950%2fdepositphotos_15093187-stock-illustration-flying-bird-cartoon-isolated-on.jpg&ehk=8pgE4ap73POBZLUYjAbuQHk4wtZjcI0d%2bviTP29cANQ%3d&risl=&pid=ImgRaw&r=0"
     },
     {
         words: [
-            { text: "El", color: "blue" },
+            { text: "O", color: "blue" },
             { text: "sol", color: "red" },
-            { text: "brilla", color: "green" }
+            { text: "brilha", color: "green" }
         ],
         image: "https://png.pngtree.com/background/20230519/original/pngtree-cartoon-sun-in-a-sunny-landscape-picture-image_2666701.jpg"
     }
@@ -55,7 +55,7 @@ const sentences = [
 
 const totalRounds = 5;
 
-// Inicializar el juego
+// Inicializar o jogo
 document.addEventListener('DOMContentLoaded', () => {
     setupEventListeners();
     startNewRound();
@@ -67,7 +67,6 @@ function setupEventListeners() {
     document.getElementById('reset-button').addEventListener('click', resetSentence);
     document.getElementById('hint-button').addEventListener('click', showHint);
 
-    // Prevenir comportamiento por defecto para permitir drag and drop
     document.addEventListener('dragover', (e) => {
         e.preventDefault();
     });
@@ -77,39 +76,33 @@ function setupEventListeners() {
     });
 }
 
-// Iniciar una nueva ronda
+// Iniciar uma nova rodada
 function startNewRound() {
     const randomSentence = sentences[Math.floor(Math.random() * sentences.length)];
     currentSentence = randomSentence;
 
-    // Mezclar las palabras
     words = [...randomSentence.words].sort(() => Math.random() - 0.5);
     droppedWords = [];
     wrongAttempts = 0;
     hintUsed = false;
     hintLevel = 0;
 
-    // Actualizar la interfaz
     updateUI();
     updateDifficulty();
 }
 
-// Actualizar la interfaz de usuario
+// Atualizar interface
 function updateUI() {
-    // Actualizar progreso
     document.getElementById('current-round').textContent = currentRound + 1;
     document.getElementById('total-rounds').textContent = totalRounds;
-    document.getElementById('score').textContent = score + ' puntos';
-    document.getElementById('score-display').textContent = score + ' puntos';
+    document.getElementById('score').textContent = score + ' pontos';
+    document.getElementById('score-display').textContent = score + ' pontos';
 
-    // Actualizar barra de progreso
     const progress = ((currentRound + 1) / totalRounds) * 100;
     document.getElementById('progress-fill').style.width = progress + '%';
 
-    // Actualizar imagen
     document.getElementById('sentence-image').src = currentSentence.image;
 
-    // Actualizar banco de palabras
     const wordsBank = document.getElementById('words-bank');
     wordsBank.innerHTML = '';
 
@@ -118,7 +111,6 @@ function updateUI() {
         wordsBank.appendChild(wordElement);
     });
 
-    // Crear slots para las palabras
     const dropZone = document.getElementById('sentence-drop-zone');
     dropZone.innerHTML = '';
 
@@ -132,12 +124,11 @@ function updateUI() {
         dropZone.appendChild(slot);
     }
 
-    // Ocultar feedback
     document.getElementById('feedback').classList.add('hidden');
     document.getElementById('order-hint').classList.add('hidden');
 }
 
-// Crear elemento de palabra
+// Criar elemento de palavra
 function createWordElement(word, index) {
     const wordElement = document.createElement('div');
     wordElement.className = `word-item word-${word.color}`;
@@ -145,7 +136,6 @@ function createWordElement(word, index) {
     wordElement.draggable = true;
     wordElement.dataset.index = index;
 
-    // Event listeners para drag and drop
     wordElement.addEventListener('dragstart', (e) => {
         draggedElement = e.target;
         e.target.style.opacity = '0.6';
@@ -158,13 +148,13 @@ function createWordElement(word, index) {
     return wordElement;
 }
 
-// Manejar dragover
+// Lidar com dragover
 function handleDragOver(e) {
     e.preventDefault();
     e.currentTarget.style.backgroundColor = 'rgba(0, 102, 204, 0.1)';
 }
 
-// Manejar drop
+// Lidar com drop
 function handleDrop(e, slotIndex) {
     e.preventDefault();
     e.currentTarget.style.backgroundColor = '';
@@ -175,7 +165,6 @@ function handleDrop(e, slotIndex) {
     const word = words[index];
     const slot = document.getElementById(`slot-${slotIndex}`);
 
-    // Si el slot ya tiene una palabra, devolverla al banco
     if (slot.innerHTML) {
         const existingWord = slot.querySelector('.word-item');
         if (existingWord) {
@@ -184,13 +173,11 @@ function handleDrop(e, slotIndex) {
         }
     }
 
-    // Crear nueva palabra en el slot
     const newWordElement = document.createElement('div');
     newWordElement.className = `word-item word-${word.color}`;
     newWordElement.textContent = word.text;
     newWordElement.style.cursor = 'pointer';
 
-    // Permitir eliminar la palabra del slot
     newWordElement.addEventListener('click', () => {
         newWordElement.remove();
         draggedElement.style.display = '';
@@ -205,34 +192,30 @@ function handleDrop(e, slotIndex) {
 
     draggedElement.style.display = 'none';
 
-    // Actualizar lista de palabras arrastradas
     droppedWords = droppedWords.filter(w => w.slotIndex !== slotIndex);
     droppedWords.push({ index, word, slotIndex });
 }
 
-// Reiniciar oración
+// Reiniciar frase
 function resetSentence() {
-    // Devolver todas las palabras al banco
     droppedWords.forEach(item => {
         const slot = document.getElementById(`slot-${item.slotIndex}`);
         slot.innerHTML = '';
         slot.classList.remove('filled');
     });
 
-    // Mostrar todas las palabras
     const wordItems = document.querySelectorAll('.word-item');
     wordItems.forEach(item => item.style.display = '');
 
-    // Limpiar lista de palabras arrastradas
     droppedWords = [];
     document.getElementById('feedback').classList.add('hidden');
     document.getElementById('order-hint').classList.add('hidden');
 }
 
-// Mostrar pista progresiva
+// Mostrar dica progressiva
 function showHint() {
     if (hintLevel >= 2) {
-        showFeedback("Ya usaste todas las pistas disponibles", false);
+        showFeedback("Você já usou todas as dicas disponíveis", false);
         return;
     }
 
@@ -242,7 +225,6 @@ function showHint() {
     hintDiv.innerHTML = '';
 
     if (hintLevel === 1) {
-        // Pista 1: Mostrar la estructura de colores
         hintDiv.classList.remove('hidden');
         hintDiv.className = 'order-hint visible';
 
@@ -253,9 +235,8 @@ function showHint() {
             hintDiv.appendChild(hint);
         });
 
-        showFeedback("💡 Pista 1: Los colores indican el orden. Mira qué color va primero, segundo, tercero.", true);
+        showFeedback("💡 Dica 1: As cores indicam a ordem. Veja qual cor vem primeiro, segundo, terceiro.", true);
     } else if (hintLevel === 2) {
-        // Pista 2: Mostrar la primera palabra
         hintDiv.classList.remove('hidden');
         hintDiv.className = 'order-hint visible';
 
@@ -264,37 +245,35 @@ function showHint() {
             hint.className = `hint-item word-${word.color}`;
 
             if (idx === 0) {
-                hint.innerHTML = `<span class="hint-word">${word.text}</span> <span class="hint-label">1ª palabra</span>`;
+                hint.innerHTML = `<span class="hint-word">${word.text}</span> <span class="hint-label">1ª palavra</span>`;
             } else {
                 hint.innerHTML = `<span class="hint-position">${idx + 1}</span>`;
             }
             hintDiv.appendChild(hint);
         });
 
-        showFeedback("💡 Pista 2: La primera palabra es: <strong>" + currentSentence.words[0].text + "</strong>", true);
+        showFeedback("💡 Dica 2: A primeira palavra é: <strong>" + currentSentence.words[0].text + "</strong>", true);
     }
 }
 
-// Verificar oración
+// Verificar frase
 function checkSentence() {
     if (droppedWords.length !== currentSentence.words.length) {
-        showFeedback("Debes usar todas las palabras (" + currentSentence.words.length + ")", false);
+        showFeedback("Você deve usar todas as palavras (" + currentSentence.words.length + ")", false);
         wrongAttempts++;
         updateDifficulty();
         return;
     }
 
-    // Ordenar palabras por slot
     droppedWords.sort((a, b) => a.slotIndex - b.slotIndex);
 
-    // Verificar orden correcto
     let isCorrect = true;
     let errorDetails = [];
 
     for (let i = 0; i < droppedWords.length; i++) {
         if (droppedWords[i].word.text !== currentSentence.words[i].text) {
             isCorrect = false;
-            errorDetails.push(`Posición ${i + 1}: encontré "${droppedWords[i].word.text}", esperaba "${currentSentence.words[i].text}"`);
+            errorDetails.push(`Posição ${i + 1}: encontrei "${droppedWords[i].word.text}", esperava "${currentSentence.words[i].text}"`);
         }
     }
 
@@ -304,18 +283,15 @@ function checkSentence() {
         if (hintLevel === 2) points = 10;
 
         score += points;
-        showFeedback(`¡Oración correcta! +${points} puntos 🎉`, true);
+        showFeedback(`Frase correta! +${points} pontos 🎉`, true);
 
-        // Colorear la imagen para indicar éxito
         const imageDisplay = document.getElementById('image-display');
         imageDisplay.classList.add('success');
 
-        // Deshabilitar botones
         document.getElementById('check-button').disabled = true;
         document.getElementById('reset-button').disabled = true;
         document.getElementById('hint-button').disabled = true;
 
-        // Avanzar a la siguiente ronda o finalizar el juego
         setTimeout(() => {
             if (currentRound + 1 >= totalRounds) {
                 completeGame();
@@ -323,25 +299,22 @@ function checkSentence() {
                 currentRound++;
                 startNewRound();
 
-                // Rehabilitar botones
                 document.getElementById('check-button').disabled = false;
                 document.getElementById('reset-button').disabled = false;
                 document.getElementById('hint-button').disabled = false;
 
-                // Quitar clase de éxito
                 imageDisplay.classList.remove('success');
             }
         }, 2000);
     } else {
         wrongAttempts++;
         updateDifficulty();
-        let message = "La oración no es correcta.\n" + errorDetails.join("\n");
+        let message = "A frase não está correta.\n" + errorDetails.join("\n");
         showFeedback(message, false);
     }
 
-    // Actualizar puntaje
-    document.getElementById('score').textContent = score + ' puntos';
-    document.getElementById('score-display').textContent = score + ' puntos';
+    document.getElementById('score').textContent = score + ' pontos';
+    document.getElementById('score-display').textContent = score + ' pontos';
 }
 
 // Mostrar feedback
@@ -358,7 +331,7 @@ function showFeedback(message, isCorrect) {
     feedbackElement.classList.remove('hidden');
 }
 
-// Actualizar dificultad según intentos fallidos
+// Atualizar dificuldade
 function updateDifficulty() {
     if (wrongAttempts === 0) {
         difficulty = 'normal';
@@ -367,33 +340,32 @@ function updateDifficulty() {
     }
 
     const badge = document.getElementById('difficulty-badge');
-    badge.textContent = difficulty === 'easy' ? '🎯 Fácil' : difficulty === 'hard' ? '⭐ Avanzado' : 'Normal';
+    badge.textContent = difficulty === 'easy' ? '🎯 Fácil' : difficulty === 'hard' ? '⭐ Avançado' : 'Normal';
 }
 
-// Completar el juego
+// Completar jogo
 function completeGame() {
-    // Mostrar mensaje de finalización
     const sentenceCard = document.querySelector('.sentence-card');
     sentenceCard.innerHTML = `
-        <h2>¡Juego Completado! 🏆</h2>
+        <h2>Jogo Concluído! 🏆</h2>
         <div class="image-display">
-            <img src="dino-feliz.jpeg" alt="Juego completado">
+            <img src="dino-feliz.jpeg" alt="Jogo concluído">
         </div>
         <div class="feedback correct">
-            <p><strong>Tu puntaje final:</strong> ${score} puntos</p>
+            <p><strong>Sua pontuação final:</strong> ${score} pontos</p>
         </div>
         <div class="action-controls">
             <button class="action-button primary" onclick="location.reload()">
-                <i class="fas fa-redo"></i> Jugar de Nuevo
+                <i class="fas fa-redo"></i> Jogar Novamente
             </button>
             <button class="action-button blue" onclick="goToMainPage()">
-                <i class="fas fa-home"></i> Volver al Menú
+                <i class="fas fa-home"></i> Voltar ao Menu
             </button>
         </div>
     `;
 }
 
-// Función para volver a la página principal
+// Função para voltar à página principal
 function goToMainPage() {
     window.location.href = 'https://plekdev.github.io/BlueMinds/selectores/selector-lecto-escritor.html';
 }

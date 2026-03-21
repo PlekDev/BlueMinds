@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Regulando el Grito - Neuro Play World</title>
+    <title>Regulando a Raiva - Neuro Play World</title>
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="style.css">
@@ -13,43 +13,43 @@
         <header class="game-header">
             <div class="back-button">
                 <button onclick="goToMainPage()">
-                    <i class="fas fa-arrow-left"></i> Volver
+                    <i class="fas fa-arrow-left"></i> Voltar
                 </button>
             </div>
-            <h1 class="game-title">Regulando el Grito</h1>
+            <h1 class="game-title">Regulando a Raiva</h1>
             <div class="game-info">
-                <span id="score-display">0 puntos</span>
+                <span id="score-display">0 pontos</span>
             </div>
         </header>
 
         <main class="game-content">
-            <!-- Progress -->
+            <!-- Progresso -->
             <div class="progress-card">
                 <div class="progress-header">
-                    <span>Ronda <span id="current-round">1</span> de <span id="total-rounds">5</span></span>
-                    <span id="score">0 puntos</span>
+                    <span>Rodada <span id="current-round">1</span> de <span id="total-rounds">5</span></span>
+                    <span id="score">0 pontos</span>
                 </div>
                 <div class="progress-bar">
                     <div id="progress-fill" class="progress-fill"></div>
                 </div>
             </div>
 
-            <!-- Main Game Card -->
+            <!-- Card Principal do Jogo -->
             <div class="regulation-card">
-                <h2>¿Cuál niño está calmado? 😌</h2>
+                <h2>Qual criança está calma? 😌</h2>
 
-                <!-- Anxiety Level Indicator -->
+                <!-- Indicador de Nível de Ansiedade -->
                 <div class="anxiety-indicator">
-                    <span>Nivel de Ansiedad:</span>
+                    <span>Nível de Ansiedade:</span>
                     <div class="anxiety-meter">
                         <div class="anxiety-bar" id="anxietyBar"></div>
                     </div>
-                    <span id="anxietyLevel">Bajo</span>
+                    <span id="anxietyLevel">Baixo</span>
                 </div>
 
-                <!-- Characters Display -->
+                <!-- Exibição dos Personagens -->
                 <div class="characters-stage">
-                    <!-- Angry Character -->
+                    <!-- Personagem Irritado -->
                     <div class="character-container angry-side">
                         <div class="character-box angry" id="angryCharacter">
                             <div class="character-head angry-head">
@@ -66,13 +66,13 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="character-label">¿Este niño está calmado?</div>
+                        <div class="character-label">Essa criança está calma?</div>
                         <button class="choice-button" id="angryBtn" onclick="selectCharacter('angry')">
-                            <i class="fas fa-hand-point-up"></i> Este
+                            <i class="fas fa-hand-point-up"></i> Esta
                         </button>
                     </div>
 
-                    <!-- Calm Character -->
+                    <!-- Personagem Calmo -->
                     <div class="character-container calm-side">
                         <div class="character-box calm" id="calmCharacter">
                             <div class="character-head calm-head">
@@ -90,9 +90,9 @@
                                 <div class="breathing-circle" id="breathingCircle"></div>
                             </div>
                         </div>
-                        <div class="character-label">¿Este niño está calmado?</div>
+                        <div class="character-label">Essa criança está calma?</div>
                         <button class="choice-button" id="calmBtn" onclick="selectCharacter('calm')">
-                            <i class="fas fa-hand-point-up"></i> Este
+                            <i class="fas fa-hand-point-up"></i> Esta
                         </button>
                     </div>
                 </div>
@@ -102,25 +102,25 @@
                     <span id="feedback-text"></span>
                 </div>
 
-                <!-- Breathing Guide Section -->
+                <!-- Seção de Guia de Respiração -->
                 <div class="breathing-guide" id="breathingGuide" style="display: none;">
-                    <h3>🫁 Respira Conmigo</h3>
+                    <h3>🫁 Respire Comigo</h3>
                     <div class="breathing-exercise">
                         <div class="breath-circle" id="breathCircle">
-                            <span id="breathInstruction">Inhala</span>
+                            <span id="breathInstruction">Inspire</span>
                         </div>
                         <div class="breath-info">
-                            <p id="breathDuration">Inhala: 4 segundos</p>
+                            <p id="breathDuration">Inspire: 4 segundos</p>
                         </div>
                     </div>
                 </div>
 
-                <!-- Voice & Breathing Analysis -->
+                <!-- Análise de Voz e Respiração -->
                 <div class="analysis-section" id="analysisSection" style="display: none;">
-                    <h4>📊 Análisis de Regulación</h4>
+                    <h4>📊 Análise de Regulação</h4>
                     <div class="analysis-metrics">
                         <div class="metric">
-                            <span class="metric-label">Volumen de Voz:</span>
+                            <span class="metric-label">Volume da Voz:</span>
                             <div class="progress-bar-small">
                                 <div class="progress-fill-small" id="voiceVolumeProgress"></div>
                             </div>
@@ -128,7 +128,7 @@
                         </div>
 
                         <div class="metric">
-                            <span class="metric-label">Ritmo Respiratorio:</span>
+                            <span class="metric-label">Ritmo Respiratório:</span>
                             <div class="progress-bar-small">
                                 <div class="progress-fill-small" id="breathRateProgress"></div>
                             </div>
@@ -136,43 +136,43 @@
                         </div>
 
                         <div class="metric">
-                            <span class="metric-label">Nivel de Ansiedad Detectado:</span>
-                            <span class="metric-value" id="detectedAnxiety">Bajo</span>
+                            <span class="metric-label">Nível de Ansiedade Detectado:</span>
+                            <span class="metric-value" id="detectedAnxiety">Baixo</span>
                         </div>
 
                         <div class="metric">
-                            <span class="metric-label">Autocontrol:</span>
+                            <span class="metric-label">Autocontrole:</span>
                             <span class="metric-value" id="selfControl">--%</span>
                         </div>
                     </div>
                 </div>
 
-                <!-- Adaptation Notice -->
+                <!-- Aviso de Adaptação -->
                 <div id="adaptationNotice" class="adaptation-notice hidden">
                     <i class="fas fa-lightbulb"></i>
                     <span id="adaptationText"></span>
                 </div>
 
-                <!-- Camera Section -->
+                <!-- Seção da Câmera -->
                 <div class="camera-section" id="cameraSection" style="display: none;">
                     <div class="camera-controls">
                         <button class="camera-btn start" id="startCameraBtn" onclick="startCamera()">
-                            <i class="fas fa-video"></i> Iniciar Cámara
+                            <i class="fas fa-video"></i> Iniciar Câmera
                         </button>
                         <button class="camera-btn stop" id="stopCameraBtn" onclick="stopCamera()" style="display: none;">
-                            <i class="fas fa-stop"></i> Detener
+                            <i class="fas fa-stop"></i> Parar
                         </button>
                     </div>
 
                     <div class="camera-container">
                         <div class="camera-feed" id="cameraFeedContainer">
                             <video id="cameraFeed" style="display: none;"></video>
-                            <span id="cameraPlaceholder">La cámara se abrirá aquí</span>
+                            <span id="cameraPlaceholder">A câmera será aberta aqui</span>
                         </div>
                     </div>
                 </div>
 
-                <!-- Control Buttons -->
+                <!-- Botões de Controle -->
                 <div class="action-controls">
                     <button id="continue-button" class="action-button primary" style="display: none;">
                         <i class="fas fa-arrow-right"></i> Continuar
@@ -180,10 +180,10 @@
                 </div>
             </div>
 
-            <!-- Instructions -->
+            <!-- Instruções -->
             <div class="instructions-card">
                 <p>
-                    💡 <span class="font-bold">Cómo jugar:</span> Mira los dos niños. Señala cuál está calmado. Luego, imita su respiración calmada.
+                    💡 <span class="font-bold">Como jogar:</span> Olhe para as duas crianças. Aponte qual está calma. Depois, imite a respiração calma dela.
                 </p>
             </div>
         </main>

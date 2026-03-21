@@ -1,4 +1,4 @@
-// Variables globales
+// Variáveis globais
 let currentRound = 0;
 let score = 0;
 let currentEmotion = null;
@@ -9,26 +9,26 @@ let cameraActive = false;
 let movementAnalysisData = {
     bodyImitation: 0,
     facialExpression: 0,
-    energyLevel: 'Neutral',
+    energyLevel: 'Neutro',
     emotionalUnderstanding: 0
 };
 
 const emotions = [
     { name: "Feliz", color: "primary", videoUrl: "https://i.pinimg.com/originals/20/57/74/2057740a1b96ddb0b0a306b20cf4d666.gif" },
     { name: "Triste", color: "blue", videoUrl: "https://cdnl.iconscout.com/lottie/premium/thumb/nina-llorando-a-fuerza-5105643-4277861.gif" },
-    { name: "Enojado", color: "red", videoUrl: "https://media.tenor.com/WYkqpAQVImkAAAAM/euphoria-boy.gif" },
-    { name: "Asustado", color: "purple", videoUrl: "https://media.tenor.com/azK-UXf7o5cAAAAM/anime-scream.gif" },
-    { name: "Sorprendido", color: "accent", videoUrl: "https://cdn-icons-gif.flaticon.com/11175/11175756.gif" },
+    { name: "Bravo", color: "red", videoUrl: "https://media.tenor.com/WYkqpAQVImkAAAAM/euphoria-boy.gif" },
+    { name: "Assustado", color: "purple", videoUrl: "https://media.tenor.com/azK-UXf7o5cAAAAM/anime-scream.gif" },
+    { name: "Surpreso", color: "accent", videoUrl: "https://cdn-icons-gif.flaticon.com/11175/11175756.gif" },
 ];
 
 const totalRounds = 5;
 
-// ================== INICIALIZACIÓN ==================
+// ================== INICIALIZAÇÃO ==================
 document.addEventListener('DOMContentLoaded', () => {
     startNewRound();
 });
 
-// ================== RONDAS ==================
+// ================== RODADAS ==================
 function startNewRound() {
     const randomEmotion = emotions[Math.floor(Math.random() * emotions.length)];
     currentEmotion = randomEmotion;
@@ -49,24 +49,24 @@ function startNewRound() {
 function completeGame() {
     const emotionCard = document.querySelector('.emotion-card');
     emotionCard.innerHTML = `
-        <h2>¡Juego Completado!</h2>
+        <h2>Jogo Concluído!</h2>
         <div style="font-size: 80px; margin: 20px 0;">🎉</div>
         <div class="feedback correct">
-            <p>Tu puntaje final: ${score} puntos</p>
-            <p style="font-size: 16px; margin-top: 10px;">¡Excelente trabajo en comprensión y expresión emocional!</p>
+            <p>Sua pontuação final: ${score} pontos</p>
+            <p style="font-size: 16px; margin-top: 10px;">Excelente trabalho em compreensão e expressão emocional!</p>
         </div>
         <div class="options-container" style="margin-top: 30px;">
             <button class="option-button primary" onclick="location.reload()">
-                <i class="fas fa-redo"></i> Jugar de Nuevo
+                <i class="fas fa-redo"></i> Jogar Novamente
             </button>
             <button class="option-button blue" onclick="goToMainPage()">
-                <i class="fas fa-home"></i> Volver al Menú
+                <i class="fas fa-home"></i> Voltar ao Menu
             </button>
         </div>
     `;
 }
 
-// ================== VIDEO ==================
+// ================== VÍDEO ==================
 function loadEmotionVideo() {
     const placeholder = document.querySelector('.video-placeholder');
 
@@ -81,12 +81,12 @@ function loadEmotionVideo() {
     placeholder.appendChild(gifImage);
 }
 
-// ================== INTERFAZ ==================
+// ================== INTERFACE ==================
 function updateUI() {
     document.getElementById('current-round').textContent = currentRound + 1;
     document.getElementById('total-rounds').textContent = totalRounds;
-    document.getElementById('score').textContent = score + ' puntos';
-    document.getElementById('score-display').textContent = score + ' puntos';
+    document.getElementById('score').textContent = score + ' pontos';
+    document.getElementById('score-display').textContent = score + ' pontos';
 
     const progress = ((currentRound + 1) / totalRounds) * 100;
     document.getElementById('progress-fill').style.width = progress + '%';
@@ -106,7 +106,7 @@ function updateUI() {
     document.getElementById('aiAnalysis').style.display = 'none';
 }
 
-// ================== CÁMARA ==================
+// ================== CÂMERA ==================
 async function startCamera() {
     try {
         const stream = await navigator.mediaDevices.getUserMedia({
@@ -126,7 +126,7 @@ async function startCamera() {
         analyzeMovement();
         document.getElementById('aiAnalysis').style.display = 'block';
     } catch (err) {
-        alert('No se pudo acceder a la cámara: ' + err.message);
+        alert('Não foi possível acessar a câmera: ' + err.message);
     }
 }
 
@@ -142,14 +142,14 @@ function stopCamera() {
     cameraActive = false;
 }
 
-// ================== ANÁLISIS DE MOVIMIENTO ==================
+// ================== ANÁLISE DE MOVIMENTO ==================
 function analyzeMovement() {
     if (!cameraActive) return;
 
     const simulatedAnalysis = {
         bodyImitation: Math.floor(Math.random() * 100),
         facialExpression: Math.floor(Math.random() * 100),
-        energyLevel: ['Bajo', 'Medio', 'Alto'][Math.floor(Math.random() * 3)],
+        energyLevel: ['Baixo', 'Médio', 'Alto'][Math.floor(Math.random() * 3)],
         emotionalUnderstanding: Math.floor(Math.random() * 100)
     };
 
@@ -171,31 +171,30 @@ function checkAdaptation() {
 
     if (movementAnalysisData.bodyImitation < 40) {
         notice.classList.remove('hidden');
-        text.textContent = '¡Muévete un poco más! Trata de imitar los movimientos del video.';
+        text.textContent = 'Mexa-se um pouco mais! Tente imitar os movimentos do vídeo.';
         reduceVideoSpeed();
     } else if (movementAnalysisData.emotionalUnderstanding < 50) {
         notice.classList.remove('hidden');
-        text.textContent = 'Parece que la emoción es un poco compleja. Aquí te muestro una versión más simple...';
+        text.textContent = 'Parece que a emoção é um pouco complexa. Aqui vai uma versão mais simples...';
     } else {
         notice.classList.add('hidden');
     }
 }
 
 function reduceVideoSpeed() {
-    // Los GIFs no se pueden ralentizar directamente, pero podemos mostrar una notificación
-    // En una implementación real, podrías usar una librería para controlar GIFs
+    // GIFs não podem ser desacelerados diretamente
 }
 
 function resetAnalysis() {
     movementAnalysisData = {
         bodyImitation: 0,
         facialExpression: 0,
-        energyLevel: 'Neutral',
+        energyLevel: 'Neutro',
         emotionalUnderstanding: 0
     };
 }
 
-// ================== RESPUESTAS ==================
+// ================== RESPOSTAS ==================
 function handleAnswer(selectedName) {
     if (showFeedback) return;
 
@@ -207,18 +206,18 @@ function handleAnswer(selectedName) {
 
     if (isCorrect) {
         score += 20;
-        feedbackText.textContent = "¡Correcto! 🎉 Excelente imitación emocional";
+        feedbackText.textContent = "Correto! 🎉 Excelente imitação emocional";
         feedbackElement.className = 'feedback correct';
     } else {
-        feedbackText.textContent = `No es correcto. Era: ${currentEmotion.name}`;
+        feedbackText.textContent = `Não foi dessa vez. Era: ${currentEmotion.name}`;
         feedbackElement.className = 'feedback incorrect';
     }
 
     feedbackElement.classList.remove('hidden');
     showFeedback = true;
 
-    document.getElementById('score').textContent = score + ' puntos';
-    document.getElementById('score-display').textContent = score + ' puntos';
+    document.getElementById('score').textContent = score + ' pontos';
+    document.getElementById('score-display').textContent = score + ' pontos';
 
     setTimeout(() => {
         if (currentRound + 1 >= totalRounds) {
@@ -230,7 +229,7 @@ function handleAnswer(selectedName) {
     }, 2500);
 }
 
-// ================== NAVEGACIÓN ==================
+// ================== NAVEGAÇÃO ==================
 function goToMainPage() {
     window.location.href = 'https://plekdev.github.io/BlueMinds/selectores/selector-kinestesico.html';
 }

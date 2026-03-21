@@ -1,4 +1,4 @@
-// Variables globales
+// Variáveis globais
 let currentRound = 0;
 let score = 0;
 let currentEmotion = null;
@@ -10,17 +10,17 @@ let emotionDetected = '';
 const emotions = [
     { name: "Feliz", color: "primary", gifUrl: "https://i.pinimg.com/originals/20/57/74/2057740a1b96ddb0b0a306b20cf4d666.gif" },
     { name: "Triste", color: "blue", gifUrl: "https://cdnl.iconscout.com/lottie/premium/thumb/nina-llorando-a-fuerza-5105643-4277861.gif" },
-    { name: "Enojado", color: "red", gifUrl: "https://media.tenor.com/WYkqpAQVImkAAAAM/euphoria-boy.gif" },
+    { name: "Bravo", color: "red", gifUrl: "https://media.tenor.com/WYkqpAQVImkAAAAM/euphoria-boy.gif" },
 ];
 
 const totalRounds = 3;
 
-// ================== INICIALIZACIÓN ==================
+// ================== INICIALIZAÇÃO ==================
 document.addEventListener('DOMContentLoaded', () => {
     startNewRound();
 });
 
-// ================== RONDAS ==================
+// ================== RODADAS ==================
 function startNewRound() {
     const randomEmotion = emotions[Math.floor(Math.random() * emotions.length)];
     currentEmotion = randomEmotion;
@@ -40,18 +40,18 @@ function startNewRound() {
 function completeGame() {
     const emotionCard = document.querySelector('.emotion-card');
     emotionCard.innerHTML = `
-        <h2>¡Juego Completado! 🎉</h2>
+        <h2>Jogo Concluído! 🎉</h2>
         <div style="font-size: 80px; margin: 30px 0;">😊</div>
         <div class="feedback correct">
-            <p>Tu puntaje final: ${score} puntos</p>
-            <p style="font-size: 16px; margin-top: 10px;">¡Excelente trabajo en comprensión emocional!</p>
+            <p>Sua pontuação final: ${score} pontos</p>
+            <p style="font-size: 16px; margin-top: 10px;">Excelente trabalho em compreensão emocional!</p>
         </div>
         <div class="options-container" style="margin-top: 30px;">
             <button class="option-button primary" onclick="location.reload()">
-                <i class="fas fa-redo"></i> Jugar de Nuevo
+                <i class="fas fa-redo"></i> Jogar Novamente
             </button>
             <button class="option-button blue" onclick="goToMainPage()">
-                <i class="fas fa-home"></i> Volver al Menú
+                <i class="fas fa-home"></i> Voltar ao Menu
             </button>
         </div>
     `;
@@ -63,17 +63,16 @@ function loadGif() {
     gifImg.src = currentEmotion.gifUrl;
 }
 
-// ================== INTERFAZ ==================
+// ================== INTERFACE ==================
 function updateUI() {
     document.getElementById('current-round').textContent = currentRound + 1;
     document.getElementById('total-rounds').textContent = totalRounds;
-    document.getElementById('score').textContent = score + ' puntos';
-    document.getElementById('score-display').textContent = score + ' puntos';
+    document.getElementById('score').textContent = score + ' pontos';
+    document.getElementById('score-display').textContent = score + ' pontos';
 
     const progress = ((currentRound + 1) / totalRounds) * 100;
     document.getElementById('progress-fill').style.width = progress + '%';
 
-    // Crear opciones
     const optionsContainer = document.getElementById('options-container');
     optionsContainer.innerHTML = '';
 
@@ -85,16 +84,14 @@ function updateUI() {
         optionsContainer.appendChild(button);
     });
 
-    // Resetear secciones
     document.getElementById('feedback').classList.add('hidden');
     document.getElementById('simpleAnalysis').style.display = 'none';
 
-    // Resetear cámara
     const startBtn = document.getElementById('startCameraBtn');
     startBtn.style.display = 'inline-block';
 }
 
-// ================== CÁMARA ==================
+// ================== CÂMERA ==================
 async function startCamera() {
     try {
         const stream = await navigator.mediaDevices.getUserMedia({
@@ -111,13 +108,11 @@ async function startCamera() {
         cameraActive = true;
         video.play();
 
-        // Mostrar análisis
         document.getElementById('simpleAnalysis').style.display = 'block';
 
-        // Iniciar detección
         detectEmotion();
     } catch (err) {
-        alert('No se pudo acceder a la cámara: ' + err.message);
+        alert('Não foi possível acessar a câmera: ' + err.message);
     }
 }
 
@@ -133,22 +128,20 @@ function stopCamera() {
     cameraActive = false;
 }
 
-// ================== DETECCIÓN DE EMOCIÓN ==================
+// ================== DETECÇÃO DE EMOÇÃO ==================
 function detectEmotion() {
     if (!cameraActive) return;
 
-    // Simulación de detección emocional
-    const emotionsList = ['Feliz', 'Triste', 'Enojado'];
+    const emotionsList = ['Feliz', 'Triste', 'Bravo'];
     const randomEmotion = emotionsList[Math.floor(Math.random() * emotionsList.length)];
     emotionDetected = randomEmotion;
 
     document.getElementById('emotionStatus').textContent = randomEmotion;
 
-    // Continuar detectando cada segundo
     setTimeout(detectEmotion, 1000);
 }
 
-// ================== RESPUESTAS ==================
+// ================== RESPOSTAS ==================
 function handleAnswer(selectedName) {
     if (showFeedback) return;
 
@@ -160,7 +153,7 @@ function handleAnswer(selectedName) {
 
     if (isCorrect) {
         score += 20;
-        feedbackText.textContent = "¡Correcto! 🎉";
+        feedbackText.textContent = "Correto! 🎉";
         feedbackElement.className = 'feedback correct';
     } else {
         feedbackText.textContent = `Era: ${currentEmotion.name}`;
@@ -170,10 +163,9 @@ function handleAnswer(selectedName) {
     feedbackElement.classList.remove('hidden');
     showFeedback = true;
 
-    document.getElementById('score').textContent = score + ' puntos';
-    document.getElementById('score-display').textContent = score + ' puntos';
+    document.getElementById('score').textContent = score + ' pontos';
+    document.getElementById('score-display').textContent = score + ' pontos';
 
-    // Desabilitar botones
     const buttons = document.querySelectorAll('.option-button');
     buttons.forEach(btn => btn.disabled = true);
 
@@ -187,7 +179,7 @@ function handleAnswer(selectedName) {
     }, 2000);
 }
 
-// ================== NAVEGACIÓN ==================
+// ================== NAVEGAÇÃO ==================
 function goToMainPage() {
     if (cameraActive) stopCamera();
     window.location.href = 'https://plekdev.github.io/BlueMinds/selectores/selector-kinestesico.html';

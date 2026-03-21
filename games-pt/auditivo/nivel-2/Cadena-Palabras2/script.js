@@ -1,5 +1,5 @@
 // ========================
-// ANALIZADOR DE MEMORIA AUDITIVA CON IA ADAPTATIVA
+// ANALISADOR DE MEMÓRIA AUDITIVA COM IA ADAPTATIVA
 // ========================
 
 class AdaptiveAuditoryMemoryAnalyzer {
@@ -23,10 +23,10 @@ class AdaptiveAuditoryMemoryAnalyzer {
     analyze(expectedSequence, selectedSequence, timeElapsed) {
         const startTime = performance.now();
 
-        // Verificar si el orden es correcto
+        // Verificar se a ordem está correta
         const isCorrect = JSON.stringify(expectedSequence) === JSON.stringify(selectedSequence);
 
-        // Calcular accuracy parcial (cuántos en orden correcto)
+        // Calcular acurácia parcial (quantas na ordem correta)
         let partialMatches = 0;
         for (let i = 0; i < Math.min(expectedSequence.length, selectedSequence.length); i++) {
             if (expectedSequence[i] === selectedSequence[i]) {
@@ -37,13 +37,13 @@ class AdaptiveAuditoryMemoryAnalyzer {
         }
         const accuracy = (partialMatches / expectedSequence.length) * 100;
 
-        // Calcular velocidad de procesamiento (ms por palabra)
+        // Calcular velocidade de processamento (ms por palavra)
         const processingSpeed = timeElapsed / expectedSequence.length;
 
-        // Generar score
+        // Gerar pontuação
         const score = this.generateScore(accuracy, isCorrect, processingSpeed, selectedSequence.length);
 
-        // Registrar intento
+        // Registrar tentativa
         const attempt = {
             timestamp: new Date(),
             expectedSequence: expectedSequence,
@@ -102,23 +102,23 @@ class AdaptiveAuditoryMemoryAnalyzer {
 
         if (isCorrect) {
             emoji = '🎉';
-            message = '¡Perfecto! Orden correcto';
-            details.push('Recordaste todas las palabras en orden');
+            message = 'Perfeito! Ordem correta';
+            details.push('Você lembrou todas as palavras em ordem');
         } else if (accuracy >= 75) {
             emoji = '👍';
-            message = 'Muy bien, casi lo tienes';
-            details.push('Acertaste ' + partialMatches + ' de ' + totalWords + ' palabras');
-            details.push('Intenta nuevamente con más atención');
+            message = 'Muito bem, quase lá';
+            details.push('Você acertou ' + partialMatches + ' de ' + totalWords + ' palavras');
+            details.push('Tente novamente com mais atenção');
         } else if (accuracy >= 50) {
             emoji = '📝';
-            message = 'Necesitas practicar más';
-            details.push('Recordaste ' + partialMatches + ' palabras');
-            details.push('Escucha de nuevo con mucha atención');
+            message = 'Você precisa praticar mais';
+            details.push('Você lembrou ' + partialMatches + ' palavras');
+            details.push('Ouça novamente com muita atenção');
         } else {
             emoji = '💪';
-            message = 'Sigue intentando';
-            details.push('La memoria auditiva se mejora con práctica');
-            details.push('Presiona "Repetir" para intentar de nuevo');
+            message = 'Continue tentando';
+            details.push('A memória auditiva melhora com a prática');
+            details.push('Pressione "Repetir" para tentar de novo');
         }
 
         return {
@@ -130,10 +130,10 @@ class AdaptiveAuditoryMemoryAnalyzer {
 
     generateAnalysis(attempt) {
         return {
-            exactness: attempt.isCorrect ? 'Exacto' : 'Incompleto',
+            exactness: attempt.isCorrect ? 'Exato' : 'Incompleto',
             memorized: attempt.partialMatches + '/' + attempt.expectedSequence.length,
             responseTime: Math.round(attempt.timeElapsed) + 'ms',
-            processingSpeed: Math.round(attempt.processingSpeed) + 'ms/palabra',
+            processingSpeed: Math.round(attempt.processingSpeed) + 'ms/palavra',
             score: attempt.score
         };
     }
@@ -158,24 +158,24 @@ class AdaptiveAuditoryMemoryAnalyzer {
         const memoryScore = this.sessionStats.auditoryMemoryScore;
         const processingSpeed = this.sessionStats.totalTime / this.sessionStats.totalAttempts;
 
-        // Adaptación basada en memoria auditiva
+        // Adaptação baseada na memória auditiva
         if (memoryScore >= 85) {
-            // Aumentar dificultad
+            // Aumentar dificuldade
             this.difficultyLevel = Math.min(5, this.difficultyLevel + 0.5);
             this.speedMultiplier = Math.max(0.7, this.speedMultiplier - 0.05);
             this.showVisualCues = false;
         } else if (memoryScore >= 70) {
-            // Mantener dificultad
+            // Manter dificuldade
             this.difficultyLevel = Math.max(1, this.difficultyLevel);
             this.speedMultiplier = 0.85;
             this.showVisualCues = false;
         } else if (memoryScore >= 50) {
-            // Reducir dificultad ligeramente
+            // Reduzir dificuldade levemente
             this.difficultyLevel = Math.max(1, this.difficultyLevel - 0.3);
             this.speedMultiplier = Math.min(0.95, this.speedMultiplier + 0.05);
             this.showVisualCues = true;
         } else {
-            // Reducir dificultad significativamente
+            // Reduzir dificuldade significativamente
             this.difficultyLevel = Math.max(1, this.difficultyLevel - 0.5);
             this.speedMultiplier = 1.0;
             this.showVisualCues = true;
@@ -193,13 +193,13 @@ class AdaptiveAuditoryMemoryAnalyzer {
 
     generateRecommendation() {
         if (this.sessionStats.auditoryMemoryScore >= 85) {
-            return 'Excelente memoria auditiva. Aumentando dificultad.';
+            return 'Excelente memória auditiva. Aumentando a dificuldade.';
         } else if (this.sessionStats.auditoryMemoryScore >= 70) {
-            return 'Buena memoria auditiva. Continúa así.';
+            return 'Boa memória auditiva. Continue assim.';
         } else if (this.sessionStats.auditoryMemoryScore >= 50) {
-            return 'Memoria en desarrollo. Mostrando ayudas visuales.';
+            return 'Memória em desenvolvimento. Mostrando dicas visuais.';
         } else {
-            return 'Memoria en entrenamiento. Reduciendo velocidad.';
+            return 'Memória em treinamento. Reduzindo a velocidade.';
         }
     }
 
@@ -217,7 +217,7 @@ class AdaptiveAuditoryMemoryAnalyzer {
 }
 
 // ========================
-// VARIABLES DEL JUEGO
+// VARIÁVEIS DO JOGO
 // ========================
 
 let currentRound = 0;
@@ -235,20 +235,20 @@ let visualCueTimeout = null;
 const analyzer = new AdaptiveAuditoryMemoryAnalyzer();
 const totalRounds = 5;
 
-// Base de datos de palabras con imágenes
+// Banco de dados de palavras com imagens (traduzido para português do Brasil)
 const wordDatabase = {
-    'manzana': 'https://img.freepik.com/vector-premium/dibujos-animados-clipart-manzana-dibujo-ilustracion_871209-13267.jpg?w=2000',
+    'maçã': 'https://img.freepik.com/vector-premium/dibujos-animados-clipart-manzana-dibujo-ilustracion_871209-13267.jpg?w=2000',
     'pera': 'https://img.freepik.com/vector-gratis/fruta-pera-aislada-sobre-fondo-blanco_1308-117166.jpg?semt=ais_hybrid&w=740',
     'uva': 'https://static.vecteezy.com/system/resources/previews/021/964/649/large_2x/grapes-fruit-cartoon-colored-clipart-illustration-free-vector.jpg',
-    'plátano': 'https://static.vecteezy.com/system/resources/previews/004/557/519/original/fruit-banana-cartoon-object-vector.jpg',
-    'naranja': 'https://img.freepik.com/vector-premium/ilustracion-vectorial-dibujos-animados-color-naranja_871209-3168.jpg?w=2000',
-    'fresa': 'https://i.pinimg.com/originals/c8/32/6a/c8326ac10514ba82a4ee79bcd8992c17.jpg',
-    'sandía': 'https://static.vecteezy.com/system/resources/previews/007/570/246/original/cartoon-watermelon-slice-fruits-vector.jpg',
-    'limón': 'https://static.vecteezy.com/system/resources/previews/004/485/242/original/lemon-fruit-illustrations-free-vector.jpg'
+    'banana': 'https://static.vecteezy.com/system/resources/previews/004/557/519/original/fruit-banana-cartoon-object-vector.jpg',
+    'laranja': 'https://img.freepik.com/vector-premium/ilustracion-vectorial-dibujos-animados-color-naranja_871209-3168.jpg?w=2000',
+    'morango': 'https://i.pinimg.com/originals/c8/32/6a/c8326ac10514ba82a4ee79bcd8992c17.jpg',
+    'melancia': 'https://static.vecteezy.com/system/resources/previews/007/570/246/original/cartoon-watermelon-slice-fruits-vector.jpg',
+    'limão': 'https://static.vecteezy.com/system/resources/previews/004/485/242/original/lemon-fruit-illustrations-free-vector.jpg'
 };
 
 // ========================
-// INICIALIZACIÓN
+// INICIALIZAÇÃO
 // ========================
 
 document.addEventListener('DOMContentLoaded', async function() {
@@ -258,17 +258,17 @@ document.addEventListener('DOMContentLoaded', async function() {
 
     try {
         const bestScore = await api.getBestScore(gameId);
-        highScoreElement.innerHTML = `🏆 Récord: ${bestScore} pts | <span id="current-score-val">0</span> pts`;
+        highScoreElement.innerHTML = `🏆 Recorde: ${bestScore} pts | <span id="current-score-val">0</span> pts`;
     } catch (error) {
-        console.error("No se pudo obtener el récord:", error);
-        highScoreElement.innerHTML = `Actual: <span id="current-score-val">0</span> pts`;
+        console.error("Não foi possível obter o recorde:", error);
+        highScoreElement.innerHTML = `Atual: <span id="current-score-val">0</span> pts`;
     }
 });
 
 function startNewRound() {
     speechSynthesis.cancel();
 
-    // Calcular longitud de secuencia adaptativa
+    // Calcular comprimento adaptativo da sequência
     const nextDifficulty = analyzer.getNextDifficulty();
     sequenceLength = Math.floor(3 + nextDifficulty.level);
     sequenceLength = Math.min(sequenceLength, 6);
@@ -284,7 +284,7 @@ function startNewRound() {
     selectedSequence = [];
     updateSelectedSequence();
 
-    // Asegurar que las imágenes estén visibles
+    // Garantir que as imagens estejam visíveis
     const imagesGrid = document.getElementById('images-grid');
     imagesGrid.style.opacity = '1';
     imagesGrid.style.pointerEvents = 'auto';
@@ -305,11 +305,11 @@ function updateUI() {
     const badgeElement = document.getElementById('difficulty-badge');
     const nextDifficulty = analyzer.getNextDifficulty();
     const levelText = Math.round(nextDifficulty.level * 10) / 10;
-    badgeElement.textContent = 'Dificultad Adaptativa: ' + levelText + ' ★';
+    badgeElement.textContent = 'Dificuldade Adaptativa: ' + levelText + ' ★';
     badgeElement.className = 'difficulty-badge adaptive';
 
     const instructionElement = document.getElementById('instruction-text');
-    let instructionText = 'Escucha ' + sequenceLength + ' palabras y selecciona las imágenes en orden • ' + nextDifficulty.recommendation;
+    let instructionText = 'Ouça ' + sequenceLength + ' palavras e selecione as imagens em ordem • ' + nextDifficulty.recommendation;
     instructionElement.textContent = instructionText;
 }
 
@@ -412,7 +412,7 @@ function updateSelectedSequence() {
     const container = document.getElementById('selected-items');
 
     if (selectedSequence.length === 0) {
-        container.innerHTML = '<span style="color: #9CA3AF;">Selecciona las imágenes en orden</span>';
+        container.innerHTML = '<span style="color: #9CA3AF;">Selecione as imagens em ordem</span>';
         return;
     }
 
@@ -459,7 +459,7 @@ function playSequence() {
     gameStarted = true;
     roundStartTime = performance.now();
 
-    // Ocultar imágenes mientras se reproduce el audio
+    // Ocultar imagens enquanto o áudio é reproduzido
     const imagesGrid = document.getElementById('images-grid');
     imagesGrid.style.opacity = '0';
     imagesGrid.style.pointerEvents = 'none';
@@ -473,7 +473,7 @@ function playSequence() {
 
 function playSequenceAudio(words, index, speechRate) {
     if (index >= words.length) {
-        // Mostrar imágenes cuando termina el audio
+        // Mostrar imagens quando o áudio terminar
         const imagesGrid = document.getElementById('images-grid');
         imagesGrid.style.opacity = '1';
         imagesGrid.style.pointerEvents = 'auto';
@@ -481,7 +481,7 @@ function playSequenceAudio(words, index, speechRate) {
 
         document.getElementById('repeat-button').style.display = 'inline-flex';
 
-        // Mostrar pistas visuales después de la reproducción si está habilitado
+        // Mostrar dicas visuais após a reprodução se estiver habilitado
         if (analyzer.showVisualCues) {
             setTimeout(() => {
                 showVisualCuesIfNeeded();
@@ -507,7 +507,7 @@ function playSequenceAudio(words, index, speechRate) {
 function repeatSequence() {
     clearSelection();
 
-    // Ocultar imágenes nuevamente
+    // Ocultar imagens novamente
     const imagesGrid = document.getElementById('images-grid');
     imagesGrid.style.opacity = '0';
     imagesGrid.style.pointerEvents = 'none';
@@ -573,12 +573,12 @@ function showFeedback(result) {
     feedbackMessage.textContent = result.feedback.emoji + ' ' + result.feedback.message;
     feedbackDetail.textContent = result.feedback.details.join(' • ');
 
-    let analysisHTML = '<div class="stat-row"><span class="stat-label">Exactitud:</span><span class="stat-value">' + result.accuracy.toFixed(0) + '%</span></div>';
+    let analysisHTML = '<div class="stat-row"><span class="stat-label">Precisão:</span><span class="stat-value">' + result.accuracy.toFixed(0) + '%</span></div>';
     analysisHTML += '<div class="stat-row"><span class="stat-label">Memorizadas:</span><span class="stat-value">' + result.analysis.memorized + '</span></div>';
-    analysisHTML += '<div class="stat-row"><span class="stat-label">Tiempo:</span><span class="stat-value">' + result.analysis.responseTime + '</span></div>';
-    analysisHTML += '<div class="stat-row"><span class="stat-label">Velocidad:</span><span class="stat-value">' + result.analysis.processingSpeed + '</span></div>';
-    analysisHTML += '<div class="stat-row"><span class="stat-label">Puntos:</span><span class="stat-value">' + result.score + ' pts</span></div>';
-    analysisHTML += '<div class="stat-row"><span class="stat-label">IA Detectó:</span><span class="stat-value">' + result.nextDifficulty.recommendation + '</span></div>';
+    analysisHTML += '<div class="stat-row"><span class="stat-label">Tempo:</span><span class="stat-value">' + result.analysis.responseTime + '</span></div>';
+    analysisHTML += '<div class="stat-row"><span class="stat-label">Velocidade:</span><span class="stat-value">' + result.analysis.processingSpeed + '</span></div>';
+    analysisHTML += '<div class="stat-row"><span class="stat-label">Pontos:</span><span class="stat-value">' + result.score + ' pts</span></div>';
+    analysisHTML += '<div class="stat-row"><span class="stat-label">IA Detectou:</span><span class="stat-value">' + result.nextDifficulty.recommendation + '</span></div>';
 
     analysisBox.innerHTML = analysisHTML;
 
@@ -590,40 +590,40 @@ async function completeGame() {
     const mainCard = document.getElementById('main-card');
     const report = analyzer.getSessionReport();
 
-    // 1. Preparar el objeto para la API
+    // 1. Preparar o objeto para a API
     const gameData = {
-        gameId: 'memoria-auditiva-1', // ID único para este minijuego
+        gameId: 'memoria-auditiva-1',
         style: 'auditivo',
-        level: Math.round(analyzer.difficultyLevel), // Nivel adaptativo final
+        level: Math.round(analyzer.difficultyLevel),
         score: score,
         accuracy: report.averageAccuracy,
         responseTime: report.averageResponseTime
     };
 
-    // 2. Mostrar estado de carga en la UI
-    mainCard.innerHTML = '<div class="game-completed"><h2>Guardando tu progreso...</h2></div>';
+    // 2. Mostrar estado de carregamento na UI
+    mainCard.innerHTML = '<div class="game-completed"><h2>Salvando seu progresso...</h2></div>';
 
     try {
-        // 3. Enviar a la API (usando tu instancia global 'api')
+        // 3. Enviar para a API
         await api.saveGameResults(gameData);
-        console.log("Resultados guardados con éxito");
+        console.log("Resultados salvos com sucesso");
     } catch (error) {
-        console.error("Error al guardar en el backend:", error);
-        // No bloqueamos al usuario, permitimos ver su reporte aunque falle la red
+        console.error("Erro ao salvar no backend:", error);
+        // Não bloqueamos o usuário, permitimos ver o relatório mesmo se a rede falhar
     }
 
-    // 4. Mostrar el reporte final (tu HTML original mejorado)
+    // 4. Mostrar o relatório final
     let html = '<div class="game-completed">';
-    html += '<h2 style="margin-bottom: 20px; color: #0066CC;">¡Juego Completado!</h2>';
-    html += '<div class="final-score"><h2>Puntuación Final:</h2><div class="score-number">' + score + '</div><p>puntos</p></div>';
+    html += '<h2 style="margin-bottom: 20px; color: #0066CC;">Jogo Concluído!</h2>';
+    html += '<div class="final-score"><h2>Pontuação Final:</h2><div class="score-number">' + score + '</div><p>pontos</p></div>';
     html += '<div class="analysis-box">';
-    html += '<h3 style="text-align: center; margin-bottom: 15px; color: #0066CC;">📊 Análisis de Desempeño</h3>';
-    html += '<div class="stat-row"><span class="stat-label">📌 Memoria Auditiva:</span><span class="stat-value">' + report.auditoryMemoryScore + '%</span></div>';
-    html += '<div class="stat-row"><span class="stat-label">⚡ Velocidad Promedio:</span><span class="stat-value">' + report.averageResponseTime + 'ms</span></div>';
+    html += '<h3 style="text-align: center; margin-bottom: 15px; color: #0066CC;">📊 Análise de Desempenho</h3>';
+    html += '<div class="stat-row"><span class="stat-label">📌 Memória Auditiva:</span><span class="stat-value">' + report.auditoryMemoryScore + '%</span></div>';
+    html += '<div class="stat-row"><span class="stat-label">⚡ Velocidade Média:</span><span class="stat-value">' + report.averageResponseTime + 'ms</span></div>';
     html += '</div>';
     html += '<div class="options-container" style="margin-top: 20px;">';
-    html += '<button class="option-button primary" onclick="location.reload()">Jugar de Nuevo</button>';
-    html += '<button class="option-button blue" onclick="goToMainPage()">Volver</button>';
+    html += '<button class="option-button primary" onclick="location.reload()">Jogar Novamente</button>';
+    html += '<button class="option-button blue" onclick="goToMainPage()">Voltar</button>';
     html += '</div></div>';
 
     mainCard.innerHTML = html;

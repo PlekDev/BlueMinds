@@ -1,4 +1,4 @@
-// Variables globales
+// Variáveis globais
 let currentRound = 0;
 let score = 0;
 let currentWord = null;
@@ -6,31 +6,31 @@ let userAnswer = '';
 let difficulty = 'normal';
 let wrongAttempts = 0;
 let hintUsed = false;
-let phase = 0; // 0 = inicio, 1 = mostrar palabra, 2 = escribir
+let phase = 0; // 0 = início, 1 = mostrar palavra, 2 = escrever
 let countdownTimer = null;
-let recordedWords = []; // Para estadísticas
+let recordedWords = [];
 
-// Palabras por dificultad
+// Palavras por dificuldade
 const wordBanks = {
     easy: [
         { word: 'gato', image: 'https://static.vecteezy.com/system/resources/previews/013/089/641/original/illustration-of-cute-colored-cat-cat-cartoon-image-in-eps10-format-suitable-for-children-s-book-design-elements-introduction-of-cats-to-children-books-or-posters-about-animal-vector.jpg?w=400&h=300&fit=crop' },
         { word: 'sol', image: 'https://static.vecteezy.com/system/resources/previews/018/800/828/original/cartoon-bright-sun-icon-png.png?w=400&h=300&fit=crop' },
         { word: 'casa', image: 'https://static.vecteezy.com/system/resources/previews/006/986/358/original/house-illustration-cartoon-vector.jpg?w=400&h=300&fit=crop' },
-        { word: 'agua', image: 'https://static.vecteezy.com/system/resources/previews/012/781/853/non_2x/cute-water-drop-cartoon-character-giving-water-bottle-free-vector.jpg?w=400&h=300&fit=crop' },
+        { word: 'água', image: 'https://static.vecteezy.com/system/resources/previews/012/781/853/non_2x/cute-water-drop-cartoon-character-giving-water-bottle-free-vector.jpg?w=400&h=300&fit=crop' },
         { word: 'flor', image: 'https://cdn.pixabay.com/photo/2022/12/13/05/16/flowers-7652496_1280.png?w=400&h=300&fit=crop' },
     ],
     normal: [
-        { word: 'mariposa', image: 'https://static.vecteezy.com/system/resources/previews/014/655/698/original/butterfly-icon-cartoon-style-vector.jpg?w=400&h=300&fit=crop' },
-        { word: 'teléfono', image: 'https://static.vecteezy.com/system/resources/previews/011/157/544/large_2x/mobile-phone-cartoon-icon-illustration-technology-object-icon-concept-isolated-premium-flat-cartoon-style-vector.jpg?w=400&h=300&fit=crop' },
+        { word: 'borboleta', image: 'https://static.vecteezy.com/system/resources/previews/014/655/698/original/butterfly-icon-cartoon-style-vector.jpg?w=400&h=300&fit=crop' },
+        { word: 'telefone', image: 'https://static.vecteezy.com/system/resources/previews/011/157/544/large_2x/mobile-phone-cartoon-icon-illustration-technology-object-icon-concept-isolated-premium-flat-cartoon-style-vector.jpg?w=400&h=300&fit=crop' },
         { word: 'bicicleta', image: 'https://static.vecteezy.com/system/resources/previews/005/239/753/non_2x/bicycle-cartoon-illustration-free-vector.jpg?w=400&h=300&fit=crop' },
-        { word: 'dinosaurio', image: 'https://static.vecteezy.com/system/resources/previews/009/877/405/original/cute-little-triceratops-dinosaur-cartoon-sitting-vector.jpg?w=400&h=300&fit=crop' },
-        { word: 'montaña', image: 'https://img.freepik.com/vector-premium/dibujo-dibujos-animados-montana-cielo-azul-campo-hierba-verde_1084749-7629.jpg?w=400&h=300&fit=crop' },
+        { word: 'dinossauro', image: 'https://static.vecteezy.com/system/resources/previews/009/877/405/original/cute-little-triceratops-dinosaur-cartoon-sitting-vector.jpg?w=400&h=300&fit=crop' },
+        { word: 'montanha', image: 'https://img.freepik.com/vector-premium/dibujo-dibujos-animados-montana-cielo-azul-campo-hierba-verde_1084749-7629.jpg?w=400&h=300&fit=crop' },
     ],
     hard: [
-        { word: 'extraordinario', image: 'https://img.freepik.com/vector-premium/persona-emocionada-asombrada-que-reacciona-algo-inesperado-concepto-efecto-guau-mujer-feliz-mirando-algo-increible-alegria-extasis-reaccion-ilustracion-vectorial-plana-aislada-sobre-fondo-blanco_198278-15226.jpg?w=400&h=300&fit=crop' },
+        { word: 'extraordinário', image: 'https://img.freepik.com/vector-premium/persona-emocionada-asombrada-que-reacciona-algo-inesperado-concepto-efecto-guau-mujer-feliz-mirando-algo-increible-alegria-extasis-reaccion-ilustracion-vectorial-plana-aislada-sobre-fondo-blanco_198278-15226.jpg?w=400&h=300&fit=crop' },
         { word: 'hipopótamo', image: 'https://static.vecteezy.com/system/resources/previews/005/561/609/non_2x/hippo-cartoon-colored-illustration-free-vector.jpg?w=400&h=300&fit=crop' },
-        { word: 'investigador', image: 'https://img.freepik.com/vector-premium/lindo-chico-detective-lupa-ilustraciones-vectoriales-dibujos-animados_1057-118480.jpg?w=400&h=300&fit=crop' },
-        { word: 'arquitectura', image: 'https://img.freepik.com/vector-premium/arquitecto-trabajando-construccion_75487-439.jpg?w=400&h=300&fit=crop' },
+        { word: 'pesquisador', image: 'https://img.freepik.com/vector-premium/lindo-chico-detective-lupa-ilustraciones-vectoriales-dibujos-animados_1057-118480.jpg?w=400&h=300&fit=crop' },
+        { word: 'arquitetura', image: 'https://img.freepik.com/vector-premium/arquitecto-trabajando-construccion_75487-439.jpg?w=400&h=300&fit=crop' },
         { word: 'biblioteca', image: 'https://img.freepik.com/vector-premium/ninos-dibujos-animados-que-estudian-biblioteca_29190-5145.jpg?w=400&h=300&fit=crop' },
     ]
 };
@@ -54,7 +54,7 @@ function setupEventListeners() {
     });
 }
 
-// Mostrar fase de inicio
+// Mostrar fase inicial
 function showStartPhase() {
     document.getElementById('phase1').classList.add('hidden');
     document.getElementById('phase2').classList.add('hidden');
@@ -66,7 +66,7 @@ function showStartPhase() {
     updateUI();
 }
 
-// Seleccionar pool por dificultad
+// Selecionar banco por dificuldade
 function selectWordBank() {
     if (wrongAttempts >= 2) {
         difficulty = 'easy';
@@ -80,7 +80,7 @@ function selectWordBank() {
     }
 }
 
-// Iniciar nueva ronda
+// Iniciar nova rodada
 function startNewRound() {
     const wordBank = selectWordBank();
     const randomIndex = Math.floor(Math.random() * wordBank.length);
@@ -95,11 +95,11 @@ function startNewRound() {
     showPhase1();
 }
 
-// Actualizar UI general
+// Atualizar UI geral
 function updateUI() {
     document.getElementById('current-round').textContent = currentRound + 1;
-    document.getElementById('score').textContent = score + ' puntos';
-    document.getElementById('score-display').textContent = score + ' puntos';
+    document.getElementById('score').textContent = score + ' pontos';
+    document.getElementById('score-display').textContent = score + ' pontos';
 
     const progress = ((currentRound + 1) / totalRounds) * 100;
     document.getElementById('progress-fill').style.width = progress + '%';
@@ -107,7 +107,7 @@ function updateUI() {
     updateDifficulty();
 }
 
-// Mostrar Fase 1: Imagen con palabra
+// Mostrar Fase 1: Imagem com palavra
 function showPhase1() {
     document.getElementById('phase1').classList.remove('hidden');
     document.getElementById('phase2').classList.add('hidden');
@@ -123,14 +123,12 @@ function showPhase1() {
     startCountdown(3);
 }
 
-// Countdown
+// Contagem regressiva
 function startCountdown(seconds) {
     let remaining = seconds;
     document.getElementById('countdown').textContent = remaining;
 
-    const interval = 1000;
-    const startTime = Date.now();
-    const endTime = startTime + (seconds * 1000);
+    const endTime = Date.now() + (seconds * 1000);
 
     const updateCountdown = () => {
         const now = Date.now();
@@ -152,7 +150,7 @@ function startCountdown(seconds) {
     updateCountdown();
 }
 
-// Mostrar Fase 2: Escribir palabra
+// Mostrar Fase 2: Escrever palavra
 function showPhase2() {
     document.getElementById('phase1').classList.add('hidden');
     document.getElementById('phase2').classList.remove('hidden');
@@ -166,28 +164,26 @@ function showPhase2() {
     input.classList.remove('correct', 'incorrect');
     input.focus();
 
-    // Mostrar información de la palabra
-    document.getElementById('word-length-info').textContent = `Longitud: ${currentWord.word.length} letras`;
+    document.getElementById('word-length-info').textContent = `Comprimento: ${currentWord.word.length} letras`;
 
     const complexity = currentWord.word.length <= 4 ? 'Fácil' :
                      currentWord.word.length <= 8 ? 'Normal' : 'Difícil';
-    document.getElementById('word-complexity-info').textContent = `Dificultad: ${complexity}`;
+    document.getElementById('word-complexity-info').textContent = `Dificuldade: ${complexity}`;
     document.getElementById('word-difficulty').classList.remove('hidden');
 
     phase = 2;
     document.getElementById('feedback').classList.add('hidden');
 }
 
-// Mostrar pista
+// Mostrar dica
 function showHint() {
     if (hintUsed) {
-        showFeedback("Ya usaste la pista", false);
+        showFeedback("Você já usou a dica", false);
         return;
     }
 
     hintUsed = true;
     const word = currentWord.word;
-    const hint = word[0] + word[word.length - 1]; // Primera y última letra
 
     const hintsList = document.getElementById('hints-list');
     hintsList.innerHTML = '';
@@ -200,10 +196,10 @@ function showHint() {
     }
 
     document.getElementById('letter-hints').classList.remove('hidden');
-    showFeedback("💡 Primera y última letra mostradas", true);
+    showFeedback("💡 Primeira e última letra mostradas", true);
 }
 
-// Algoritmo Levenshtein para tolerancia ortográfica
+// Algoritmo de Levenshtein para tolerância ortográfica
 function levenshteinDistance(a, b) {
     const aLower = a.toLowerCase().trim();
     const bLower = b.toLowerCase().trim();
@@ -230,12 +226,12 @@ function levenshteinDistance(a, b) {
     return dp[m][n];
 }
 
-// Verificar respuesta
+// Verificar resposta
 function checkAnswer() {
     userAnswer = document.getElementById('write-input').value.trim();
 
     if (!userAnswer) {
-        showFeedback("Por favor escribe una palabra", false);
+        showFeedback("Por favor escreva uma palavra", false);
         return;
     }
 
@@ -251,7 +247,7 @@ function checkAnswer() {
         if (wrongAttempts > 0) points = Math.max(10, points - (wrongAttempts * 5));
 
         score += points;
-        showFeedback(`¡Correcto! "${currentWord.word}" +${points} puntos 🎉`, true);
+        showFeedback(`Correto! "${currentWord.word}" +${points} pontos 🎉`, true);
 
         const input = document.getElementById('write-input');
         input.classList.add('correct');
@@ -273,7 +269,7 @@ function checkAnswer() {
         }, 2500);
     } else {
         wrongAttempts++;
-        showFeedback(`Incorrecto. La palabra era: "${currentWord.word}"`, false);
+        showFeedback(`Incorreto. A palavra era: "${currentWord.word}"`, false);
 
         const input = document.getElementById('write-input');
         input.classList.add('incorrect');
@@ -281,11 +277,11 @@ function checkAnswer() {
         updateDifficulty();
     }
 
-    document.getElementById('score').textContent = score + ' puntos';
-    document.getElementById('score-display').textContent = score + ' puntos';
+    document.getElementById('score').textContent = score + ' pontos';
+    document.getElementById('score-display').textContent = score + ' pontos';
 }
 
-// Reiniciar ronda
+// Reiniciar rodada
 function resetRound() {
     document.getElementById('write-input').value = '';
     document.getElementById('write-input').classList.remove('correct', 'incorrect');
@@ -305,7 +301,7 @@ function showFeedback(message, isCorrect) {
     feedbackElement.classList.remove('hidden');
 }
 
-// Actualizar dificultad
+// Atualizar dificuldade
 function updateDifficulty() {
     let newDifficulty = 'normal';
 
@@ -316,11 +312,11 @@ function updateDifficulty() {
     }
 
     const badge = document.getElementById('difficulty-badge');
-    const texts = { 'easy': '🎯 Fácil', 'normal': 'Normal', 'hard': '⭐ Avanzado' };
+    const texts = { 'easy': '🎯 Fácil', 'normal': 'Normal', 'hard': '⭐ Avançado' };
     badge.textContent = texts[newDifficulty];
 }
 
-// Completar juego
+// Completar jogo
 function completeGame() {
     const avgLength = (recordedWords.reduce((sum, w) => sum + w.length, 0) / recordedWords.length).toFixed(1);
     const maxLength = Math.max(...recordedWords.map(w => w.length));
@@ -328,29 +324,29 @@ function completeGame() {
 
     const escribeCard = document.querySelector('.escribe-card');
     escribeCard.innerHTML = `
-        <h2>¡Juego Completado! 🏆</h2>
+        <h2>Jogo Concluído! 🏆</h2>
         <div class="feedback correct" style="margin-top: 20px;">
-            <p><strong>Tu puntaje final:</strong> ${score} puntos</p>
+            <p><strong>Sua pontuação final:</strong> ${score} pontos</p>
         </div>
         <div class="explanation" style="margin-top: 20px;">
-            <h3>Estadísticas de Palabras</h3>
-            <p><strong>Longitud promedio:</strong> ${avgLength} letras</p>
-            <p><strong>Rango:</strong> ${minLength}-${maxLength} letras</p>
-            <p><strong>Nivel final:</strong> ${difficulty === 'easy' ? 'Fácil 🎯' : difficulty === 'hard' ? 'Avanzado ⭐' : 'Normal'}</p>
-            <p style="margin-top: 10px; font-size: 14px;">¡Excelente trabajo memorizando y escribiendo palabras!</p>
+            <h3>Estatísticas de Palavras</h3>
+            <p><strong>Comprimento médio:</strong> ${avgLength} letras</p>
+            <p><strong>Intervalo:</strong> ${minLength}-${maxLength} letras</p>
+            <p><strong>Nível final:</strong> ${difficulty === 'easy' ? 'Fácil 🎯' : difficulty === 'hard' ? 'Avançado ⭐' : 'Normal'}</p>
+            <p style="margin-top: 10px; font-size: 14px;">Excelente trabalho memorizando e escrevendo palavras!</p>
         </div>
         <div class="action-controls" style="margin-top: 30px;">
             <button class="action-button primary" onclick="location.reload()">
-                <i class="fas fa-redo"></i> Jugar de Nuevo
+                <i class="fas fa-redo"></i> Jogar Novamente
             </button>
             <button class="action-button blue" onclick="goToMainPage()">
-                <i class="fas fa-home"></i> Volver al Menú
+                <i class="fas fa-home"></i> Voltar ao Menu
             </button>
         </div>
     `;
 }
 
-// Volver a página principal
+// Voltar à página principal
 function goToMainPage() {
     window.location.href = 'https://plekdev.github.io/BlueMinds/selectores/selector-lecto-escritor.html';
 }

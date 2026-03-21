@@ -1,4 +1,4 @@
-// Variables globales
+// Variáveis globais
 let currentRound = 0;
 let score = 0;
 let currentExercise = null;
@@ -6,101 +6,101 @@ let selectedOption = null;
 let difficulty = 'normal';
 let wrongAttempts = 0;
 let hintUsed = false;
-let errorFrequency = {}; // Rastrear errores recurrentes
+let errorFrequency = {}; // Rastrear erros recorrentes
 
 const exercises = {
     easy: [
         {
-            sentence: "El gato son bonito.",
-            errorWord: "son",
-            correctWord: "es",
-            options: ["es", "somos", "eres"],
+            sentence: "O gato são bonito.",
+            errorWord: "são",
+            correctWord: "é",
+            options: ["é", "somos", "és"],
             errorType: "verbo",
-            explanation: "El sujeto 'el gato' es singular, por eso el verbo debe ser 'ES' (singular), no 'SON' (plural).",
-            hint: "¿Es el gato uno solo o varios? Busca la palabra que sea singular."
+            explanation: "O sujeito 'o gato' é singular, por isso o verbo deve ser 'É' (singular), não 'SÃO' (plural).",
+            hint: "O gato é um ou vários? Procure a palavra que seja singular."
         },
         {
-            sentence: "Los niño corren rápido.",
-            errorWord: "niño",
-            correctWord: "niños",
-            options: ["niños", "niña", "niñas"],
+            sentence: "Os menino correm rápido.",
+            errorWord: "menino",
+            correctWord: "meninos",
+            options: ["meninos", "menina", "meninas"],
             errorType: "número",
-            explanation: "'Los' es plural, así que debe ir con 'NIÑOS' (plural), no 'NIÑO' (singular).",
-            hint: "La palabra antes dice 'LOS' (plural), entonces la siguiente debe ser plural también."
+            explanation: "'Os' é plural, então deve ir com 'MENINOS' (plural), não 'MENINO' (singular).",
+            hint: "A palavra antes diz 'OS' (plural), então a seguinte também deve ser plural."
         },
         {
-            sentence: "La gata es blanca y grande.",
-            errorWord: "grandon",
+            sentence: "A gata é branca e grande.",
+            errorWord: "grandona",
             correctWord: "grande",
             options: ["grandes", "grande", "grandas"],
-            errorType: "género/número",
-            explanation: "Bien hecho. 'GRANDE' es correcto porque funciona igual para singular y plural.",
-            hint: "Los adjetivos deben coincidir en número con el sustantivo."
+            errorType: "gênero/número",
+            explanation: "Muito bem. 'GRANDE' é correto porque funciona igual para singular e plural.",
+            hint: "Os adjetivos devem concordar em número com o substantivo."
         }
     ],
     normal: [
         {
-            sentence: "Los carros es muy rápidos.",
-            errorWord: "es",
-            correctWord: "son",
-            options: ["son", "es", "eres"],
+            sentence: "Os carros é muito rápidos.",
+            errorWord: "é",
+            correctWord: "são",
+            options: ["são", "é", "és"],
             errorType: "verbo",
-            explanation: "'Los carros' (plural) necesita el verbo 'SON' (plural). 'ES' es solo para singular como 'El carro ES'.",
-            hint: "¿Hay uno o varios carros? El verbo debe ser plural como el sustantivo."
+            explanation: "'Os carros' (plural) precisa do verbo 'SÃO' (plural). 'É' é só para singular como 'O carro É'.",
+            hint: "Há um ou vários carros? O verbo deve ser plural como o substantivo."
         },
         {
-            sentence: "Ella tiene unos libros rojo.",
-            errorWord: "rojo",
-            correctWord: "rojos",
-            options: ["rojos", "roja", "rojas"],
+            sentence: "Ela tem uns livros vermelho.",
+            errorWord: "vermelho",
+            correctWord: "vermelhos",
+            options: ["vermelhos", "vermelha", "vermelhas"],
             errorType: "número",
-            explanation: "'Unos libros' es plural masculino, así que el adjetivo debe ser 'ROJOS' (plural), no 'ROJO' (singular).",
-            hint: "Si hay varios libros, el color también debe estar en plural."
+            explanation: "'Uns livros' é plural masculino, então o adjetivo deve ser 'VERMELHOS' (plural), não 'VERMELHO' (singular).",
+            hint: "Se há vários livros, a cor também deve estar no plural."
         },
         {
-            sentence: "El profesor dijo a los estudiantes que trabajien duro.",
-            errorWord: "trabajien",
-            correctWord: "trabajen",
-            options: ["trabajen", "trabajan", "trabajar"],
+            sentence: "O professor disse aos alunos que trabalhiem muito.",
+            errorWord: "trabalhiem",
+            correctWord: "trabalhem",
+            options: ["trabalhem", "trabalham", "trabalhar"],
             errorType: "modo verbal",
-            explanation: "Correcto. 'TRABAJEN' es subjuntivo y es lo adecuado después de 'que'.",
-            hint: "Después de 'que' suele ir subjuntivo cuando es una orden o deseo."
+            explanation: "Correto. 'TRABALHEM' é subjuntivo e é o adequado depois de 'que'.",
+            hint: "Depois de 'que' costuma ir subjuntivo quando é uma ordem ou desejo."
         }
     ],
     hard: [
         {
-            sentence: "Si yo taria rico, viajaría al mundo.",
+            sentence: "Se eu taria rico, viajaria pelo mundo.",
             errorWord: "taria",
-            correctWord: "fuera",
-            options: ["fuera", "soñara", "tuviera"],
-            errorType: "tiempo verbal",
-            explanation: "En condicionales, la prótasis (primera parte) debe ir en imperfecto de subjuntivo 'FUERA', no en condicional 'SERÍA'.",
-            hint: "En 'Si...' las estructuras condicionales tienen reglas especiales de conjugación."
+            correctWord: "fosse",
+            options: ["fosse", "sonhasse", "tivesse"],
+            errorType: "tempo verbal",
+            explanation: "Em condicionais, a prótase (primeira parte) deve ir no imperfeito do subjuntivo 'FOSSE', não no condicional 'SERIA'.",
+            hint: "Em 'Se...' as estruturas condicionais têm regras especiais de conjugação."
         },
         {
-            sentence: "A pesar de sus errores, el estudiante anduvo con sus estudios.",
-            errorWord: "anduvo",
-            correctWord: "continuó",
-            options: ["continuó", "continúa", "continuar"],
-            errorType: "tiempo verbal",
-            explanation: "Correcto. 'CONTINUÓ' (pretérito) es el tiempo adecuado para narrar una acción pasada.",
-            hint: "Busca consistencia temporal en toda la oración."
+            sentence: "Apesar dos seus erros, o aluno andou com os seus estudos.",
+            errorWord: "andou",
+            correctWord: "continuou",
+            options: ["continuou", "continua", "continuar"],
+            errorType: "tempo verbal",
+            explanation: "Correto. 'CONTINUOU' (pretérito) é o tempo adequado para narrar uma ação passada.",
+            hint: "Procure consistência temporal em toda a frase."
         },
         {
-            sentence: "Aunque allia sido difícil, nosotros lograremos éxito.",
+            sentence: "Embora allia sido difícil, nós conseguiremos sucesso.",
             errorWord: "allia",
-            correctWord: "haya",
-            options: ["haya", "ha", "había"],
+            correctWord: "tenha",
+            options: ["tenha", "tem", "tinha"],
             errorType: "modo verbal",
-            explanation: "Correcto. 'HAYA' (presente de subjuntivo) es obligatorio después de 'aunque'.",
-            hint: "Expresiones de concesión como 'aunque' requieren subjuntivo."
+            explanation: "Correto. 'TENHA' (presente do subjuntivo) é obrigatório depois de 'embora'.",
+            hint: "Expressões de concessão como 'embora' requerem subjuntivo."
         }
     ]
 };
 
 const totalRounds = 5;
 
-// Inicializar el juego
+// Inicializar o jogo
 document.addEventListener('DOMContentLoaded', () => {
     setupEventListeners();
     startNewRound();
@@ -113,9 +113,8 @@ function setupEventListeners() {
     document.getElementById('hint-button').addEventListener('click', showHint);
 }
 
-// Iniciar una nueva ronda
+// Iniciar uma nova rodada
 function startNewRound() {
-    // Seleccionar dificultad según desempeño
     const difficultyPool = selectDifficultyPool();
     const randomIndex = Math.floor(Math.random() * difficultyPool.length);
 
@@ -128,7 +127,7 @@ function startNewRound() {
     updateDifficulty();
 }
 
-// Seleccionar pool de dificultad según desempeño
+// Selecionar pool de dificuldade conforme desempenho
 function selectDifficultyPool() {
     if (wrongAttempts >= 3) {
         difficulty = 'easy';
@@ -142,35 +141,35 @@ function selectDifficultyPool() {
     }
 }
 
-// Actualizar interfaz
+// Atualizar interface
 function updateUI() {
     document.getElementById('current-round').textContent = currentRound + 1;
     document.getElementById('total-rounds').textContent = totalRounds;
-    document.getElementById('score').textContent = score + ' puntos';
-    document.getElementById('score-display').textContent = score + ' puntos';
+    document.getElementById('score').textContent = score + ' pontos';
+    document.getElementById('score-display').textContent = score + ' pontos';
 
     const progress = ((currentRound + 1) / totalRounds) * 100;
     document.getElementById('progress-fill').style.width = progress + '%';
 
-    // Mostrar oración con error resaltado
+    // Mostrar frase com erro destacado
     const sentenceText = document.getElementById('sentence-text');
     const parts = currentExercise.sentence.split(currentExercise.errorWord);
     sentenceText.innerHTML = parts[0] +
         `<span class="error-word">${currentExercise.errorWord}</span>` +
         parts[1];
 
-    // Mostrar tipo de error
+    // Mostrar tipo de erro
     const badges = {
-        'verbo': '🔤 Error: Verbo',
-        'número': '📊 Error: Número',
-        'género': '♀️♂️ Error: Género',
-        'tiempo verbal': '⏰ Error: Tiempo Verbal',
-        'modo verbal': '📝 Error: Modo Verbal',
-        'género/número': '📊 Error: Género/Número'
+        'verbo': '🔤 Erro: Verbo',
+        'número': '📊 Erro: Número',
+        'gênero': '♀️♂️ Erro: Gênero',
+        'tempo verbal': '⏰ Erro: Tempo Verbal',
+        'modo verbal': '📝 Erro: Modo Verbal',
+        'gênero/número': '📊 Erro: Gênero/Número'
     };
-    document.getElementById('word-type-badge').textContent = badges[currentExercise.errorType] || 'Error Gramatical';
+    document.getElementById('word-type-badge').textContent = badges[currentExercise.errorType] || 'Erro Gramatical';
 
-    // Generar opciones
+    // Gerar opções
     const container = document.getElementById('options-container');
     container.innerHTML = '';
 
@@ -182,41 +181,39 @@ function updateUI() {
         container.appendChild(button);
     });
 
-    // Limpiar feedback
+    // Limpar feedback
     document.getElementById('feedback').classList.add('hidden');
     document.getElementById('explanation').classList.add('hidden');
     document.getElementById('error-hint').classList.add('hidden');
 }
 
-// Seleccionar opción
+// Selecionar opção
 function selectOption(option, button) {
-    // Remover selección anterior
     document.querySelectorAll('.option-button').forEach(btn => {
         btn.classList.remove('selected');
     });
 
-    // Marcar nueva selección
     button.classList.add('selected');
     selectedOption = option;
 }
 
-// Mostrar pista
+// Mostrar dica
 function showHint() {
     if (hintUsed) {
-        showFeedback("Ya usaste la pista", false);
+        showFeedback("Você já usou a dica", false);
         return;
     }
 
     hintUsed = true;
     document.getElementById('hint-text').textContent = currentExercise.hint;
     document.getElementById('error-hint').classList.remove('hidden');
-    showFeedback("💡 Pista mostrada", true);
+    showFeedback("💡 Dica exibida", true);
 }
 
-// Verificar respuesta
+// Verificar resposta
 function checkAnswer() {
     if (!selectedOption) {
-        showFeedback("Debes seleccionar una opción", false);
+        showFeedback("Você deve selecionar uma opção", false);
         return;
     }
 
@@ -226,25 +223,21 @@ function checkAnswer() {
         let points = hintUsed ? 15 : 20;
         score += points;
 
-        // Registrar error corregido
         const key = currentExercise.errorType;
         errorFrequency[key] = (errorFrequency[key] || 0) + 1;
 
-        showFeedback(`¡Correcto! +${points} puntos 🎉`, true);
+        showFeedback(`Correto! +${points} pontos 🎉`, true);
 
-        // Marcar como correcto
         document.querySelectorAll('.option-button').forEach(btn => {
             if (btn.textContent === selectedOption) {
                 btn.classList.add('correct');
             }
         });
 
-        // Mostrar explicación
         setTimeout(() => {
             showExplanation();
         }, 500);
 
-        // Avanzar
         document.getElementById('check-button').disabled = true;
         document.getElementById('reset-button').disabled = true;
         document.getElementById('hint-button').disabled = true;
@@ -262,9 +255,8 @@ function checkAnswer() {
         }, 3000);
     } else {
         wrongAttempts++;
-        showFeedback("Incorrecto. Intenta de nuevo", false);
+        showFeedback("Incorreto. Tente novamente", false);
 
-        // Marcar como incorrecto
         document.querySelectorAll('.option-button').forEach(btn => {
             if (btn.textContent === selectedOption) {
                 btn.classList.add('incorrect');
@@ -274,17 +266,17 @@ function checkAnswer() {
         updateDifficulty();
     }
 
-    document.getElementById('score').textContent = score + ' puntos';
-    document.getElementById('score-display').textContent = score + ' puntos';
+    document.getElementById('score').textContent = score + ' pontos';
+    document.getElementById('score-display').textContent = score + ' pontos';
 }
 
-// Mostrar explicación
+// Mostrar explicação
 function showExplanation() {
     document.getElementById('explanation-text').textContent = currentExercise.explanation;
     document.getElementById('explanation').classList.remove('hidden');
 }
 
-// Reiniciar ronda
+// Reiniciar rodada
 function resetRound() {
     selectedOption = null;
     document.querySelectorAll('.option-button').forEach(btn => {
@@ -305,7 +297,7 @@ function showFeedback(message, isCorrect) {
     feedbackElement.classList.remove('hidden');
 }
 
-// Actualizar dificultad
+// Atualizar dificuldade
 function updateDifficulty() {
     let newDifficulty = 'normal';
 
@@ -319,12 +311,12 @@ function updateDifficulty() {
     const badgeTexts = {
         'easy': '🎯 Fácil',
         'normal': 'Normal',
-        'hard': '⭐ Avanzado'
+        'hard': '⭐ Avançado'
     };
     badge.textContent = badgeTexts[newDifficulty];
 }
 
-// Completar juego
+// Completar jogo
 function completeGame() {
     const errorSummary = Object.entries(errorFrequency)
         .sort((a, b) => b[1] - a[1])
@@ -334,27 +326,27 @@ function completeGame() {
 
     const errorCard = document.querySelector('.error-card');
     errorCard.innerHTML = `
-        <h2>¡Juego Completado! 🏆</h2>
+        <h2>Jogo Concluído! 🏆</h2>
         <div class="feedback correct" style="margin-top: 20px;">
-            <p><strong>Tu puntaje final:</strong> ${score} puntos</p>
+            <p><strong>Sua pontuação final:</strong> ${score} pontos</p>
         </div>
         <div class="explanation" style="margin-top: 20px;">
-            <h3>Resumen de Errores Practicados</h3>
-            <p>Trabajaste principalmente en: ${errorSummary || 'Varios tipos de errores'}</p>
-            <p style="margin-top: 10px; font-size: 14px;">Continúa practicando estas estructuras para mejorar tu gramática.</p>
+            <h3>Resumo dos Erros Praticados</h3>
+            <p>Você trabalhou principalmente em: ${errorSummary || 'Vários tipos de erros'}</p>
+            <p style="margin-top: 10px; font-size: 14px;">Continue praticando essas estruturas para melhorar sua gramática.</p>
         </div>
         <div class="action-controls" style="margin-top: 30px;">
             <button class="action-button primary" onclick="location.reload()">
-                <i class="fas fa-redo"></i> Jugar de Nuevo
+                <i class="fas fa-redo"></i> Jogar Novamente
             </button>
             <button class="action-button blue" onclick="goToMainPage()">
-                <i class="fas fa-home"></i> Volver al Menú
+                <i class="fas fa-home"></i> Voltar ao Menu
             </button>
         </div>
     `;
 }
 
-// Función para volver a la página principal
+// Função para voltar à página principal
 function goToMainPage() {
     window.location.href = 'https://plekdev.github.io/BlueMinds/selectores/selector-lecto-escritor.html';
 }

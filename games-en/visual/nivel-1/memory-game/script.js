@@ -1,4 +1,4 @@
-// ===== SISTEMA DE IA ADAPTATIVO PARA MEMORIA DE PATRONES =====
+// ===== ADAPTIVE AI SYSTEM FOR PATTERN MEMORY =====
 class AIMemoryGame {
     constructor() {
         this.sequence = [];
@@ -8,19 +8,19 @@ class AIMemoryGame {
         this.score = 0;
         this.highlightedColor = null;
         
-        // Parámetros de IA
+        // AI parameters
         this.memoryScore = 0;
         this.difficulty = 'easy';
         this.consecutiveCorrect = 0;
         this.consecutiveWrong = 0;
-        this.sequenceSpeed = 800; // milisegundos entre colores
+        this.sequenceSpeed = 800; // milliseconds between colors
         this.reactionTime = 0;
         
         // Audio
         this.synth = window.speechSynthesis;
         this.audioEnabled = true;
         
-        // Análisis de errores
+        // Error analysis
         this.errorPattern = {
             firstError: false,
             repeatableErrors: 0,
@@ -30,20 +30,19 @@ class AIMemoryGame {
         this.colors = ["🔴", "🔵", "🟢", "🟡", "🟣", "🟠"];
         this.maxLevel = 5;
         
-        // Niveles de dificultad
+        // Difficulty levels
         this.difficultyConfig = {
-            easy: { initialLength: 2, speed: 900, increment: 0.5 },
+            easy:   { initialLength: 2, speed: 900, increment: 0.5 },
             medium: { initialLength: 3, speed: 700, increment: 1 },
-            hard: { initialLength: 4, speed: 500, increment: 1.5 }
+            hard:   { initialLength: 4, speed: 500, increment: 1.5 }
         };
         this.activeTimeouts = [];
     }
 
-    // ===== SÍNTESIS DE VOZ =====
+    // ===== SPEECH SYNTHESIS =====
     speak(text) {
         if (!this.audioEnabled || !this.synth) return;
         
-        // Cancelar cualquier audio en curso
         this.synth.cancel();
         
         const utterance = new SpeechSynthesisUtterance(text);
@@ -55,12 +54,11 @@ class AIMemoryGame {
         this.synth.speak(utterance);
     }
 
-    // ===== INICIO DEL JUEGO =====
+    // ===== GAME START =====
     startNewLevel() {
         const config = this.difficultyConfig[this.difficulty];
         let sequenceLength = Math.min(config.initialLength + Math.floor(this.currentLevel * config.increment), 8);
         
-        // Generar nueva secuencia
         this.sequence = [];
         for (let i = 0; i < sequenceLength; i++) {
             this.sequence.push(this.colors[Math.floor(Math.random() * this.colors.length)]);
@@ -69,19 +67,18 @@ class AIMemoryGame {
         this.playerSequence = [];
         this.updateUI();
         
-        // Mostrar secuencia con retraso
         setTimeout(() => {
-            this.speak(`Sigue el patrón que ves a continuación.`);
+            this.speak(`Follow the pattern shown below.`);
             setTimeout(() => {
                 this.showSequence();
             }, 2500);
         }, 500);
     }
 
-    // ===== MOSTRAR SECUENCIA DE COLORES =====
+    // ===== SHOW COLOR SEQUENCE =====
     async showSequence() {
         this.isShowingSequence = true;
-        document.getElementById('status-message').textContent = '👀 ¡Mira la secuencia!';
+        document.getElementById('status-message').textContent = '👀 Watch the sequence!';
         
         for (let i = 0; i < this.sequence.length; i++) {
             await this.delay(this.sequenceSpeed);
@@ -91,10 +88,10 @@ class AIMemoryGame {
         }
         
         this.isShowingSequence = false;
-        document.getElementById('status-message').textContent = '🎮 ¡Tu turno! Repite la secuencia';
+        document.getElementById('status-message').textContent = '🎮 Your turn! Repeat the sequence';
     }
 
-    // ===== UTILIDADES =====
+    // ===== UTILITIES =====
     delay(ms) {
         return new Promise(resolve => setTimeout(resolve, ms));
     }
@@ -117,17 +114,15 @@ class AIMemoryGame {
         }
     }
 
-    // ===== MANEJO DE CLICS =====
+    // ===== CLICK HANDLING =====
     handleColorClick(color) {
         if (this.isShowingSequence) return;
         
         this.playerSequence.push(color);
         
-        // Flash del color
         this.highlightColor(color);
         setTimeout(() => this.unhighlightColor(), 300);
         
-        // Verificar si es correcto
         const isCorrect = this.sequence[this.playerSequence.length - 1] === color;
         
         if (!isCorrect) {
@@ -135,7 +130,6 @@ class AIMemoryGame {
             return;
         }
         
-        // Verificar si completó la secuencia
         if (this.playerSequence.length === this.sequence.length) {
             this.handleLevelComplete();
         }
@@ -143,17 +137,17 @@ class AIMemoryGame {
         this.updateUI();
     }
 
-    // ===== MANEJO DE ERRORES =====
+    // ===== ERROR HANDLING =====
     handleError() {
         this.consecutiveWrong++;
         this.consecutiveCorrect = 0;
         this.errorPattern.speedErrors++;
         
         const feedbackElement = document.getElementById('feedback');
-        feedbackElement.textContent = '¡Ups! Intenta de nuevo 😊';
+        feedbackElement.textContent = 'Oops! Try again 😊';
         feedbackElement.className = 'feedback incorrect';
         
-        this.speak('¡Ups! Ese no era el patrón correcto. Intenta de nuevo.');
+        this.speak('Oops! That was not the correct pattern. Try again.');
         
         this.score = Math.max(0, this.score - 5);
         this.adjustDifficulty();
@@ -164,7 +158,7 @@ class AIMemoryGame {
         }, 2000);
     }
 
-    // ===== NIVEL COMPLETADO =====
+    // ===== LEVEL COMPLETE =====
     handleLevelComplete() {
         this.consecutiveCorrect++;
         this.consecutiveWrong = 0;
@@ -173,10 +167,10 @@ class AIMemoryGame {
         this.score += levelScore;
         
         const feedbackElement = document.getElementById('feedback');
-        feedbackElement.textContent = '¡Excelente! 🎉';
+        feedbackElement.textContent = 'Excellent! 🎉';
         feedbackElement.className = 'feedback correct';
         
-        this.speak('¡Excelente! Completaste este nivel correctamente.');
+        this.speak('Excellent! You completed this level correctly.');
         
         this.adjustDifficulty();
         this.showAIAnalysis();
@@ -191,13 +185,10 @@ class AIMemoryGame {
         }, 1500);
     }
 
-    // ===== ANÁLISIS Y AJUSTE DE DIFICULTAD =====
+    // ===== DIFFICULTY ADJUSTMENT =====
     adjustDifficulty() {
         this.memoryScore = (this.score / (this.currentLevel * 20)) * 100;
         
-        const config = this.difficultyConfig[this.difficulty];
-        
-        // Si 3 aciertos seguidos → aumentar dificultad
         if (this.consecutiveCorrect >= 3 && this.memoryScore >= 80) {
             if (this.difficulty === 'easy') {
                 this.difficulty = 'medium';
@@ -207,7 +198,6 @@ class AIMemoryGame {
                 this.sequenceSpeed = this.difficultyConfig.hard.speed;
             }
         }
-        // Si está teniendo dificultad → reducir
         else if (this.consecutiveWrong >= 2 || this.memoryScore < 50) {
             if (this.difficulty === 'hard') {
                 this.difficulty = 'medium';
@@ -225,56 +215,53 @@ class AIMemoryGame {
     showDifficultyIndicator() {
         const indicator = document.getElementById('difficulty-indicator');
         const levels = {
-            easy: '⭐ Dificultad: FÁCIL (secuencias cortas y lentas)',
-            medium: '⭐⭐ Dificultad: MEDIO (secuencias medianas y rápidas)',
-            hard: '⭐⭐⭐ Dificultad: DIFÍCIL (secuencias largas y muy rápidas)'
+            easy:   '⭐ Difficulty: EASY (short and slow sequences)',
+            medium: '⭐⭐ Difficulty: MEDIUM (medium and faster sequences)',
+            hard:   '⭐⭐⭐ Difficulty: HARD (long and very fast sequences)'
         };
 
         indicator.textContent = levels[this.difficulty];
         indicator.style.display = 'block';
     }
 
-    // ===== ANÁLISIS EN TIEMPO REAL =====
+    // ===== REAL-TIME AI ANALYSIS =====
     showAIAnalysis() {
         const analysisEl = document.getElementById('ai-analysis');
         const analysisText = document.getElementById('analysis-text');
         
         let analysis = '';
 
-        // Análisis de velocidad
         if (this.sequenceSpeed < 600) {
-            analysis += '⚡ Secuencia muy rápida. ';
+            analysis += '⚡ Very fast sequence. ';
         } else if (this.sequenceSpeed > 800) {
-            analysis += '🐢 Secuencia lenta para practicar. ';
+            analysis += '🐢 Slow sequence for practice. ';
         }
 
-        // Análisis de racha
         if (this.consecutiveCorrect > 0) {
-            analysis += `✅ ${this.consecutiveCorrect} acierto(s) seguido(s). `;
+            analysis += `✅ ${this.consecutiveCorrect} consecutive correct answer(s). `;
         }
         if (this.consecutiveWrong > 0) {
-            analysis += `❌ ${this.consecutiveWrong} error(es) seguido(s). `;
+            analysis += `❌ ${this.consecutiveWrong} consecutive error(s). `;
         }
 
-        // Cambios de dificultad
         if (this.difficulty === 'hard') {
-            analysis += '📈 Nivel: DIFÍCIL. ';
+            analysis += '📈 Level: HARD. ';
         } else if (this.difficulty === 'easy') {
-            analysis += '📉 Nivel: FÁCIL. ';
+            analysis += '📉 Level: EASY. ';
         } else {
-            analysis += '➡️ Nivel: MEDIO. ';
+            analysis += '➡️ Level: MEDIUM. ';
         }
 
-        analysisText.textContent = analysis || 'Memoria en desarrollo...';
+        analysisText.textContent = analysis || 'Memory in development...';
         analysisEl.classList.add('show');
     }
 
-    // ===== ACTUALIZAR UI =====
+    // ===== UPDATE UI =====
     updateUI() {
         document.getElementById('current-level').textContent = this.currentLevel;
         document.getElementById('max-level').textContent = this.maxLevel;
-        document.getElementById('score').textContent = this.score + ' puntos';
-        document.getElementById('score-display').textContent = this.score + ' puntos';
+        document.getElementById('score').textContent = this.score + ' points';
+        document.getElementById('score-display').textContent = this.score + ' points';
 
         const progress = (this.currentLevel / this.maxLevel) * 100;
         document.getElementById('progress-fill').style.width = progress + '%';
@@ -283,92 +270,91 @@ class AIMemoryGame {
         document.getElementById('sequence-length').textContent = this.sequence.length;
     }
 
-    // ===== JUEGO COMPLETADO =====
+    // ===== GAME COMPLETE =====
     async completeGame() {
 
-      const gameData = {
-        gameId: 'memoria-patrones-1',
-        style: 'visual',
-        level: this.difficulty === 'hard' ? 3 : (this.difficulty === 'medium' ? 2 : 1),
-        score: this.score,
-        accuracy: parseFloat(((this.score / (this.maxLevel * 20)) * 100).toFixed(1)),
-        responseTime: this.sequenceSpeed
-      }
-      try {
-          await api.saveGameResults(gameData);
-      } catch (e) {
-          console.error("No se pudo guardar el progreso:", e);
-      }
+        const gameData = {
+            gameId: 'pattern-memory-1',
+            style: 'visual',
+            level: this.difficulty === 'hard' ? 3 : (this.difficulty === 'medium' ? 2 : 1),
+            score: this.score,
+            accuracy: parseFloat(((this.score / (this.maxLevel * 20)) * 100).toFixed(1)),
+            responseTime: this.sequenceSpeed
+        };
+        try {
+            await api.saveGameResults(gameData);
+        } catch (e) {
+            console.error("Could not save progress:", e);
+        }
 
-      const gameCard = document.querySelector('.status-card');
-      const avgAccuracy = ((this.score / (this.maxLevel * 20)) * 100).toFixed(1);
-      
-      let performanceMessage = '¡Memoria excepcional! 🏆';
-      let audioMessage = '¡Felicidades! Completaste el juego con una memoria excepcional.';
-      
-      if (avgAccuracy < 60) {
-          performanceMessage = '¡Sigue practicando! Tu memoria mejorará. 💪';
-          audioMessage = 'Juego completado. Sigue practicando para mejorar tu memoria.';
-      } else if (avgAccuracy < 80) {
-          performanceMessage = '¡Muy buen trabajo! Tu memoria está en desarrollo. 🌟';
-          audioMessage = '¡Muy buen trabajo! Tu memoria está mejorando constantemente.';
-      }
+        const gameCard = document.querySelector('.status-card');
+        const avgAccuracy = ((this.score / (this.maxLevel * 20)) * 100).toFixed(1);
+        
+        let performanceMessage = 'Exceptional memory! 🏆';
+        let audioMessage = 'Congratulations! You completed the game with exceptional memory.';
+        
+        if (avgAccuracy < 60) {
+            performanceMessage = 'Keep practicing! Your memory will improve. 💪';
+            audioMessage = 'Game completed. Keep practicing to improve your memory.';
+        } else if (avgAccuracy < 80) {
+            performanceMessage = 'Great work! Your memory is developing well. 🌟';
+            audioMessage = 'Great work! Your memory is steadily improving.';
+        }
 
-      this.speak(audioMessage);
+        this.speak(audioMessage);
 
-      gameCard.innerHTML = `
-          <div class="status-message">
-              ¡Juego Completado!
-          </div>
-          
-          <div style="background: linear-gradient(135deg, #0066CC 0%, #0099FF 100%); color: white; padding: 20px; border-radius: 12px; margin: 20px 0; font-size: 24px; font-weight: 700;">
-              Tu puntaje final: ${this.score} puntos
-          </div>
+        gameCard.innerHTML = `
+            <div class="status-message">
+                Game Completed!
+            </div>
+            
+            <div style="background: linear-gradient(135deg, #0066CC 0%, #0099FF 100%); color: white; padding: 20px; border-radius: 12px; margin: 20px 0; font-size: 24px; font-weight: 700;">
+                Your final score: ${this.score} points
+            </div>
 
-          <div style="background: rgba(0, 102, 204, 0.1); border-left: 4px solid #0066CC; padding: 15px; border-radius: 8px; margin: 20px 0; text-align: left; color: #1F2937; font-size: 14px;">
-              <strong>📊 Análisis Final de IA - Memoria de Patrones:</strong>
-              <div style="margin-top: 10px; line-height: 1.8;">
-                  <div>✓ Precisión: ${avgAccuracy}%</div>
-                  <div>✓ Puntuación de memoria: ${this.memoryScore.toFixed(0)}%</div>
-                  <div>✓ Nivel final alcanzado: ${this.difficulty.toUpperCase()}</div>
-                  <div>✓ Velocidad de respuesta: ${this.sequenceSpeed}ms</div>
-              </div>
-          </div>
+            <div style="background: rgba(0, 102, 204, 0.1); border-left: 4px solid #0066CC; padding: 15px; border-radius: 8px; margin: 20px 0; text-align: left; color: #1F2937; font-size: 14px;">
+                <strong>📊 Final AI Analysis - Pattern Memory:</strong>
+                <div style="margin-top: 10px; line-height: 1.8;">
+                    <div>✓ Accuracy: ${avgAccuracy}%</div>
+                    <div>✓ Memory score: ${this.memoryScore.toFixed(0)}%</div>
+                    <div>✓ Final level reached: ${this.difficulty.toUpperCase()}</div>
+                    <div>✓ Response speed: ${this.sequenceSpeed}ms</div>
+                </div>
+            </div>
 
-          <div style="color: var(--primary-blue); font-size: 18px; font-weight: 600; margin: 15px 0;">
-              ${performanceMessage}
-          </div>
-      `;
+            <div style="color: var(--primary-blue); font-size: 18px; font-weight: 600; margin: 15px 0;">
+                ${performanceMessage}
+            </div>
+        `;
 
-      const colorCard = document.querySelector('.color-card');
-      colorCard.innerHTML = `
-          <div class="options-container">
-              <button class="option-button primary" onclick="location.reload()">
-                  Jugar de Nuevo
-              </button>
-              <button class="option-button blue" onclick="goToMainPage()">
-                  Volver al Menú
-              </button>
-          </div>
-      `;
+        const colorCard = document.querySelector('.color-card');
+        colorCard.innerHTML = `
+            <div class="options-container">
+                <button class="option-button primary" onclick="location.reload()">
+                    Play Again
+                </button>
+                <button class="option-button blue" onclick="goToMainPage()">
+                    Back to Menu
+                </button>
+            </div>
+        `;
 
-      document.getElementById('ai-analysis').classList.remove('show');
-  }
+        document.getElementById('ai-analysis').classList.remove('show');
+    }
 }
 
-// ===== INICIALIZACIÓN =====
+// ===== INITIALIZATION =====
 const game = new AIMemoryGame();
 
 document.addEventListener('DOMContentLoaded', () => {
     game.startNewLevel();
 });
 
-// ===== FUNCIONES GLOBALES =====
+// ===== GLOBAL FUNCTIONS =====
 function handleColorClick(color) {
     game.handleColorClick(color);
 }
 
 function goToMainPage() {
     window.location.href = 'https://plekdev.github.io/BlueMinds/selectores/selector-visual.html';
-    
 }

@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Detective de Errores - BlueMinds IA</title>
+    <title>Error Detective - BlueMinds AI</title>
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
@@ -431,18 +431,18 @@
         <header class="game-header">
             <div class="back-button">
                 <button onclick="goToMainPage()">
-                    <i class="fas fa-arrow-left"></i> Volver
+                    <i class="fas fa-arrow-left"></i> Back
                 </button>
             </div>
-            <h1 class="game-title">Detective de Errores IA</h1>
+            <h1 class="game-title">Error Detective AI</h1>
             <div class="ai-status">
-                <span id="score-display">0 puntos</span>
-                <button id="audio-toggle" onclick="toggleAudio()" title="Activar/Desactivar audio">
+                <span id="score-display">0 points</span>
+                <button id="audio-toggle" onclick="toggleAudio()" title="Enable/Disable audio">
                     <i class="fas fa-volume-up"></i>
                 </button>
-                <div class="ai-indicator" title="IA adaptativa activa">
+                <div class="ai-indicator" title="Adaptive AI active">
                     <i class="fas fa-robot"></i>
-                    <span>IA</span>
+                    <span>AI</span>
                 </div>
             </div>
         </header>
@@ -450,8 +450,8 @@
         <main class="game-content">
             <div class="progress-card">
                 <div class="progress-header">
-                    <span>Ronda <span id="current-round">1</span> de <span id="total-rounds">5</span></span>
-                    <span id="score">0 puntos</span>
+                    <span>Round <span id="current-round">1</span> of <span id="total-rounds">5</span></span>
+                    <span id="score">0 points</span>
                 </div>
                 <div class="progress-bar">
                     <div id="progress-fill" class="progress-fill"></div>
@@ -462,19 +462,19 @@
                 <div id="difficulty-indicator" class="difficulty-indicator" style="display: none;"></div>
                 <div id="model-example" class="model-example" style="display: none;"></div>
 
-                <h2>¡Forma la oración correcta!</h2>
+                <h2>Build the correct sentence!</h2>
                 
                 <div class="sentence-display" id="sentence-display"></div>
 
-                <p style="font-size: 16px; margin-bottom: 15px; color: #777;">Haz clic en las palabras en el orden correcto:</p>
+                <p style="font-size: 16px; margin-bottom: 15px; color: #777;">Click the words in the correct order:</p>
                 <div class="words-bank" id="words-bank"></div>
 
                 <div class="action-buttons">
                     <button class="action-button primary" onclick="checkSentence()">
-                        <i class="fas fa-check"></i> Verificar
+                        <i class="fas fa-check"></i> Check
                     </button>
                     <button class="action-button secondary" onclick="resetSentence()">
-                        <i class="fas fa-redo"></i> Reiniciar
+                        <i class="fas fa-redo"></i> Reset
                     </button>
                 </div>
 
@@ -483,18 +483,18 @@
                 </div>
 
                 <div id="ai-analysis" class="ai-analysis">
-                    <strong>📊 Análisis IA:</strong> <span id="analysis-text"></span>
+                    <strong>📊 AI Analysis:</strong> <span id="analysis-text"></span>
                 </div>
             </div>
 
             <div class="instructions-card">
-                <p>🤖 <strong>IA Adaptativa:</strong> El sistema ajusta la complejidad de las oraciones según tu desempeño en la construcción sintáctica.</p>
+                <p>🤖 <strong>Adaptive AI:</strong> The system adjusts sentence complexity based on your syntactic construction performance.</p>
             </div>
         </main>
     </div>
 
     <script>
-// ===== SISTEMA DE IA ADAPTATIVO PARA CONSTRUCCIÓN SINTÁCTICA CON AUDIO =====
+// ===== ADAPTIVE AI SYSTEM FOR SYNTACTIC CONSTRUCTION WITH AUDIO =====
 
 class AudioManager {
     constructor() {
@@ -511,7 +511,7 @@ class AudioManager {
         const utterance = new SpeechSynthesisUtterance(text);
         utterance.rate = rate;
         utterance.pitch = pitch;
-        utterance.lang = 'es-ES';
+        utterance.lang = 'en-US';
 
         utterance.onstart = () => {
             this.isSpeaking = true;
@@ -567,61 +567,82 @@ class AISyntaxGame {
         };
 
         this.sentences = [
+            // EASY (3 words)
             { 
-                words: ["El", "gato", "duerme"], 
-                correct: ["El", "gato", "duerme"], 
+                words: ["The", "cat", "sleeps"], 
+                correct: ["The", "cat", "sleeps"], 
                 complexity: 'easy',
-                type: 'SVO',
+                type: 'SV',
                 image: "🐱",
-                audioDescription: "Se muestra un gato. ¿Cuál es el animal en la imagen?",
-                audioInstruction: "Forma la oración correcta haciendo clic en las palabras en el orden adecuado"
+                audioDescription: "A cat is shown. What is this animal?",
+                audioInstruction: "Build the correct sentence by clicking the words in the right order"
             },
             { 
-                words: ["perro", "El", "corre"], 
-                correct: ["El", "perro", "corre"], 
+                words: ["dog", "The", "runs"], 
+                correct: ["The", "dog", "runs"], 
                 complexity: 'easy',
                 type: 'SV',
                 image: "🐕",
-                audioDescription: "Se muestra un perro. ¿Cuál es este animal?",
-                audioInstruction: "Haz clic en las palabras para formar: El perro corre"
+                audioDescription: "A dog is shown. What is this animal?",
+                audioInstruction: "Click the words to build: The dog runs"
             },
             { 
-                words: ["vuela", "pájaro", "El"], 
-                correct: ["El", "pájaro", "vuela"], 
+                words: ["flies", "bird", "The"], 
+                correct: ["The", "bird", "flies"], 
                 complexity: 'easy',
                 type: 'SV',
                 image: "🦅",
-                audioDescription: "Se muestra un pájaro volando. ¿Qué animal ves?",
-                audioInstruction: "Ordena las palabras para decir que el pájaro vuela"
+                audioDescription: "A bird is shown flying. What animal do you see?",
+                audioInstruction: "Order the words to say that the bird flies"
             },
             
+            // MEDIUM (4 words)
             { 
-                words: ["niña", "come", "La", "manzana"], 
-                correct: ["La", "niña", "come", "manzana"], 
+                words: ["girl", "eats", "The", "apple"], 
+                correct: ["The", "girl", "eats", "apple"], 
                 complexity: 'medium',
                 type: 'SVO',
                 image: "👧",
-                audioDescription: "Se muestra una niña comiendo una manzana. ¿Quién aparece en la imagen?",
-                audioInstruction: "Forma la oración con cuatro palabras sobre la niña"
+                audioDescription: "A girl eating an apple is shown. Who appears in the image?",
+                audioInstruction: "Build the four-word sentence about the girl"
             },
             { 
-                words: ["bonita", "Una", "casa", "es"], 
-                correct: ["Una", "casa", "es", "bonita"], 
+                words: ["pretty", "A", "house", "is"], 
+                correct: ["A", "house", "is", "pretty"], 
                 complexity: 'medium',
                 type: 'SVC',
                 image: "🏠",
-                audioDescription: "Se muestra una casa. ¿Cómo es esta casa?",
-                audioInstruction: "Completa la frase sobre las características de la casa"
+                audioDescription: "A house is shown. What is this house like?",
+                audioInstruction: "Complete the phrase about the house's characteristics"
             },
             
+            // HARD (5 words)
             { 
-                words: ["niños", "parque", "Los", "en", "juegan"], 
-                correct: ["Los", "niños", "juegan", "en", "parque"], 
+                words: ["children", "park", "The", "in", "play"], 
+                correct: ["The", "children", "play", "in", "park"], 
                 complexity: 'hard',
                 type: 'SVLP',
                 image: "🎮",
-                audioDescription: "Se muestran niños jugando en el parque. ¿Dónde están jugando?",
-                audioInstruction: "Forma la oración de cinco palabras sobre dónde juegan los niños"
+                audioDescription: "Children playing in the park are shown. Where are they playing?",
+                audioInstruction: "Build the five-word sentence about where the children play"
+            },
+            { 
+                words: ["reads", "boy", "The", "a", "book"], 
+                correct: ["The", "boy", "reads", "a", "book"], 
+                complexity: 'hard',
+                type: 'SVO',
+                image: "📚",
+                audioDescription: "A boy reading a book is shown. What is he doing?",
+                audioInstruction: "Build the five-word sentence about the boy reading"
+            },
+            { 
+                words: ["swims", "fish", "The", "in", "water"], 
+                correct: ["The", "fish", "swims", "in", "water"], 
+                complexity: 'hard',
+                type: 'SVLP',
+                image: "🐠",
+                audioDescription: "A fish swimming in the water is shown. What is it doing?",
+                audioInstruction: "Build the five-word sentence about the fish"
             }
         ];
 
@@ -637,7 +658,7 @@ class AISyntaxGame {
     }
 
     announceGameStart() {
-        const message = `Bienvenido al Detective de Errores. Tu objetivo es formar oraciones correctas haciendo clic en las palabras en el orden adecuado. Tienes cinco rondas para completar. ¡Buena suerte!`;
+        const message = `Welcome to Error Detective. Your goal is to build correct sentences by clicking the words in the right order. You have five rounds to complete. Good luck!`;
         this.audioManager.speak(message, 0.9);
     }
 
@@ -648,16 +669,13 @@ class AISyntaxGame {
     }
 
     announceRoundInstruction() {
-        const roundMessage = `Ronda ${this.currentRound + 1} de ${this.totalRounds}. ${this.currentSentence.audioInstruction}`;
+        const roundMessage = `Round ${this.currentRound + 1} of ${this.totalRounds}. ${this.currentSentence.audioInstruction}`;
         setTimeout(() => {
             this.audioManager.speak(roundMessage, 0.9);
         }, 500);
     }
 
     analyzeError(selected, correct) {
-        const selectedStr = selected.join(' ');
-        const correctStr = correct.join(' ');
-        
         let errorType = '';
         
         if (new Set(selected).size === new Set(correct).size && 
@@ -685,10 +703,7 @@ class AISyntaxGame {
     }
 
     detectBlocking() {
-        if (this.consecutiveWrong >= 3) {
-            return true;
-        }
-        return false;
+        return this.consecutiveWrong >= 3;
     }
 
     calculateSyntaxScore() {
@@ -704,19 +719,19 @@ class AISyntaxGame {
         if (this.consecutiveCorrect >= 3 && this.syntaxScore >= 75) {
             if (this.difficulty === 'easy') {
                 this.difficulty = 'medium';
-                this.audioManager.speak('¡Excelente! Pasamos al nivel medio.', 0.9);
+                this.audioManager.speak('Excellent! Moving to medium level.', 0.9);
             } else if (this.difficulty === 'medium') {
                 this.difficulty = 'hard';
-                this.audioManager.speak('¡Muy bien! Ahora el nivel difícil.', 0.9);
+                this.audioManager.speak('Great job! Now the hard level.', 0.9);
             }
         }
         else if (this.detectBlocking() || this.syntaxScore < 50) {
             if (this.difficulty === 'hard') {
                 this.difficulty = 'medium';
-                this.audioManager.speak('Volvemos al nivel medio para seguir practicando.', 0.9);
+                this.audioManager.speak('Back to medium level to keep practicing.', 0.9);
             } else if (this.difficulty === 'medium') {
                 this.difficulty = 'easy';
-                this.audioManager.speak('Practicemos el nivel fácil.', 0.9);
+                this.audioManager.speak("Let's practice the easy level.", 0.9);
             }
             this.consecutiveWrong = 0;
         }
@@ -727,9 +742,9 @@ class AISyntaxGame {
     showDifficultyIndicator() {
         const indicator = document.getElementById('difficulty-indicator');
         const levels = {
-            easy: '⭐ Dificultad: FÁCIL (3 palabras)',
-            medium: '⭐⭐ Dificultad: MEDIO (4 palabras)',
-            hard: '⭐⭐⭐ Dificultad: DIFÍCIL (5 palabras)'
+            easy: '⭐ Difficulty: EASY (3 words)',
+            medium: '⭐⭐ Difficulty: MEDIUM (4 words)',
+            hard: '⭐⭐⭐ Difficulty: HARD (5 words)'
         };
 
         indicator.textContent = levels[this.difficulty];
@@ -763,11 +778,11 @@ class AISyntaxGame {
         if (shouldShow) {
             const modelEl = document.getElementById('model-example');
             modelEl.innerHTML = `
-                <strong>💡 Ejemplo modelo:</strong> 
-                "${this.currentSentence.correct.join(' ')}" es una oración con orden ${this.currentSentence.type}
+                <strong>💡 Model example:</strong> 
+                "${this.currentSentence.correct.join(' ')}" is a sentence with ${this.currentSentence.type} order
             `;
             modelEl.style.display = 'block';
-            this.audioManager.speak(`Ejemplo: ${this.currentSentence.correct.join(' ')}`, 1);
+            this.audioManager.speak(`Example: ${this.currentSentence.correct.join(' ')}`, 1);
         } else {
             document.getElementById('model-example').style.display = 'none';
         }
@@ -789,8 +804,8 @@ class AISyntaxGame {
     updateUI() {
         document.getElementById('current-round').textContent = this.currentRound + 1;
         document.getElementById('total-rounds').textContent = this.totalRounds;
-        document.getElementById('score').textContent = this.score + ' puntos';
-        document.getElementById('score-display').textContent = this.score + ' puntos';
+        document.getElementById('score').textContent = this.score + ' points';
+        document.getElementById('score-display').textContent = this.score + ' points';
 
         const progress = ((this.currentRound + 1) / this.totalRounds) * 100;
         document.getElementById('progress-fill').style.width = progress + '%';
@@ -855,11 +870,9 @@ class AISyntaxGame {
         const index = this.selectedWords.indexOf(word);
         
         if (index > -1) {
-            // Si la palabra ya está seleccionada, la quitamos
             this.selectedWords.splice(index, 1);
-            this.audioManager.speak(`${word} removida`, 1, 0.9);
+            this.audioManager.speak(`${word} removed`, 1, 0.9);
         } else if (this.selectedWords.length < this.currentSentence.correct.length) {
-            // Si no está seleccionada y hay espacio, la agregamos
             this.selectedWords.push(word);
             this.audioManager.speak(word, 1, 1.2);
         }
@@ -868,16 +881,16 @@ class AISyntaxGame {
 
     resetSentence() {
         this.selectedWords = [];
-        this.audioManager.speak('Reiniciado. Intenta de nuevo.', 0.9);
+        this.audioManager.speak('Reset. Try again.', 0.9);
         this.updateUI();
     }
 
     checkSentence() {
         if (this.selectedWords.length !== this.currentSentence.correct.length) {
             const feedbackElement = document.getElementById('feedback');
-            feedbackElement.textContent = 'Debes completar toda la oración';
+            feedbackElement.textContent = 'You must complete the entire sentence';
             feedbackElement.className = 'feedback incorrect show';
-            this.audioManager.speak('Debes seleccionar todas las palabras', 0.9);
+            this.audioManager.speak('You must select all the words', 0.9);
             return;
         }
 
@@ -895,23 +908,23 @@ class AISyntaxGame {
             this.consecutiveWrong = 0;
             this.sentenceStats[sentenceKey].correct++;
             
-            feedbackText.textContent = `¡Correcto! 🎉 ${this.currentSentence.image} Orden: ${this.currentSentence.type}`;
+            feedbackText.textContent = `Correct! 🎉 ${this.currentSentence.image} Order: ${this.currentSentence.type}`;
             feedbackElement.className = 'feedback correct show';
-            this.audioManager.speak(`¡Correcto! La oración es: ${this.currentSentence.correct.join(' ')}`, 0.95);
+            this.audioManager.speak(`Correct! The sentence is: ${this.currentSentence.correct.join(' ')}`, 0.95);
         } else {
             const errorType = this.analyzeError(this.selectedWords, this.currentSentence.correct);
             this.consecutiveWrong++;
             this.consecutiveCorrect = 0;
             this.sentenceStats[sentenceKey].errors.push(errorType);
             
-            feedbackText.textContent = `No es correcto. Intenta de nuevo 😊`;
+            feedbackText.textContent = `Not correct. Try again 😊`;
             feedbackElement.className = 'feedback incorrect show';
-            this.audioManager.speak(`Incorrecto. La respuesta correcta es: ${this.currentSentence.correct.join(' ')}. Intenta de nuevo.`, 0.9);
+            this.audioManager.speak(`Incorrect. The correct answer is: ${this.currentSentence.correct.join(' ')}. Try again.`, 0.9);
         }
 
         this.showFeedback = true;
-        document.getElementById('score').textContent = this.score + ' puntos';
-        document.getElementById('score-display').textContent = this.score + ' puntos';
+        document.getElementById('score').textContent = this.score + ' points';
+        document.getElementById('score-display').textContent = this.score + ' points';
 
         this.adjustDifficulty();
         this.showAIAnalysis();
@@ -933,35 +946,35 @@ class AISyntaxGame {
         let analysis = '';
 
         if (this.attentionTime < 2) {
-            analysis += '⚡ Respuesta muy rápida (impulsiva). ';
+            analysis += '⚡ Very fast (impulsive) response. ';
         } else if (this.attentionTime > 8) {
-            analysis += '🤔 Sostuvo la atención > 8s (concentración prolongada). ';
+            analysis += '🤔 Sustained attention > 8s (prolonged focus). ';
         }
 
         if (this.syntaxErrors.inversionPattern) {
-            analysis += '🔄 Patrón detectado: inversión sistemática de palabras. ';
+            analysis += '🔄 Pattern detected: systematic word inversion. ';
         }
 
         if (this.syntaxErrors.blockedWords.length > 0) {
-            analysis += `🚫 Palabras problemáticas: ${this.syntaxErrors.blockedWords.slice(0, 2).join(', ')}. `;
+            analysis += `🚫 Problematic words: ${this.syntaxErrors.blockedWords.slice(0, 2).join(', ')}. `;
         }
 
         if (this.consecutiveCorrect > 0) {
-            analysis += `✅ ${this.consecutiveCorrect} acierto(s) consecutivo(s). `;
+            analysis += `✅ ${this.consecutiveCorrect} consecutive correct answer(s). `;
         }
         if (this.consecutiveWrong > 0) {
-            analysis += `❌ ${this.consecutiveWrong} error(es) consecutivo(s). `;
+            analysis += `❌ ${this.consecutiveWrong} consecutive error(s). `;
         }
 
         if (this.difficulty === 'hard') {
-            analysis += '📈 Nivel: DIFÍCIL. ';
+            analysis += '📈 Level: HARD. ';
         } else if (this.difficulty === 'easy') {
-            analysis += '📉 Nivel: FÁCIL. ';
+            analysis += '📉 Level: EASY. ';
         } else {
-            analysis += '➡️ Nivel: MEDIO. ';
+            analysis += '➡️ Level: MEDIUM. ';
         }
 
-        analysisText.textContent = analysis || 'Construcción sintáctica en desarrollo...';
+        analysisText.textContent = analysis || 'Syntactic construction in progress...';
         analysisEl.classList.add('show');
     }
 
@@ -970,40 +983,40 @@ class AISyntaxGame {
         const avgAccuracy = ((this.score / (this.totalRounds * 20)) * 100).toFixed(1);
         const finalSyntaxScore = this.calculateSyntaxScore().toFixed(0);
         
-        let performanceMessage = '¡Excelente construcción sintáctica! 🏆';
-        let mainWeakness = 'Ninguna detectada';
+        let performanceMessage = 'Excellent syntactic construction! 🏆';
+        let mainWeakness = 'None detected';
 
         if (avgAccuracy < 60) {
-            performanceMessage = '¡Sigue practicando la construcción de oraciones! 💪';
+            performanceMessage = 'Keep practicing sentence construction! 💪';
         } else if (avgAccuracy < 80) {
-            performanceMessage = '¡Muy buen trabajo! Tu sintaxis mejora. 🌟';
+            performanceMessage = 'Great work! Your syntax is improving. 🌟';
         }
 
         if (this.syntaxErrors.blockedWords.length > 0) {
             mainWeakness = this.syntaxErrors.blockedWords.slice(0, 2).join(', ');
         }
 
-        const finalMessage = `Juego completado. Tu puntaje final es de ${this.score} puntos con una precisión de ${avgAccuracy} por ciento. ${performanceMessage}`;
+        const finalMessage = `Game completed. Your final score is ${this.score} points with an accuracy of ${avgAccuracy} percent. ${performanceMessage}`;
         this.audioManager.speak(finalMessage, 0.9);
 
         gameCard.innerHTML = `
-            <h2>¡Juego Completado!</h2>
+            <h2>Game Completed!</h2>
             <div style="font-size: 80px; margin: 30px 0;">🎉</div>
             
             <div style="background: linear-gradient(135deg, #0066CC 0%, #0099FF 100%); color: white; padding: 20px; border-radius: 12px; margin: 20px 0;">
-                <div style="font-size: 24px; font-weight: 700; margin-bottom: 10px;">Tu puntaje final: ${this.score} puntos</div>
-                <div style="font-size: 18px; opacity: 0.9;">Precisión: ${avgAccuracy}%</div>
+                <div style="font-size: 24px; font-weight: 700; margin-bottom: 10px;">Your final score: ${this.score} points</div>
+                <div style="font-size: 18px; opacity: 0.9;">Accuracy: ${avgAccuracy}%</div>
             </div>
 
             <div style="background: rgba(0, 102, 204, 0.1); border-left: 4px solid #0066CC; padding: 15px; border-radius: 8px; margin: 20px 0; text-align: left; color: #1F2937; font-size: 14px;">
-                <strong>📊 Análisis Final de IA - Construcción Sintáctica:</strong>
+                <strong>📊 Final AI Analysis - Syntactic Construction:</strong>
                 <div style="margin-top: 10px; line-height: 1.8;">
-                    <div>✓ Puntuación sintáctica: ${finalSyntaxScore}%</div>
-                    <div>✓ Errores de orden: ${this.syntaxErrors.wrongOrder}</div>
-                    <div>✓ Errores de palabra: ${this.syntaxErrors.wrongWord}</div>
-                    <div>✓ Palabras a practicar: ${mainWeakness}</div>
-                    <div>✓ Patrón de inversión detectado: ${this.syntaxErrors.inversionPattern ? 'Sí' : 'No'}</div>
-                    <div>✓ Nivel final: ${this.difficulty.toUpperCase()}</div>
+                    <div>✓ Syntax score: ${finalSyntaxScore}%</div>
+                    <div>✓ Order errors: ${this.syntaxErrors.wrongOrder}</div>
+                    <div>✓ Word errors: ${this.syntaxErrors.wrongWord}</div>
+                    <div>✓ Words to practice: ${mainWeakness}</div>
+                    <div>✓ Inversion pattern detected: ${this.syntaxErrors.inversionPattern ? 'Yes' : 'No'}</div>
+                    <div>✓ Final level: ${this.difficulty.toUpperCase()}</div>
                 </div>
             </div>
 
@@ -1013,10 +1026,10 @@ class AISyntaxGame {
 
             <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; margin-top: 20px;">
                 <button style="background: linear-gradient(135deg, #0066CC 0%, #0099FF 100%); color: white; padding: 15px; border: none; border-radius: 12px; font-size: 16px; font-weight: 700; cursor: pointer; transition: transform 0.2s;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'" onclick="location.reload()">
-                    Jugar de Nuevo
+                    Play Again
                 </button>
                 <button style="background-color: #00B4D8; color: white; padding: 15px; border: none; border-radius: 12px; font-size: 16px; font-weight: 700; cursor: pointer; transition: transform 0.2s;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'" onclick="goToMainPage()">
-                    Volver al Menú
+                    Back to Menu
                 </button>
             </div>
         `;

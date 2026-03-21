@@ -1,4 +1,4 @@
-// ===== SISTEMA DE IA ADAPTATIVO PARA CATEGORIZACIÓN VISUAL-VERBAL =====
+// ===== ADAPTIVE AI SYSTEM FOR VISUAL-VERBAL CATEGORIZATION =====
 class AISceneGame {
     constructor() {
         this.currentRound = 0;
@@ -7,13 +7,13 @@ class AISceneGame {
         this.selectedOption = null;
         this.showFeedback = false;
         
-        // Parámetros de IA
+        // AI parameters
         this.categorizationScore = 0;
         this.difficulty = 'easy';
         this.consecutiveCorrect = 0;
         this.consecutiveWrong = 0;
         
-        // Análisis de errores
+        // Error analysis
         this.errorAnalysis = {
             visualErrors: 0,
             semanticErrors: 0,
@@ -23,123 +23,123 @@ class AISceneGame {
         
         this.sceneStats = {};
         
-        // Base de escenas por dificultad y categoría
+        // Scene database by difficulty and category
         this.allScenes = {
             easy: [
                 {
-                    sentence: "El pájaro está en el",
+                    sentence: "The bird is in the",
                     options: ["🍅", "🪺", "🌊"],
                     correct: "🪺",
-                    correctText: "nido",
-                    category: "animales",
+                    correctText: "nest",
+                    category: "animals",
                     complexity: 1
                 },
                 {
-                    sentence: "El pez vive en el",
+                    sentence: "The fish lives in the",
                     options: ["🌳", "🌊", "🏠"],
                     correct: "🌊",
-                    correctText: "agua",
-                    category: "animales",
+                    correctText: "water",
+                    category: "animals",
                     complexity: 1
                 },
                 {
-                    sentence: "El gato come",
+                    sentence: "The cat eats",
                     options: ["🐟", "🌽", "🥕"],
                     correct: "🐟",
-                    correctText: "pescado",
-                    category: "animales",
+                    correctText: "fish",
+                    category: "animals",
                     complexity: 1
                 },
                 {
-                    sentence: "La flor está en el",
+                    sentence: "The flower is in the",
                     options: ["🌳", "🌐", "💻"],
                     correct: "🌳",
-                    correctText: "jardín",
-                    category: "naturaleza",
+                    correctText: "garden",
+                    category: "nature",
                     complexity: 1
                 },
                 {
-                    sentence: "El niño juega con la",
+                    sentence: "The child plays with the",
                     options: ["🦃", "⚽", "🪱"],
                     correct: "⚽",
-                    correctText: "pelota",
-                    category: "juegos",
+                    correctText: "ball",
+                    category: "games",
                     complexity: 1
                 }
             ],
             medium: [
                 {
-                    sentence: "El profesor enseña en la",
+                    sentence: "The teacher teaches at the",
                     options: ["🛒", "🏫", "🪸"],
                     correct: "🏫",
-                    correctText: "escuela",
-                    category: "lugares",
+                    correctText: "school",
+                    category: "places",
                     complexity: 2
                 },
                 {
-                    sentence: "El médico trabaja en el",
+                    sentence: "The doctor works at the",
                     options: ["🪸", "🏥", "🪄"],
                     correct: "🏥",
                     correctText: "hospital",
-                    category: "lugares",
+                    category: "places",
                     complexity: 2
                 },
                 {
-                    sentence: "La abeja vuela entre las",
+                    sentence: "The bee flies among the",
                     options: ["😭", "🌻", "🏢"],
                     correct: "🌻",
-                    correctText: "flores",
-                    category: "naturaleza",
+                    correctText: "flowers",
+                    category: "nature",
                     complexity: 2
                 },
                 {
-                    sentence: "La mariposa necesita",
+                    sentence: "The butterfly needs",
                     options: ["👻", "🔥", "🌻"],
                     correct: "🌻",
-                    correctText: "flores",
-                    category: "naturaleza",
+                    correctText: "flowers",
+                    category: "nature",
                     complexity: 2
                 },
                 {
-                    sentence: "El perro juega con la",
+                    sentence: "The dog plays with the",
                     options: ["🛹", "🦺", "🥎"],
                     correct: "🥎",
-                    correctText: "pelota",
-                    category: "lugares",
+                    correctText: "ball",
+                    category: "places",
                     complexity: 2
                 }
             ],
             hard: [
                 {
-                    sentence: "El pintor usa el",
+                    sentence: "The painter uses the",
                     options: ["🎨", "👽", "⚽"],
                     correct: "🎨",
-                    correctText: "pincel",
-                    category: "profesiones",
+                    correctText: "brush",
+                    category: "professions",
                     complexity: 3
                 },
                 {
-                    sentence: "La dentista examina los",
+                    sentence: "The dentist examines the",
                     options: ["👂", "👁️", "🦷"],
                     correct: "🦷",
-                    correctText: "dientes",
-                    category: "profesiones",
+                    correctText: "teeth",
+                    category: "professions",
                     complexity: 3
                 },
                 {
-                    sentence: "El cocinero prepara la",
+                    sentence: "The chef prepares the",
                     options: ["🍕", "📚", "🚗"],
                     correct: "🍕",
-                    correctText: "comida",
-                    category: "profesiones",
+                    correctText: "food",
+                    category: "professions",
                     complexity: 3
                 },
                 {
-                    sentence: "La granjero cultiva en el",
+                    sentence: "The farmer grows crops in the",
                     options: ["🏙️", "🌾", "🏢"],
                     correct: "🌾",
-                    correctText: "campo",
-                    category: "lugares",
+                    correctText: "field",
+                    category: "places",
                     complexity: 3
                 }
             ]
@@ -147,7 +147,7 @@ class AISceneGame {
 
         this.totalRounds = 5;
         
-        // Inicializar estadísticas
+        // Initialize stats
         Object.values(this.allScenes).forEach(scenes => {
             scenes.forEach(scene => {
                 this.sceneStats[scene.sentence] = {
@@ -159,7 +159,7 @@ class AISceneGame {
         });
     }
 
-    // ===== ANÁLISIS DE ERRORES =====
+    // ===== ERROR ANALYSIS =====
     analyzeError(selectedOption, correctOption, sceneCategory) {
         let errorType = 'semantic';
         
@@ -186,7 +186,7 @@ class AISceneGame {
         return visualSimilarPairs.some(pair => pair.includes(option));
     }
 
-    // ===== CÁLCULO DE PUNTUACIÓN =====
+    // ===== SCORE CALCULATION =====
     calculateCategorizationScore() {
         const totalAttempts = this.currentRound + 1;
         const correctCount = Math.floor(this.score / 20);
@@ -194,26 +194,26 @@ class AISceneGame {
         return this.categorizationScore;
     }
 
-    // ===== AJUSTE AUTOMÁTICO DE DIFICULTAD =====
+    // ===== AUTOMATIC DIFFICULTY ADJUSTMENT =====
     adjustDifficulty() {
         this.calculateCategorizationScore();
         
         if (this.consecutiveCorrect >= 3 && this.categorizationScore >= 75) {
             if (this.difficulty === 'easy') {
                 this.difficulty = 'medium';
-                audioManager.speak('Aumentando dificultad a nivel medio', 0.9);
+                audioManager.speak('Increasing difficulty to medium level', 0.9);
             } else if (this.difficulty === 'medium') {
                 this.difficulty = 'hard';
-                audioManager.speak('Aumentando dificultad a nivel difícil', 0.9);
+                audioManager.speak('Increasing difficulty to hard level', 0.9);
             }
         }
         else if (this.consecutiveWrong >= 2 || this.categorizationScore < 50) {
             if (this.difficulty === 'hard') {
                 this.difficulty = 'medium';
-                audioManager.speak('Reduciendo dificultad a nivel medio', 0.9);
+                audioManager.speak('Reducing difficulty to medium level', 0.9);
             } else if (this.difficulty === 'medium') {
                 this.difficulty = 'easy';
-                audioManager.speak('Reduciendo dificultad a nivel fácil', 0.9);
+                audioManager.speak('Reducing difficulty to easy level', 0.9);
             }
             this.consecutiveWrong = 0;
         }
@@ -224,16 +224,16 @@ class AISceneGame {
     showDifficultyIndicator() {
         const indicator = document.getElementById('difficulty-indicator');
         const levels = {
-            easy: '⭐ Dificultad: FÁCIL (3 opciones simples)',
-            medium: '⭐⭐ Dificultad: MEDIO (3 opciones complejas)',
-            hard: '⭐⭐⭐ Dificultad: DIFÍCIL (conceptos abstractos)'
+            easy:   '⭐ Difficulty: EASY (3 simple options)',
+            medium: '⭐⭐ Difficulty: MEDIUM (3 complex options)',
+            hard:   '⭐⭐⭐ Difficulty: HARD (abstract concepts)'
         };
 
         indicator.textContent = levels[this.difficulty];
         indicator.style.display = 'block';
     }
 
-    // ===== SELECCIÓN INTELIGENTE DE ESCENAS =====
+    // ===== INTELLIGENT SCENE SELECTION =====
     selectNextScene() {
         const scenesForDifficulty = this.allScenes[this.difficulty];
         
@@ -249,20 +249,20 @@ class AISceneGame {
         return scenesForDifficulty[Math.floor(Math.random() * scenesForDifficulty.length)];
     }
 
-    // ===== MOSTRAR HINT =====
+    // ===== SHOW HINT =====
     showHint() {
         if (this.consecutiveWrong >= 1) {
             const hintBox = document.getElementById('hint-box');
-            const hintText = `💡 Pista: Piensa en la categoría "${this.currentScene.category}"`;
+            const hintText = `💡 Hint: Think about the "${this.currentScene.category}" category`;
             hintBox.textContent = hintText;
             hintBox.style.display = 'block';
-            audioManager.speak(`Pista: Piensa en la categoría ${this.currentScene.category}`, 0.9);
+            audioManager.speak(`Hint: Think about the ${this.currentScene.category} category`, 0.9);
         } else {
             document.getElementById('hint-box').style.display = 'none';
         }
     }
 
-    // ===== INICIO DEL JUEGO =====
+    // ===== GAME START =====
     startNewRound() {
         this.currentScene = this.selectNextScene();
         this.selectedOption = null;
@@ -270,14 +270,14 @@ class AISceneGame {
         
         this.updateUI();
         this.showHint();
-        audioManager.speak(`Ronda ${this.currentRound + 1}. Completa: ${this.currentScene.sentence}`, 1);
+        audioManager.speak(`Round ${this.currentRound + 1}. Complete: ${this.currentScene.sentence}`, 1);
     }
 
     updateUI() {
         document.getElementById('current-round').textContent = this.currentRound + 1;
         document.getElementById('total-rounds').textContent = this.totalRounds;
-        document.getElementById('score').textContent = this.score + ' puntos';
-        document.getElementById('score-display').textContent = this.score + ' puntos';
+        document.getElementById('score').textContent = this.score + ' points';
+        document.getElementById('score-display').textContent = this.score + ' points';
 
         const progress = ((this.currentRound + 1) / this.totalRounds) * 100;
         document.getElementById('progress-fill').style.width = progress + '%';
@@ -315,13 +315,13 @@ class AISceneGame {
         this.updateUI();
     }
 
-    // ===== VERIFICACIÓN Y ANÁLISIS =====
+    // ===== CHECK & ANALYSIS =====
     checkAnswer() {
         if (!this.selectedOption) {
             const feedbackElement = document.getElementById('feedback');
-            feedbackElement.textContent = 'Debes seleccionar una opción';
+            feedbackElement.textContent = 'You must select an option';
             feedbackElement.className = 'feedback incorrect show';
-            audioManager.speak('Debes seleccionar una opción', 0.9);
+            audioManager.speak('You must select an option', 0.9);
             return;
         }
 
@@ -338,9 +338,9 @@ class AISceneGame {
             this.consecutiveWrong = 0;
             this.sceneStats[sceneKey].correct++;
             
-            feedbackText.textContent = `¡Correcto! Era "${this.currentScene.correctText}" 🎉`;
+            feedbackText.textContent = `Correct! It was "${this.currentScene.correctText}" 🎉`;
             feedbackElement.className = 'feedback correct show';
-            audioManager.speak(`¡Correcto! La respuesta correcta es ${this.currentScene.correctText}`, 0.95);
+            audioManager.speak(`Correct! The right answer is ${this.currentScene.correctText}`, 0.95);
             
             if (!this.errorAnalysis.preferredCategories[this.currentScene.category]) {
                 this.errorAnalysis.preferredCategories[this.currentScene.category] = 0;
@@ -348,7 +348,7 @@ class AISceneGame {
             this.errorAnalysis.preferredCategories[this.currentScene.category]++;
         } else {
             const errorType = this.analyzeError(
-                this.selectedOption, 
+                this.selectedOption,
                 this.currentScene.correct,
                 this.currentScene.category
             );
@@ -356,14 +356,14 @@ class AISceneGame {
             this.consecutiveCorrect = 0;
             this.sceneStats[sceneKey].errorType = errorType;
             
-            feedbackText.textContent = `No es correcto. Era "${this.currentScene.correctText}" 😊`;
+            feedbackText.textContent = `Not correct. It was "${this.currentScene.correctText}" 😊`;
             feedbackElement.className = 'feedback incorrect show';
-            audioManager.speak(`No es correcto. La respuesta correcta es ${this.currentScene.correctText}`, 0.95);
+            audioManager.speak(`Not correct. The right answer is ${this.currentScene.correctText}`, 0.95);
         }
 
         this.showFeedback = true;
-        document.getElementById('score').textContent = this.score + ' puntos';
-        document.getElementById('score-display').textContent = this.score + ' puntos';
+        document.getElementById('score').textContent = this.score + ' points';
+        document.getElementById('score-display').textContent = this.score + ' points';
 
         this.adjustDifficulty();
         this.showAIAnalysis();
@@ -378,7 +378,7 @@ class AISceneGame {
         }, 2500);
     }
 
-    // ===== ANÁLISIS EN TIEMPO REAL =====
+    // ===== REAL-TIME AI ANALYSIS =====
     showAIAnalysis() {
         const analysisEl = document.getElementById('ai-analysis');
         const analysisText = document.getElementById('analysis-text');
@@ -386,32 +386,32 @@ class AISceneGame {
         let analysis = '';
 
         if (this.errorAnalysis.visualErrors > 0 && !this.showFeedback) {
-            analysis += `👁️ Errores visuales detectados: ${this.errorAnalysis.visualErrors}. `;
+            analysis += `👁️ Visual errors detected: ${this.errorAnalysis.visualErrors}. `;
         }
         if (this.errorAnalysis.semanticErrors > 0 && !this.showFeedback) {
-            analysis += `📝 Errores semánticos: ${this.errorAnalysis.semanticErrors}. `;
+            analysis += `📝 Semantic errors: ${this.errorAnalysis.semanticErrors}. `;
         }
 
         if (this.consecutiveCorrect > 0) {
-            analysis += `✅ ${this.consecutiveCorrect} acierto(s) consecutivo(s). `;
+            analysis += `✅ ${this.consecutiveCorrect} consecutive correct answer(s). `;
         }
         if (this.consecutiveWrong > 0) {
-            analysis += `❌ ${this.consecutiveWrong} error(es) consecutivo(s). `;
+            analysis += `❌ ${this.consecutiveWrong} consecutive error(s). `;
         }
 
         if (this.difficulty === 'hard') {
-            analysis += '📈 Nivel: DIFÍCIL (conceptos avanzados). ';
+            analysis += '📈 Level: HARD (advanced concepts). ';
         } else if (this.difficulty === 'easy') {
-            analysis += '📉 Nivel: FÁCIL (conceptos básicos). ';
+            analysis += '📉 Level: EASY (basic concepts). ';
         } else {
-            analysis += '➡️ Nivel: MEDIO (conceptos intermedios). ';
+            analysis += '➡️ Level: MEDIUM (intermediate concepts). ';
         }
 
-        analysisText.textContent = analysis || 'Categorización en desarrollo...';
+        analysisText.textContent = analysis || 'Categorization in progress...';
         analysisEl.classList.add('show');
     }
 
-    // ===== JUEGO COMPLETADO =====
+    // ===== GAME COMPLETE =====
     completeGame() {
         const gameCard = document.querySelector('.game-card');
         const avgAccuracy = ((this.score / (this.totalRounds * 20)) * 100).toFixed(1);
@@ -426,36 +426,36 @@ class AISceneGame {
             }
         }
         
-        let performanceMessage = '¡Excelente categorización visual! 🏆';
-        let performanceAudio = 'Excelente categorización visual';
+        let performanceMessage = 'Excellent visual categorization! 🏆';
+        let performanceAudio = 'Excellent visual categorization';
         
         if (avgAccuracy < 60) {
-            performanceMessage = '¡Sigue practicando! La categorización mejorará. 💪';
-            performanceAudio = 'Sigue practicando, la categorización mejorará';
+            performanceMessage = 'Keep practicing! Your categorization will improve. 💪';
+            performanceAudio = 'Keep practicing, your categorization will improve';
         } else if (avgAccuracy < 80) {
-            performanceMessage = '¡Muy buen trabajo! Entiendes bien las categorías. 🌟';
-            performanceAudio = 'Muy buen trabajo, entiendes bien las categorías';
+            performanceMessage = 'Great work! You understand the categories well. 🌟';
+            performanceAudio = 'Great work, you understand the categories well';
         }
 
-        audioManager.speak(`Juego completado. Puntuación: ${this.score} puntos. Precisión: ${avgAccuracy} por ciento. ${performanceAudio}`, 0.95);
+        audioManager.speak(`Game completed. Score: ${this.score} points. Accuracy: ${avgAccuracy} percent. ${performanceAudio}`, 0.95);
 
         gameCard.innerHTML = `
-            <h2>¡Juego Completado!</h2>
+            <h2>Game Completed!</h2>
             <div style="font-size: 80px; margin: 30px 0;">🎉</div>
             
             <div style="background: linear-gradient(135deg, #0066CC 0%, #0099FF 100%); color: white; padding: 20px; border-radius: 12px; margin: 20px 0;">
-                <div style="font-size: 24px; font-weight: 700; margin-bottom: 10px;">Tu puntaje final: ${this.score} puntos</div>
-                <div style="font-size: 18px; opacity: 0.9;">Precisión: ${avgAccuracy}%</div>
+                <div style="font-size: 24px; font-weight: 700; margin-bottom: 10px;">Your final score: ${this.score} points</div>
+                <div style="font-size: 18px; opacity: 0.9;">Accuracy: ${avgAccuracy}%</div>
             </div>
 
             <div style="background: rgba(0, 102, 204, 0.1); border-left: 4px solid #0066CC; padding: 15px; border-radius: 8px; margin: 20px 0; text-align: left; color: #1F2937; font-size: 14px;">
-                <strong>📊 Análisis Final de IA - Categorización Visual-Verbal:</strong>
+                <strong>📊 Final AI Analysis - Visual-Verbal Categorization:</strong>
                 <div style="margin-top: 10px; line-height: 1.8;">
-                    <div>✓ Puntuación de categorización: ${finalScore}%</div>
-                    <div>✓ Errores visuales: ${this.errorAnalysis.visualErrors}</div>
-                    <div>✓ Errores semánticos: ${this.errorAnalysis.semanticErrors}</div>
-                    <div>✓ Categoría favorita: ${favoriteCategory}</div>
-                    <div>✓ Nivel final: ${this.difficulty.toUpperCase()}</div>
+                    <div>✓ Categorization score: ${finalScore}%</div>
+                    <div>✓ Visual errors: ${this.errorAnalysis.visualErrors}</div>
+                    <div>✓ Semantic errors: ${this.errorAnalysis.semanticErrors}</div>
+                    <div>✓ Favorite category: ${favoriteCategory}</div>
+                    <div>✓ Final level: ${this.difficulty.toUpperCase()}</div>
                 </div>
             </div>
 
@@ -465,10 +465,10 @@ class AISceneGame {
 
             <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; margin-top: 20px;">
                 <button style="background: linear-gradient(135deg, #0066CC 0%, #0099FF 100%); color: white; padding: 15px; border: none; border-radius: 12px; font-size: 16px; font-weight: 700; cursor: pointer; transition: transform 0.2s;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'" onclick="location.reload()">
-                    Jugar de Nuevo
+                    Play Again
                 </button>
                 <button style="background-color: #00B4D8; color: white; padding: 15px; border: none; border-radius: 12px; font-size: 16px; font-weight: 700; cursor: pointer; transition: transform 0.2s;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'" onclick="goToMainPage()">
-                    Volver al Menú
+                    Back to Menu
                 </button>
             </div>
         `;
@@ -477,14 +477,14 @@ class AISceneGame {
     }
 }
 
-// ===== INICIALIZACIÓN =====
+// ===== INITIALIZATION =====
 const game = new AISceneGame();
 
 document.addEventListener('DOMContentLoaded', () => {
     game.startNewRound();
 });
 
-// ===== FUNCIONES GLOBALES =====
+// ===== GLOBAL FUNCTIONS =====
 function selectOption(option) {
     game.selectOption(option);
 }

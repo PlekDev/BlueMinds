@@ -1,4 +1,4 @@
-// ===== SISTEMA DE IA ADAPTATIVO PARA CLASIFICACIÓN =====
+// ===== ADAPTIVE AI SYSTEM FOR CLASSIFICATION =====
 class AIClassificationGame {
     constructor() {
         this.currentRound = 0;
@@ -6,38 +6,38 @@ class AIClassificationGame {
         this.currentPuzzle = null;
         this.showFeedback = false;
         
-        // Parámetros de IA
+        // AI parameters
         this.classificationScore = 0;
         this.difficulty = 'easy';
         this.consecutiveCorrect = 0;
         this.consecutiveWrong = 0;
         this.totalQuestions = 5;
         
-        // Análisis de errores
+        // Error analysis
         this.distractorsSelected = {};
         this.confusingItems = [];
         this.categoryStats = {};
         this.preferredInterests = {};
         
-        // Base de puzzles con múltiples intereses
+        // Puzzle database with multiple themes
         this.allPuzzles = {
             easy: [
                 {
-                    name: "animales_comida_ropa",
+                    name: "animals_food_clothes",
                     categories: {
-                        animals: { name: '🐾 Animales', color: '#0066CC', items: ['🐱', '🐕', '🐻'] },
-                        food: { name: '🍎 Comida', color: '#00B4D8', items: ['🍕', '🍎', '🥕'] },
-                        clothes: { name: '👕 Ropa', color: '#0099FF', items: ['👔', '👗', '👟'] }
+                        animals: { name: '🐾 Animals', color: '#0066CC', items: ['🐱', '🐕', '🐻'] },
+                        food:    { name: '🍎 Food',    color: '#00B4D8', items: ['🍕', '🍎', '🥕'] },
+                        clothes: { name: '👕 Clothes', color: '#0099FF', items: ['👔', '👗', '👟'] }
                     },
                     distractors: ['🌟', '⭐', '☀️'],
                     interest: "numbers"
                 },
                 {
-                    name: "mascotas_frutas_zapatos",
+                    name: "pets_fruits_shoes",
                     categories: {
-                        animals: { name: '🐾 Mascotas', color: '#0066CC', items: ['🐶', '🐱', '🐰'] },
-                        food: { name: '🍎 Frutas', color: '#00B4D8', items: ['🍌', '🍊', '🍇'] },
-                        clothes: { name: '👠 Zapatos', color: '#0099FF', items: ['👞', '👟', '🩴'] }
+                        animals: { name: '🐾 Pets',   color: '#0066CC', items: ['🐶', '🐱', '🐰'] },
+                        food:    { name: '🍎 Fruits', color: '#00B4D8', items: ['🍌', '🍊', '🍇'] },
+                        clothes: { name: '👠 Shoes',  color: '#0099FF', items: ['👞', '👟', '🩴'] }
                     },
                     distractors: ['🎨', '🎭', '🎪'],
                     interest: "numbers"
@@ -45,21 +45,21 @@ class AIClassificationGame {
             ],
             medium: [
                 {
-                    name: "animales_comida_accesorios",
+                    name: "animals_food_accessories",
                     categories: {
-                        animals: { name: '🐾 Animales', color: '#0066CC', items: ['🦁', '🐘', '🦒'] },
-                        food: { name: '🍔 Comida', color: '#00B4D8', items: ['🍔', '🌭', '🍟'] },
-                        clothes: { name: '⌚ Accesorios', color: '#0099FF', items: ['👓', '⌚', '👜'] }
+                        animals: { name: '🐾 Animals',     color: '#0066CC', items: ['🦁', '🐘', '🦒'] },
+                        food:    { name: '🍔 Food',        color: '#00B4D8', items: ['🍔', '🌭', '🍟'] },
+                        clothes: { name: '⌚ Accessories', color: '#0099FF', items: ['👓', '⌚', '👜'] }
                     },
                     distractors: ['🚗', '✈️', '🚢'],
                     interest: "general"
                 },
                 {
-                    name: "aves_verduras_prendas",
+                    name: "birds_vegetables_garments",
                     categories: {
-                        animals: { name: '🦅 Aves', color: '#0066CC', items: ['🦅', '🦆', '🦉'] },
-                        food: { name: '🥬 Verduras', color: '#00B4D8', items: ['🥬', '🌽', '🥒'] },
-                        clothes: { name: '🧥 Prendas', color: '#0099FF', items: ['🧥', '👖', '🧢'] }
+                        animals: { name: '🦅 Birds',      color: '#0066CC', items: ['🦅', '🦆', '🦉'] },
+                        food:    { name: '🥬 Vegetables', color: '#00B4D8', items: ['🥬', '🌽', '🥒'] },
+                        clothes: { name: '🧥 Garments',  color: '#0099FF', items: ['🧥', '👖', '🧢'] }
                     },
                     distractors: ['🎸', '🎹', '🎺'],
                     interest: "general"
@@ -67,21 +67,21 @@ class AIClassificationGame {
             ],
             hard: [
                 {
-                    name: "animales_marinos_postre_ropa_formal",
+                    name: "sea_animals_desserts_formal",
                     categories: {
-                        animals: { name: '🐠 Marinos', color: '#0066CC', items: ['🐠', '🐙', '🦈'] },
-                        food: { name: '🍰 Postres', color: '#00B4D8', items: ['🍰', '🍪', '🍩'] },
-                        clothes: { name: '🤵 Formal', color: '#0099FF', items: ['🤵', '👰', '🎩'] }
+                        animals: { name: '🐠 Sea Animals', color: '#0066CC', items: ['🐠', '🐙', '🦈'] },
+                        food:    { name: '🍰 Desserts',   color: '#00B4D8', items: ['🍰', '🍪', '🍩'] },
+                        clothes: { name: '🤵 Formal',     color: '#0099FF', items: ['🤵', '👰', '🎩'] }
                     },
                     distractors: ['💎', '👑', '🔱'],
                     interest: "sophisticated"
                 },
                 {
-                    name: "insectos_bebidas_deportes",
+                    name: "insects_drinks_sports",
                     categories: {
-                        animals: { name: '🦋 Insectos', color: '#0066CC', items: ['🦋', '🐛', '🐝'] },
-                        food: { name: '🥤 Bebidas', color: '#00B4D8', items: ['🥤', '🍷', '☕'] },
-                        clothes: { name: '⚽ Deportes', color: '#0099FF', items: ['⚽', '🏀', '🎾'] }
+                        animals: { name: '🦋 Insects', color: '#0066CC', items: ['🦋', '🐛', '🐝'] },
+                        food:    { name: '🥤 Drinks',  color: '#00B4D8', items: ['🥤', '🍷', '☕'] },
+                        clothes: { name: '⚽ Sports',  color: '#0099FF', items: ['⚽', '🏀', '🎾'] }
                     },
                     distractors: ['🌴', '🌲', '🌳'],
                     interest: "sports"
@@ -89,7 +89,7 @@ class AIClassificationGame {
             ]
         };
         
-        // Inicializar estadísticas
+        // Initialize stats
         this.initializeStats();
         this.loadPuzzle();
     }
@@ -113,7 +113,7 @@ class AIClassificationGame {
     selectNextPuzzle() {
         const puzzlesForDifficulty = this.allPuzzles[this.difficulty];
         
-        // Priorizar puzzles problemáticos
+        // Prioritize problematic puzzles
         const problematicPuzzles = puzzlesForDifficulty.filter(puzzle => {
             const allCorrect = Object.keys(puzzle.categories).every(key => {
                 const categoryName = puzzle.categories[key].name;
@@ -133,24 +133,24 @@ class AIClassificationGame {
     adjustDifficulty() {
         this.classificationScore = (this.score / (this.totalQuestions * 30)) * 100;
         
-        // Si 3 aciertos seguidos y >= 80% → aumentar dificultad
+        // 3 consecutive correct and >= 80% → increase difficulty
         if (this.consecutiveCorrect >= 3 && this.classificationScore >= 80) {
             if (this.difficulty === 'easy') {
                 this.difficulty = 'medium';
-                audioManager.speak('Aumentando dificultad a nivel medio', 0.9);
+                audioManager.speak('Increasing difficulty to medium level', 0.9);
             } else if (this.difficulty === 'medium') {
                 this.difficulty = 'hard';
-                audioManager.speak('Aumentando dificultad a nivel difícil', 0.9);
+                audioManager.speak('Increasing difficulty to hard level', 0.9);
             }
         }
-        // Si está teniendo dificultad → reducir
+        // Struggling → reduce difficulty
         else if (this.consecutiveWrong >= 2 || this.classificationScore < 50) {
             if (this.difficulty === 'hard') {
                 this.difficulty = 'medium';
-                audioManager.speak('Reduciendo dificultad a nivel medio', 0.9);
+                audioManager.speak('Reducing difficulty to medium level', 0.9);
             } else if (this.difficulty === 'medium') {
                 this.difficulty = 'easy';
-                audioManager.speak('Reduciendo dificultad a nivel fácil', 0.9);
+                audioManager.speak('Reducing difficulty to easy level', 0.9);
             }
             this.consecutiveWrong = 0;
         }
@@ -162,9 +162,9 @@ class AIClassificationGame {
         const indicator = document.getElementById('difficulty-indicator');
         const numDistracters = this.difficulty === 'easy' ? 2 : (this.difficulty === 'medium' ? 3 : 4);
         const levels = {
-            easy: `⭐ Dificultad: FÁCIL (${numDistracters} distractores)`,
-            medium: `⭐⭐ Dificultad: MEDIO (${numDistracters} distractores)`,
-            hard: `⭐⭐⭐ Dificultad: DIFÍCIL (${numDistracters} distractores)`
+            easy:   `⭐ Difficulty: EASY (${numDistracters} distractors)`,
+            medium: `⭐⭐ Difficulty: MEDIUM (${numDistracters} distractors)`,
+            hard:   `⭐⭐⭐ Difficulty: HARD (${numDistracters} distractors)`
         };
         
         indicator.textContent = levels[this.difficulty];
@@ -172,7 +172,7 @@ class AIClassificationGame {
     }
     
     detectConfusion() {
-        // Si hay muchos errores → mostrar pista con audio
+        // If many errors → show audio hint
         if (this.consecutiveWrong >= 1 && this.confusingItems.length > 0) {
             this.showAudioHint();
         } else {
@@ -184,22 +184,20 @@ class AIClassificationGame {
         const hintBox = document.getElementById('audio-hint');
         const confusingItem = this.confusingItems[this.confusingItems.length - 1];
         const hints = [
-            `💡 Pista: "${confusingItem}" pertenece a la categoría principal de su grupo`,
-            `💡 Pista: Piensa en la función principal de "${confusingItem}"`,
-            `💡 Pista: "${confusingItem}" es más similar a elementos del mismo color`
+            `💡 Hint: "${confusingItem}" belongs to the main category of its group`,
+            `💡 Hint: Think about the main function of "${confusingItem}"`,
+            `💡 Hint: "${confusingItem}" is more similar to elements of the same color`
         ];
         const selectedHint = hints[Math.floor(Math.random() * hints.length)];
         hintBox.textContent = selectedHint;
         hintBox.style.display = 'block';
         
-        // Reproducir audio de pista
-        audioManager.speak(selectedHint.replace('💡 Pista: ', ''), 0.9);
+        audioManager.speak(selectedHint.replace('💡 Hint: ', ''), 0.9);
     }
     
     loadPuzzle() {
         this.showFeedback = false;
         
-        // Seleccionar puzzle
         const selectedPuzzle = this.selectNextPuzzle();
         this.currentPuzzle = {
             data: selectedPuzzle,
@@ -207,20 +205,16 @@ class AIClassificationGame {
             allItems: []
         };
         
-        // Crear items con distractores
+        // Build items with distractors
         Object.keys(this.currentPuzzle.categories).forEach(key => {
             this.currentPuzzle.allItems.push(...this.currentPuzzle.categories[key].items);
             this.currentPuzzle.categories[key].items = [];
         });
         
-        // Agregar distractores ESPECÍFICOS (elegidos manualmente)
-        const numDistracters = selectedPuzzle.distractors.length;
         this.currentPuzzle.allItems.push(...selectedPuzzle.distractors);
-        
-        // Barajar todos los items
         this.currentPuzzle.allItems.sort(() => Math.random() - 0.5);
         
-        // Actualizar UI
+        // Update UI
         document.getElementById('current-round').textContent = this.currentRound + 1;
         document.getElementById('total-rounds').textContent = this.totalQuestions;
         
@@ -236,8 +230,7 @@ class AIClassificationGame {
         this.adjustDifficulty();
         this.detectConfusion();
         
-        // Audio: Anunciar la ronda
-        audioManager.speak(`Ronda ${this.currentRound + 1}. Agrupa los emojis por categoría`, 1);
+        audioManager.speak(`Round ${this.currentRound + 1}. Group the emojis by category`, 1);
     }
     
     renderCategories() {
@@ -259,7 +252,7 @@ class AIClassificationGame {
                 </div>
                 <div class="category-items" id="category-${categoryKey}">
                     ${category.items.map((item, idx) => `
-                        <div class="item-emoji" onclick="window.game.removeItemFromCategory('${categoryKey}', ${idx})" title="Haz clic para sacar">
+                        <div class="item-emoji" onclick="window.game.removeItemFromCategory('${categoryKey}', ${idx})" title="Click to remove">
                             ${item}
                         </div>
                     `).join('')}
@@ -321,13 +314,11 @@ class AIClassificationGame {
         if (!this.currentPuzzle.categories[categoryKey].items.includes(item)) {
             this.currentPuzzle.categories[categoryKey].items.push(item);
             
-            // Detectar si es un error
             const isInCorrectCategory = this.currentPuzzle.data.categories[categoryKey].items.includes(item);
             if (!isInCorrectCategory) {
                 this.distractorsSelected[item] = (this.distractorsSelected[item] || 0) + 1;
                 this.confusingItems.push(item);
                 
-                // Animar error
                 this.animateError(item);
             }
             
@@ -381,23 +372,22 @@ class AIClassificationGame {
             this.consecutiveCorrect++;
             this.consecutiveWrong = 0;
             
-            feedbackText.textContent = '¡Perfecto! Todas las clasificaciones son correctas 🎉';
+            feedbackText.textContent = 'Perfect! All classifications are correct 🎉';
             feedbackElement.className = 'feedback correct show';
-            audioManager.speak('Perfecto. Todas las clasificaciones son correctas', 0.95);
+            audioManager.speak('Perfect. All classifications are correct', 0.95);
             
-            // Reproducir sonido
             this.playSuccessSound();
         } else {
             this.consecutiveWrong++;
             this.consecutiveCorrect = 0;
             
-            feedbackText.textContent = 'Algunos items no están en la categoría correcta. Intenta de nuevo 😊';
+            feedbackText.textContent = 'Some items are not in the correct category. Try again 😊';
             feedbackElement.className = 'feedback incorrect show';
-            audioManager.speak('Algunos items no están en la categoría correcta. Intenta de nuevo', 0.95);
+            audioManager.speak('Some items are not in the correct category. Try again', 0.95);
         }
 
-        document.getElementById('score').textContent = this.score + ' puntos';
-        document.getElementById('score-display').textContent = this.score + ' puntos';
+        document.getElementById('score').textContent = this.score + ' points';
+        document.getElementById('score-display').textContent = this.score + ' points';
         
         this.showFeedback = true;
         this.adjustDifficulty();
@@ -416,7 +406,7 @@ class AIClassificationGame {
     
     playSuccessSound() {
         const audioContext = new (window.AudioContext || window.webkitAudioContext)();
-        const notes = [523, 659, 784]; // Do, Mi, Sol
+        const notes = [523, 659, 784]; // C, E, G
         
         notes.forEach((freq, idx) => {
             const oscillator = audioContext.createOscillator();
@@ -445,25 +435,25 @@ class AIClassificationGame {
         if (Object.keys(this.distractorsSelected).length > 0) {
             const topDistractor = Object.entries(this.distractorsSelected)
                 .sort((a, b) => b[1] - a[1])[0];
-            analysis += `🚫 Distractor frecuente: "${topDistractor[0]}". `;
+            analysis += `🚫 Frequent distractor: "${topDistractor[0]}". `;
         }
         
         if (this.consecutiveCorrect > 0) {
-            analysis += `✅ ${this.consecutiveCorrect} clasificación(es) perfecta(s). `;
+            analysis += `✅ ${this.consecutiveCorrect} perfect classification(s). `;
         }
         if (this.consecutiveWrong > 0) {
-            analysis += `❌ ${this.consecutiveWrong} error(es) seguido(s). `;
+            analysis += `❌ ${this.consecutiveWrong} consecutive error(s). `;
         }
         
         if (this.difficulty === 'hard') {
-            analysis += '📈 Nivel: DIFÍCIL. ';
+            analysis += '📈 Level: HARD. ';
         } else if (this.difficulty === 'easy') {
-            analysis += '📉 Nivel: FÁCIL. ';
+            analysis += '📉 Level: EASY. ';
         } else {
-            analysis += '➡️ Nivel: MEDIO. ';
+            analysis += '➡️ Level: MEDIUM. ';
         }
         
-        analysisText.textContent = analysis || 'Clasificación en desarrollo...';
+        analysisText.textContent = analysis || 'Classification in progress...';
         analysisEl.classList.add('show');
     }
     
@@ -472,35 +462,35 @@ class AIClassificationGame {
         const avgAccuracy = ((this.score / (this.totalQuestions * 30)) * 100).toFixed(1);
         const finalScore = this.classificationScore.toFixed(0);
         
-        let performanceMessage = '¡Excelente clasificación! 🏆';
-        let performanceAudio = 'Excelente clasificación';
+        let performanceMessage = 'Excellent classification! 🏆';
+        let performanceAudio = 'Excellent classification';
         
         if (avgAccuracy < 60) {
-            performanceMessage = '¡Sigue practicando! La clasificación mejorará. 💪';
-            performanceAudio = 'Sigue practicando, la clasificación mejorará';
+            performanceMessage = 'Keep practicing! Your classification will improve. 💪';
+            performanceAudio = 'Keep practicing, your classification will improve';
         } else if (avgAccuracy < 80) {
-            performanceMessage = '¡Muy buen trabajo! Tu clasificación mejora. 🌟';
-            performanceAudio = 'Muy buen trabajo, tu clasificación mejora';
+            performanceMessage = 'Great work! Your classification is improving. 🌟';
+            performanceAudio = 'Great work, your classification is improving';
         }
 
-        audioManager.speak(`Juego completado. Puntuación: ${this.score} puntos. Precisión: ${avgAccuracy} por ciento. ${performanceAudio}`, 0.95);
+        audioManager.speak(`Game completed. Score: ${this.score} points. Accuracy: ${avgAccuracy} percent. ${performanceAudio}`, 0.95);
         
         gameCard.innerHTML = `
-            <h2>¡Juego Completado!</h2>
+            <h2>Game Completed!</h2>
             <div style="font-size: 80px; margin: 30px 0;">🎉</div>
             
             <div style="background: linear-gradient(135deg, #0066CC 0%, #0099FF 100%); color: white; padding: 20px; border-radius: 12px; margin: 20px 0;">
-                <div style="font-size: 24px; font-weight: 700; margin-bottom: 10px;">Tu puntaje final: ${this.score} puntos</div>
-                <div style="font-size: 18px; opacity: 0.9;">Precisión: ${avgAccuracy}%</div>
+                <div style="font-size: 24px; font-weight: 700; margin-bottom: 10px;">Your final score: ${this.score} points</div>
+                <div style="font-size: 18px; opacity: 0.9;">Accuracy: ${avgAccuracy}%</div>
             </div>
 
             <div style="background: rgba(0, 102, 204, 0.1); border-left: 4px solid #0066CC; padding: 15px; border-radius: 8px; margin: 20px 0; text-align: left; color: #1F2937; font-size: 14px;">
-                <strong>📊 Análisis Final de IA - Clasificación:</strong>
+                <strong>📊 Final AI Analysis - Classification:</strong>
                 <div style="margin-top: 10px; line-height: 1.8;">
-                    <div>✓ Puntuación de clasificación: ${finalScore}%</div>
-                    <div>✓ Distractores que confundieron: ${Object.keys(this.distractorsSelected).length}</div>
-                    <div>✓ Elementos problemáticos: ${this.confusingItems.length > 0 ? this.confusingItems.slice(0, 3).join(', ') : 'Ninguno'}</div>
-                    <div>✓ Nivel final: ${this.difficulty.toUpperCase()}</div>
+                    <div>✓ Classification score: ${finalScore}%</div>
+                    <div>✓ Confusing distractors: ${Object.keys(this.distractorsSelected).length}</div>
+                    <div>✓ Problematic items: ${this.confusingItems.length > 0 ? this.confusingItems.slice(0, 3).join(', ') : 'None'}</div>
+                    <div>✓ Final level: ${this.difficulty.toUpperCase()}</div>
                 </div>
             </div>
 
@@ -510,10 +500,10 @@ class AIClassificationGame {
 
             <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; margin-top: 20px;">
                 <button style="background: linear-gradient(135deg, #0066CC 0%, #0099FF 100%); color: white; padding: 15px; border: none; border-radius: 12px; font-size: 16px; font-weight: 700; cursor: pointer; transition: transform 0.2s;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'" onclick="location.reload()">
-                    Jugar de Nuevo
+                    Play Again
                 </button>
                 <button style="background-color: #00B4D8; color: white; padding: 15px; border: none; border-radius: 12px; font-size: 16px; font-weight: 700; cursor: pointer; transition: transform 0.2s;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'" onclick="goToMainPage()">
-                    Volver al Menú
+                    Back to Menu
                 </button>
             </div>
         `;
@@ -535,7 +525,7 @@ class AIClassificationGame {
     }
 }
 
-// Inicializar el juego
+// Initialize the game
 let game;
 document.addEventListener('DOMContentLoaded', () => {
     game = new AIClassificationGame();

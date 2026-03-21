@@ -1,4 +1,4 @@
-// ===== SISTEMA DE IA ADAPTATIVO PARA RECONOCIMIENTO DE PROFESIONES =====
+// ===== ADAPTIVE AI SYSTEM FOR PROFESSION RECOGNITION =====
 class AIProfessionsGame {
     constructor() {
         this.currentQuestion = 0;
@@ -6,149 +6,149 @@ class AIProfessionsGame {
         this.selectedOption = null;
         this.answered = false;
         
-        // Parámetros de IA
+        // AI parameters
         this.professionScore = 0;
         this.difficulty = 'easy';
         this.consecutiveCorrect = 0;
         this.consecutiveWrong = 0;
         this.totalQuestions = 5;
         
-        // Análisis de errores
+        // Error analysis
         this.professionStats = {};
         this.masteredProfessions = [];
         this.problematicProfessions = [];
         
-        // Base de profesiones expandida por dificultad
+        // Profession database by difficulty
         this.allQuestions = {
             easy: [
                 {
                     image: "https://i.pinimg.com/originals/dd/5f/5d/dd5f5d4cbe0531cd5dc4d5b7204b38a4.png",
-                    options: ["Médico", "Ingeniero", "Cocinero"],
+                    options: ["Doctor", "Engineer", "Cook"],
                     correctAnswer: 0,
-                    profession: "Médico",
-                    category: "salud",
+                    profession: "Doctor",
+                    category: "health",
                     complexity: 1
                 },
                 {
                     image: "https://tse1.mm.bing.net/th/id/OIP.msPDaNRRUyVPXdHj-pV-pwHaHa?rs=1&pid=ImgDetMain",
-                    options: ["Abogado", "Profesor", "Piloto"],
+                    options: ["Lawyer", "Teacher", "Pilot"],
                     correctAnswer: 1,
-                    profession: "Profesor",
-                    category: "educacion",
+                    profession: "Teacher",
+                    category: "education",
                     complexity: 1
                 },
                 {
                     image: "https://static.vecteezy.com/system/resources/previews/002/084/042/original/cute-fire-fighter-holding-wooden-stairs-character-cartoon-icon-illustration-free-vector.jpg",
-                    options: ["Bombero", "Electricista", "Músico"],
+                    options: ["Firefighter", "Electrician", "Musician"],
                     correctAnswer: 0,
-                    profession: "Bombero",
-                    category: "seguridad",
+                    profession: "Firefighter",
+                    category: "safety",
                     complexity: 1
                 },
                 {
                     image: "https://img.freepik.com/vector-premium/ilustracion-vectorial-dibujos-animados-chef-cocinando-plato-arroz-frito_1263357-24820.jpg?w=2000",
-                    options: ["Cocinero", "Mesero", "piloto"],
+                    options: ["Cook", "Waiter", "Pilot"],
                     correctAnswer: 0,
-                    profession: "Cocinero",
-                    category: "gastronomia",
+                    profession: "Cook",
+                    category: "gastronomy",
                     complexity: 1
                 },
                 {
                     image: "https://img.freepik.com/vector-premium/profesion-constructor-hombre-estilo-dibujos-animados-plana_180868-418.jpg",
-                    options: ["Constructor", "Plomero", "Carpintero"],
+                    options: ["Builder", "Plumber", "Carpenter"],
                     correctAnswer: 0,
-                    profession: "Constructor",
-                    category: "construccion",
+                    profession: "Builder",
+                    category: "construction",
                     complexity: 1
                 }
             ],
             medium: [
                 {
                     image: "https://image.freepik.com/vector-gratis/enfermera-personaje-dibujos-animados-lindo_78094-108.jpg",
-                    options: ["Abogada", "Doctora", "Enfermera"],
+                    options: ["Lawyer", "Doctor", "Nurse"],
                     correctAnswer: 2,
-                    profession: "Enfermera",
-                    category: "salud",
+                    profession: "Nurse",
+                    category: "health",
                     complexity: 2
                 },
                 {
                     image: "https://static.vecteezy.com/system/resources/previews/049/166/524/original/cute-girl-photographer-with-camera-illustration-cartoon-style-free-vector.jpg",
-                    options: ["Fotógrafo", "Camarógrafo", "Artista"],
+                    options: ["Photographer", "Cameraman", "Artist"],
                     correctAnswer: 0,
-                    profession: "Fotógrafo",
-                    category: "artes",
+                    profession: "Photographer",
+                    category: "arts",
                     complexity: 2
                 },
                 {
                     image: "https://tse3.mm.bing.net/th/id/OIP.v0OHHvrgQAR3Py8Yn7kxPQHaHa?rs=1&pid=ImgDetMain&o=7&rm=3",
-                    options: ["Veterinario", "Dentista", "Oftalmólogo"],
+                    options: ["Veterinarian", "Dentist", "Ophthalmologist"],
                     correctAnswer: 1,
-                    profession: "Dentista",
-                    category: "salud",
+                    profession: "Dentist",
+                    category: "health",
                     complexity: 2
                 },
                 {
                     image: "https://tse3.mm.bing.net/th/id/OIP.gVeGGYgBXKC50q1hUWjCIQHaHa?rs=1&pid=ImgDetMain&o=7&rm=3",
-                    options: ["Jardinero", "Granjero", "Paisajista"],
+                    options: ["Gardener", "Farmer", "Landscaper"],
                     correctAnswer: 0,
-                    profession: "Jardinero",
-                    category: "naturaleza",
+                    profession: "Gardener",
+                    category: "nature",
                     complexity: 2
                 },
                 {
                     image: "https://tse3.mm.bing.net/th/id/OIP.iWlnUosfG4X9bSz_-DkuwAHaHa?rs=1&pid=ImgDetMain&o=7&rm=3",
-                    options: ["Mecánico", "Ingeniero", "Técnico"],
+                    options: ["Mechanic", "Engineer", "Technician"],
                     correctAnswer: 0,
-                    profession: "Mecánico",
-                    category: "mecanica",
+                    profession: "Mechanic",
+                    category: "mechanics",
                     complexity: 2
                 }
             ],
             hard: [
                 {
                     image: "https://tse3.mm.bing.net/th/id/OIP.MdwKTsCeC81Mt6HWsT8NHQHaHa?rs=1&pid=ImgDetMain&o=7&rm=3",
-                    options: ["Piloto", "Comandante", "Aeromoza"],
+                    options: ["Pilot", "Commander", "Flight Attendant"],
                     correctAnswer: 0,
-                    profession: "Piloto",
-                    category: "aviacion",
+                    profession: "Pilot",
+                    category: "aviation",
                     complexity: 3
                 },
                 {
                     image: "https://tse4.mm.bing.net/th/id/OIP.PeivQAgqUPUvKdKGxZDsDAHaHa?rs=1&pid=ImgDetMain&o=7&rm=3",
-                    options: ["Científico", "Investigador", "Químico"],
+                    options: ["Scientist", "Researcher", "Chemist"],
                     correctAnswer: 0,
-                    profession: "Científico",
-                    category: "ciencia",
+                    profession: "Scientist",
+                    category: "science",
                     complexity: 3
                 },
                 {
                     image: "https://static.vecteezy.com/system/resources/previews/034/344/816/non_2x/rear-view-of-cartoon-man-architect-working-on-construction-project-illustration-vector.jpg",
-                    options: ["Arquitecto", "Ingeniero", "Dibujante"],
+                    options: ["Architect", "Engineer", "Draftsman"],
                     correctAnswer: 0,
-                    profession: "Arquitecto",
-                    category: "diseno",
+                    profession: "Architect",
+                    category: "design",
                     complexity: 3
                 },
                 {
                     image: "https://tse2.mm.bing.net/th/id/OIP.ACOKrk7PUAT4z7HPG3bLFwHaGe?rs=1&pid=ImgDetMain&o=7&rm=3",
-                    options: ["Actor", "Cantante", "Comediante"],
+                    options: ["Actor", "Singer", "Comedian"],
                     correctAnswer: 0,
                     profession: "Actor",
-                    category: "espectaculos",
+                    category: "entertainment",
                     complexity: 3
                 },
                 {
                     image: "https://img.freepik.com/vector-premium/chibi-contable-personaje-dibujos-animados-hombre-calculadora-mano_161819-1130.jpg",
-                    options: ["Contador", "Auditor", "Economista"],
+                    options: ["Accountant", "Auditor", "Economist"],
                     correctAnswer: 0,
-                    profession: "Contador",
-                    category: "finanzas",
+                    profession: "Accountant",
+                    category: "finance",
                     complexity: 3
                 }
             ]
         };
         
-        // Inicializar estadísticas
+        // Initialize stats
         Object.values(this.allQuestions).forEach(questions => {
             questions.forEach(q => {
                 this.professionStats[q.profession] = {
@@ -192,19 +192,19 @@ class AIProfessionsGame {
         if (this.consecutiveCorrect >= 3 && this.professionScore >= 80) {
             if (this.difficulty === 'easy') {
                 this.difficulty = 'medium';
-                audioManager.speak('Aumentando dificultad a nivel medio', 0.9);
+                audioManager.speak('Increasing difficulty to medium level', 0.9);
             } else if (this.difficulty === 'medium') {
                 this.difficulty = 'hard';
-                audioManager.speak('Aumentando dificultad a nivel difícil', 0.9);
+                audioManager.speak('Increasing difficulty to hard level', 0.9);
             }
         }
         else if (this.consecutiveWrong >= 2 || this.professionScore < 50) {
             if (this.difficulty === 'hard') {
                 this.difficulty = 'medium';
-                audioManager.speak('Reduciendo dificultad a nivel medio', 0.9);
+                audioManager.speak('Reducing difficulty to medium level', 0.9);
             } else if (this.difficulty === 'medium') {
                 this.difficulty = 'easy';
-                audioManager.speak('Reduciendo dificultad a nivel fácil', 0.9);
+                audioManager.speak('Reducing difficulty to easy level', 0.9);
             }
             this.consecutiveWrong = 0;
         }
@@ -215,9 +215,9 @@ class AIProfessionsGame {
     showDifficultyIndicator() {
         const indicator = document.getElementById('difficulty-indicator');
         const levels = {
-            easy: '⭐ Dificultad: FÁCIL (profesiones básicas)',
-            medium: '⭐⭐ Dificultad: MEDIO (profesiones complejas)',
-            hard: '⭐⭐⭐ Dificultad: DIFÍCIL (profesiones especializadas)'
+            easy:   '⭐ Difficulty: EASY (basic professions)',
+            medium: '⭐⭐ Difficulty: MEDIUM (complex professions)',
+            hard:   '⭐⭐⭐ Difficulty: HARD (specialized professions)'
         };
         
         indicator.textContent = levels[this.difficulty];
@@ -231,7 +231,7 @@ class AIProfessionsGame {
         const currentQuestion = this.selectNextQuestion();
         this.currentQuestionData = currentQuestion;
         
-        document.getElementById('questionNumber').textContent = `Pregunta ${this.currentQuestion + 1} de ${this.totalQuestions}`;
+        document.getElementById('questionNumber').textContent = `Question ${this.currentQuestion + 1} of ${this.totalQuestions}`;
         document.getElementById('progressText').textContent = `${this.currentQuestion + 1}/${this.totalQuestions}`;
         document.getElementById('progressFill').style.width = `${((this.currentQuestion + 1) / this.totalQuestions) * 100}%`;
         
@@ -262,8 +262,7 @@ class AIProfessionsGame {
         
         this.adjustDifficulty();
         
-        // Audio: Anunciar la pregunta
-        audioManager.speak(`Pregunta ${this.currentQuestion + 1}. ¿Cuál es la profesión que se muestra en la imagen?`, 1);
+        audioManager.speak(`Question ${this.currentQuestion + 1}. What is the profession shown in the image?`, 1);
     }
     
     selectOption(index) {
@@ -279,8 +278,8 @@ class AIProfessionsGame {
     
     checkAnswer() {
         if (this.selectedOption === null) {
-            this.showFeedback('Por favor, selecciona una opción', false);
-            audioManager.speak('Debes seleccionar una opción', 0.9);
+            this.showFeedback('Please select an option', false);
+            audioManager.speak('You must select an option', 0.9);
             return;
         }
         
@@ -307,8 +306,8 @@ class AIProfessionsGame {
                 this.masteredProfessions.push(profession);
             }
             
-            this.showFeedback('¡Correcto! ¡Bien hecho!', true);
-            audioManager.speak(`Correcto. La respuesta es ${profession}`, 0.95);
+            this.showFeedback('Correct! Well done!', true);
+            audioManager.speak(`Correct. The answer is ${profession}`, 0.95);
         } else {
             options[this.selectedOption].classList.add('incorrect');
             this.consecutiveWrong++;
@@ -318,8 +317,8 @@ class AIProfessionsGame {
                 this.problematicProfessions.push(profession);
             }
             
-            this.showFeedback('¡Incorrecto! Intenta con otra opción', false);
-            audioManager.speak(`Incorrecto. La respuesta correcta es ${profession}`, 0.95);
+            this.showFeedback('Incorrect! Try another option', false);
+            audioManager.speak(`Incorrect. The correct answer is ${profession}`, 0.95);
         }
         
         document.getElementById('score').textContent = this.score;
@@ -343,21 +342,21 @@ class AIProfessionsGame {
         let analysis = '';
         
         if (this.consecutiveCorrect > 0) {
-            analysis += `✅ ${this.consecutiveCorrect} acierto(s) seguido(s). `;
+            analysis += `✅ ${this.consecutiveCorrect} consecutive correct answer(s). `;
         }
         if (this.consecutiveWrong > 0) {
-            analysis += `❌ ${this.consecutiveWrong} error(es) seguido(s). `;
+            analysis += `❌ ${this.consecutiveWrong} consecutive error(s). `;
         }
         
         if (this.difficulty === 'hard') {
-            analysis += '📈 Nivel: DIFÍCIL. ';
+            analysis += '📈 Level: HARD. ';
         } else if (this.difficulty === 'easy') {
-            analysis += '📉 Nivel: FÁCIL. ';
+            analysis += '📉 Level: EASY. ';
         } else {
-            analysis += '➡️ Nivel: MEDIO. ';
+            analysis += '➡️ Level: MEDIUM. ';
         }
         
-        analysisText.textContent = analysis || 'Reconocimiento en desarrollo...';
+        analysisText.textContent = analysis || 'Recognition in progress...';
         analysisEl.classList.add('show');
     }
     
@@ -393,24 +392,24 @@ class AIProfessionsGame {
         
         if (percentage === 100) {
             stars = 3;
-            message = '¡Perfecto! ¡Eres un experto en profesiones! 🏆';
-            audioMessage = 'Perfecto. Eres un experto en profesiones';
+            message = 'Perfect! You are a professions expert! 🏆';
+            audioMessage = 'Perfect. You are a professions expert';
         } else if (percentage >= 70) {
             stars = 2;
-            message = '¡Muy bien! ¡Tienes una buena comprensión de profesiones! 🌟';
-            audioMessage = 'Muy bien. Tienes una buena comprensión de profesiones';
+            message = 'Great job! You have a strong understanding of professions! 🌟';
+            audioMessage = 'Great job. You have a strong understanding of professions';
         } else if (percentage >= 50) {
             stars = 1;
-            message = '¡Buen intento! ¡Sigue practicando! 💪';
-            audioMessage = 'Buen intento. Sigue practicando';
+            message = 'Good try! Keep practicing! 💪';
+            audioMessage = 'Good try. Keep practicing';
         } else {
             stars = 0;
-            message = '¡No te rindas! ¡La próxima vez será mejor! 📚';
-            audioMessage = 'No te rindas. La próxima vez será mejor';
+            message = "Don't give up! Next time will be better! 📚";
+            audioMessage = "Don't give up. Next time will be better";
         }
         
         resultMessage.textContent = message;
-        audioManager.speak(`Juego completado. Puntuación: ${this.score} puntos. Porcentaje: ${percentage.toFixed(0)} por ciento. ${audioMessage}`, 0.95);
+        audioManager.speak(`Game completed. Score: ${this.score} points. Percentage: ${percentage.toFixed(0)} percent. ${audioMessage}`, 0.95);
         
         starsContainer.innerHTML = '';
         for (let i = 0; i < 3; i++) {
@@ -423,7 +422,7 @@ class AIProfessionsGame {
         document.getElementById('reportMastered').textContent = this.masteredProfessions.length;
         document.getElementById('reportImprove').textContent = this.problematicProfessions.length > 0 
             ? this.problematicProfessions.slice(0, 2).join(', ') 
-            : 'Ninguna';
+            : 'None';
         document.getElementById('reportLevel').textContent = this.difficulty.toUpperCase();
         
         modal.classList.add('show');
@@ -447,11 +446,11 @@ class AIProfessionsGame {
     }
     
     goToMainPage() {
-       window.location.href = 'https://plekdev.github.io/BlueMinds/selectores/selector-visual.html';
+        window.location.href = 'https://plekdev.github.io/BlueMinds/selectores/selector-visual.html';
     }
 }
 
-// Iniciar el juego cuando se carga la página
+// Start the game when the page loads
 document.addEventListener('DOMContentLoaded', () => {
     new AIProfessionsGame();
 });

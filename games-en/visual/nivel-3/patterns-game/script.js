@@ -1,4 +1,4 @@
-// Variables globales
+// Global variables
 let currentRound = 0;
 let score = 0;
 let currentPatternData = null;
@@ -7,103 +7,97 @@ let showFeedback = false;
 
 const totalRounds = 5;
 
-// PATRONES DEFINIDOS MANUALMENTE CON EMOJIS
+// MANUALLY DEFINED PATTERNS WITH EMOJIS
 const patternsDatabase = [
     {
-        name: "alternancia_cuadrados_rojo_azul",
+        name: "alternating_squares_red_blue",
         display: ["🟥", "🟦", "🟥", "🟦", "🟥", "?"],
         correct: "🟦",
         options: ["🟥", "🟦", "🟩"]
     },
     {
-        name: "alternancia_cuadrados_verde_amarillo",
+        name: "alternating_squares_green_yellow",
         display: ["🟩", "🟨", "🟩", "🟨", "🟩", "?"],
         correct: "🟨",
         options: ["🟩", "🟨", "🟪"]
     },
     {
-        name: "tres_partes_rojo_azul_verde",
+        name: "three_part_red_blue_green",
         display: ["🟥", "🟦", "🟩", "🟥", "🟦", "?"],
         correct: "🟩",
         options: ["🟥", "🟦", "🟩"]
     },
     {
-        name: "doble_rojo_azul",
+        name: "double_red_blue",
         display: ["🟥", "🟥", "🟦", "🟦", "🟥", "?"],
         correct: "🟥",
         options: ["🟥", "🟦", "🟨"]
     },
     {
-        name: "alternancia_morado_negro",
+        name: "alternating_purple_black",
         display: ["🟪", "⬛", "🟪", "⬛", "🟪", "?"],
         correct: "⬛",
         options: ["🟪", "⬛", "⬜"]
     },
     {
-        name: "tres_partes_amarillo_morado_negro",
+        name: "three_part_yellow_purple_black",
         display: ["🟨", "🟪", "⬛", "🟨", "🟪", "?"],
         correct: "⬛",
         options: ["🟨", "🟪", "⬛"]
     },
     {
-        name: "doble_verde_amarillo",
+        name: "double_green_yellow",
         display: ["🟩", "🟩", "🟨", "🟨", "🟩", "?"],
         correct: "🟩",
         options: ["🟩", "🟨", "🟦"]
     },
     {
-        name: "alternancia_azul_verde",
+        name: "alternating_blue_green",
         display: ["🟦", "🟩", "🟦", "🟩", "🟦", "?"],
         correct: "🟩",
         options: ["🟦", "🟩", "🟥"]
     },
     {
-        name: "tres_partes_blanco_negro_rojo",
+        name: "three_part_white_black_red",
         display: ["⬜", "⬛", "🟥", "⬜", "⬛", "?"],
         correct: "🟥",
         options: ["⬜", "⬛", "🟥"]
     },
     {
-        name: "doble_morado_blanco",
+        name: "double_purple_white",
         display: ["🟪", "🟪", "⬜", "⬜", "🟪", "?"],
         correct: "🟪",
         options: ["🟪", "⬜", "🟦"]
     }
 ];
 
-// Inicializar el juego
+// Initialize the game
 document.addEventListener('DOMContentLoaded', () => {
     startNewRound();
 });
 
-// Iniciar una nueva ronda
+// Start a new round
 function startNewRound() {
-    // Seleccionar un patrón aleatorio
     const randomPattern = patternsDatabase[Math.floor(Math.random() * patternsDatabase.length)];
     currentPatternData = randomPattern;
     correctAnswer = randomPattern.correct;
     showFeedback = false;
     
-    // Actualizar la interfaz
     updateUI();
     
-    // Audio: Anunciar la ronda
-    audioManager.speak(`Ronda ${currentRound + 1}. ¿Qué falta en el patrón? Observa la secuencia y elige la opción correcta`, 1);
+    audioManager.speak(`Round ${currentRound + 1}. What's missing in the pattern? Observe the sequence and choose the correct option`, 1);
 }
 
-// Actualizar la interfaz de usuario
+// Update the user interface
 function updateUI() {
-    // Actualizar progreso
     document.getElementById('current-round').textContent = currentRound + 1;
     document.getElementById('total-rounds').textContent = totalRounds;
-    document.getElementById('score').textContent = score + ' puntos';
-    document.getElementById('score-display').textContent = score + ' puntos';
+    document.getElementById('score').textContent = score + ' points';
+    document.getElementById('score-display').textContent = score + ' points';
     
-    // Actualizar barra de progreso
     const progress = ((currentRound + 1) / totalRounds) * 100;
     document.getElementById('progress-fill').style.width = progress + '%';
     
-    // Actualizar patrón
     const patternDisplay = document.getElementById('pattern-display');
     patternDisplay.innerHTML = '';
     
@@ -119,11 +113,9 @@ function updateUI() {
         patternDisplay.appendChild(div);
     });
     
-    // Actualizar opciones
     const optionsContainer = document.getElementById('options-container');
     optionsContainer.innerHTML = '';
     
-    // Barajar opciones
     const shuffledOptions = [...currentPatternData.options].sort(() => Math.random() - 0.5);
     
     shuffledOptions.forEach((option, index) => {
@@ -134,11 +126,10 @@ function updateUI() {
         optionsContainer.appendChild(button);
     });
     
-    // Ocultar feedback
     document.getElementById('feedback').classList.add('hidden');
 }
 
-// Manejar respuesta del usuario
+// Handle user answer
 function handleAnswer(selected, buttonElement) {
     if (showFeedback) return;
     
@@ -146,27 +137,22 @@ function handleAnswer(selected, buttonElement) {
     const feedbackElement = document.getElementById('feedback');
     const feedbackText = document.getElementById('feedback-text');
     
-    // Deshabilitar todos los botones
     const allButtons = document.querySelectorAll('.option-button');
     allButtons.forEach(btn => btn.disabled = true);
     
     if (isCorrect) {
         score += 20;
-        feedbackText.textContent = "¡Correcto! ✅";
+        feedbackText.textContent = "Correct! ✅";
         feedbackElement.className = 'feedback correct';
-        audioManager.speak('Correcto. Has identificado el patrón correctamente', 0.95);
+        audioManager.speak('Correct. You identified the pattern correctly', 0.95);
         
-        // Animar el botón correcto
         buttonElement.classList.add('answer-correct');
-        
-        // Reproducir sonido de éxito
         playSuccessSound();
     } else {
-        feedbackText.innerHTML = `Incorrecto ❌<br>La respuesta correcta era: <strong>${correctAnswer}</strong>`;
+        feedbackText.innerHTML = `Incorrect ❌<br>The correct answer was: <strong>${correctAnswer}</strong>`;
         feedbackElement.className = 'feedback incorrect';
-        audioManager.speak(`Incorrecto. La respuesta correcta era ${correctAnswer}`, 0.95);
+        audioManager.speak(`Incorrect. The correct answer was ${correctAnswer}`, 0.95);
         
-        // Mostrar respuesta correcta
         allButtons.forEach(btn => {
             if (btn.textContent === correctAnswer) {
                 btn.classList.add('answer-correct');
@@ -179,11 +165,9 @@ function handleAnswer(selected, buttonElement) {
     feedbackElement.classList.remove('hidden');
     showFeedback = true;
     
-    // Actualizar puntaje
-    document.getElementById('score').textContent = score + ' puntos';
-    document.getElementById('score-display').textContent = score + ' puntos';
+    document.getElementById('score').textContent = score + ' points';
+    document.getElementById('score-display').textContent = score + ' points';
     
-    // Avanzar a la siguiente ronda o finalizar el juego
     setTimeout(() => {
         if (currentRound + 1 >= totalRounds) {
             completeGame();
@@ -194,10 +178,10 @@ function handleAnswer(selected, buttonElement) {
     }, 2500);
 }
 
-// Reproducir sonido de éxito
+// Play success sound
 function playSuccessSound() {
     const audioContext = new (window.AudioContext || window.webkitAudioContext)();
-    const notes = [523, 659, 784]; // Do, Mi, Sol
+    const notes = [523, 659, 784]; // C, E, G
     
     notes.forEach((freq, idx) => {
         const oscillator = audioContext.createOscillator();
@@ -217,46 +201,44 @@ function playSuccessSound() {
     });
 }
 
-// Completar el juego
+// Complete the game
 function completeGame() {
-    // Mostrar mensaje de finalización
     const patternCard = document.querySelector('.pattern-card');
     const accuracy = ((score / (totalRounds * 20)) * 100).toFixed(0);
     
-    let message = '¡Excelente! 🏆';
-    let audioMessage = 'Excelente';
+    let message = 'Excellent! 🏆';
+    let audioMessage = 'Excellent';
     
     if (accuracy < 60) {
-        message = '¡Sigue practicando! 💪';
-        audioMessage = 'Sigue practicando';
+        message = 'Keep practicing! 💪';
+        audioMessage = 'Keep practicing';
     } else if (accuracy < 80) {
-        message = '¡Muy buen trabajo! 🌟';
-        audioMessage = 'Muy buen trabajo';
+        message = 'Great work! 🌟';
+        audioMessage = 'Great work';
     }
     
-    // Audio: Anunciar finalización
-    audioManager.speak(`Juego completado. Puntuación: ${score} puntos. Precisión: ${accuracy} por ciento. ${audioMessage}`, 0.95);
+    audioManager.speak(`Game completed. Score: ${score} points. Accuracy: ${accuracy} percent. ${audioMessage}`, 0.95);
     
     patternCard.innerHTML = `
-        <h2>¡Juego Completado!</h2>
+        <h2>Game Completed!</h2>
         <div class="completion-emoji">🎉</div>
         <div class="completion-score">
-            <p>Tu puntaje final: <strong>${score} puntos</strong></p>
-            <p>Precisión: <strong>${accuracy}%</strong></p>
+            <p>Your final score: <strong>${score} points</strong></p>
+            <p>Accuracy: <strong>${accuracy}%</strong></p>
             <p style="font-size: 20px; margin-top: 10px;">${message}</p>
         </div>
         <div class="options-container">
             <button class="option-button" onclick="location.reload()">
-                Jugar de Nuevo
+                Play Again
             </button>
             <button class="option-button" onclick="goToMainPage()">
-                Volver al Menú
+                Back to Menu
             </button>
         </div>
     `;
 }
 
-// Función para volver a la página principal
+// Go back to main page
 function goToMainPage() {
-     window.location.href = 'https://plekdev.github.io/BlueMinds/selectores/selector-visual.html';
+    window.location.href = 'https://plekdev.github.io/BlueMinds/selectores/selector-visual.html';
 }

@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Completa la Escena - BlueMinds IA</title>
+    <title>Complete the Scene - BlueMinds AI</title>
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="styles.css">
@@ -13,18 +13,18 @@
         <header class="game-header">
             <div class="back-button">
                 <button onclick="goToMainPage()">
-                    <i class="fas fa-arrow-left"></i> Volver
+                    <i class="fas fa-arrow-left"></i> Back
                 </button>
             </div>
-            <h1 class="game-title">Completa la Escena IA</h1>
+            <h1 class="game-title">Complete the Scene AI</h1>
             <div class="ai-status">
-                <span id="score-display">0 puntos</span>
-                <button class="audio-toggle" onclick="toggleAudio()" title="Activar/Desactivar audio">
+                <span id="score-display">0 points</span>
+                <button class="audio-toggle" onclick="toggleAudio()" title="Enable/Disable audio">
                     <i class="fas fa-volume-up"></i>
                 </button>
-                <div class="ai-indicator" title="IA adaptativa activa">
+                <div class="ai-indicator" title="Adaptive AI active">
                     <i class="fas fa-robot"></i>
-                    <span>IA</span>
+                    <span>AI</span>
                 </div>
             </div>
         </header>
@@ -32,8 +32,8 @@
         <main class="game-content">
             <div class="progress-card">
                 <div class="progress-header">
-                    <span>Ronda <span id="current-round">1</span> de <span id="total-rounds">5</span></span>
-                    <span id="score">0 puntos</span>
+                    <span>Round <span id="current-round">1</span> of <span id="total-rounds">5</span></span>
+                    <span id="score">0 points</span>
                 </div>
                 <div class="progress-bar">
                     <div id="progress-fill" class="progress-fill"></div>
@@ -44,19 +44,19 @@
                 <div id="difficulty-indicator" class="difficulty-indicator" style="display: none;"></div>
                 <div id="hint-box" class="hint-box" style="display: none;"></div>
 
-                <h2>¡Completa la oración!</h2>
+                <h2>Complete the sentence!</h2>
                 
                 <div class="sentence-display" id="sentence-display"></div>
 
-                <p style="font-size: 16px; margin-bottom: 15px; color: #777;">Selecciona la imagen correcta:</p>
+                <p style="font-size: 16px; margin-bottom: 15px; color: #777;">Select the correct image:</p>
                 <div class="options-display" id="options-display"></div>
 
                 <div class="action-buttons">
                     <button class="action-button primary" onclick="checkAnswer()">
-                        <i class="fas fa-check"></i> Verificar
+                        <i class="fas fa-check"></i> Check
                     </button>
                     <button class="action-button secondary" onclick="resetAnswer()">
-                        <i class="fas fa-redo"></i> Reiniciar
+                        <i class="fas fa-redo"></i> Reset
                     </button>
                 </div>
 
@@ -65,12 +65,12 @@
                 </div>
 
                 <div id="ai-analysis" class="ai-analysis">
-                    <strong>📊 Análisis IA:</strong> <span id="analysis-text"></span>
+                    <strong>📊 AI Analysis:</strong> <span id="analysis-text"></span>
                 </div>
             </div>
 
             <div class="instructions-card">
-                <p>🤖 <strong>IA Adaptativa:</strong> El sistema ajusta el tipo de oración y distractores según tu desempeño en categorización visual-verbal.</p>
+                <p>🤖 <strong>Adaptive AI:</strong> The system adjusts sentence types and distractors based on your visual-verbal categorization performance.</p>
             </div>
         </main>
     </div>
@@ -89,7 +89,7 @@
                 utterance.rate = rate;
                 utterance.pitch = 1.0;
                 utterance.volume = 1.0;
-                utterance.lang = 'es-ES';
+                utterance.lang = 'en-US';
                 this.synth.speak(utterance);
             }
             toggleAudio() {
@@ -105,7 +105,7 @@
             const button = document.querySelector('.audio-toggle');
             if (isEnabled) {
                 button.innerHTML = '<i class="fas fa-volume-up"></i>';
-                audioManager.speak('Audio activado');
+                audioManager.speak('Audio enabled');
             } else {
                 button.innerHTML = '<i class="fas fa-volume-mute"></i>';
             }

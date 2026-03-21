@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Juego de Patrones - Neuro Play World</title>
+    <title>Pattern Game - Neuro Play World</title>
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="../../css/main.css">
@@ -12,15 +12,15 @@
 <body>
     <div class="game-container">
         <header class="game-header">
-             <div class="back-button">
+            <div class="back-button">
                 <button onclick="goToMainPage()">
-                 <i class="fas fa-arrow-left"></i> Volver
-             </button>
+                    <i class="fas fa-arrow-left"></i> Back
+                </button>
             </div>
-            <h1 class="game-title">Juego de Patrones</h1>
+            <h1 class="game-title">Pattern Game</h1>
             <div class="game-info">
-                <span id="score-display">0 puntos</span>
-                <button class="audio-toggle" id="audioToggle" title="Activar/Desactivar audio">
+                <span id="score-display">0 points</span>
+                <button class="audio-toggle" id="audioToggle" title="Enable/Disable audio">
                     <i class="fas fa-volume-up"></i>
                 </button>
             </div>
@@ -30,8 +30,8 @@
             <!-- Progress -->
             <div class="progress-card">
                 <div class="progress-header">
-                    <span>Ronda <span id="current-round">1</span> de <span id="total-rounds">5</span></span>
-                    <span id="score">0 puntos</span>
+                    <span>Round <span id="current-round">1</span> of <span id="total-rounds">5</span></span>
+                    <span id="score">0 points</span>
                 </div>
                 <div class="progress-bar">
                     <div id="progress-fill" class="progress-fill"></div>
@@ -40,10 +40,10 @@
 
             <!-- Pattern Display -->
             <div class="pattern-card">
-                <h2>¿Qué falta en el patrón?</h2>
+                <h2>What's missing in the pattern?</h2>
                 
                 <div id="pattern-display" class="pattern-display">
-                    <!-- Los elementos del patrón se generarán dinámicamente -->
+                    <!-- Pattern elements are generated dynamically -->
                 </div>
                 
                 <div id="feedback" class="feedback hidden">
@@ -51,14 +51,14 @@
                 </div>
 
                 <div id="options-container" class="options-container">
-                    <!-- Las opciones se generarán dinámicamente -->
+                    <!-- Options are generated dynamically -->
                 </div>
             </div>
 
             <!-- Instructions -->
             <div class="instructions-card">
                 <p>
-                    💡 <span class="font-bold">Tip:</span> Busca qué se repite en el patrón y completa la secuencia.
+                    💡 <span class="font-bold">Tip:</span> Look for what repeats in the pattern and complete the sequence.
                 </p>
             </div>
         </main>
@@ -78,7 +78,7 @@
                 utterance.rate = rate;
                 utterance.pitch = 1.0;
                 utterance.volume = 1.0;
-                utterance.lang = 'es-ES';
+                utterance.lang = 'en-US';
                 this.synth.speak(utterance);
             }
             toggleAudio() {
@@ -93,7 +93,7 @@
             const isEnabled = audioManager.toggleAudio();
             if (isEnabled) {
                 this.innerHTML = '<i class="fas fa-volume-up"></i>';
-                audioManager.speak('Audio activado');
+                audioManager.speak('Audio enabled');
             } else {
                 this.innerHTML = '<i class="fas fa-volume-mute"></i>';
             }

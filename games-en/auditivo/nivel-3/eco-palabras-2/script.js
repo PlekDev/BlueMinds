@@ -1,16 +1,12 @@
 // ========================
-// ANALIZADOR DE IMITACIÓN AUDITIVA CON IA ADAPTATIVA
+// ADAPTIVE ANIMAL SOUND ANALYZER (Level 3)
 // ========================
 
 class AdaptiveAnimalSoundAnalyzer {
     constructor() {
         this.sessionStats = {
-            totalAttempts: 0,
-            correctAttempts: 0,
-            averageAccuracy: 0,
-            discriminationScore: 0,
-            imitationScore: 0,
-            confusionCount: 0
+            totalAttempts: 0, correctAttempts: 0, averageAccuracy: 0,
+            discriminationScore: 0, imitationScore: 0, confusionCount: 0
         };
         this.attempts = [];
         this.difficultyLevel = 1;
@@ -24,31 +20,15 @@ class AdaptiveAnimalSoundAnalyzer {
         const accuracy = this.calculateSoundAccuracy(expectedSound, recordedSound);
         const similarity = this.calculateSimilarity(expectedSound, recordedSound);
         const confusion = this.detectSoundConfusion(expectedSound, recordedSound);
-        
         const score = this.generateScore(accuracy, isCorrect, similarity);
-        
-        const attempt = {
-            timestamp: new Date(),
-            animal: animalName,
-            expectedSound: expectedSound,
-            recordedSound: recordedSound,
-            isCorrect: isCorrect,
-            accuracy: accuracy,
-            similarity: similarity,
-            confusion: confusion,
-            score: score,
-            timeElapsed: timeElapsed
-        };
-        
+
+        const attempt = { timestamp: new Date(), animal: animalName, expectedSound, recordedSound, isCorrect, accuracy, similarity, confusion, score, timeElapsed };
         this.attempts.push(attempt);
         this.updateSessionStats(attempt);
         this.adaptDifficulty();
-        
+
         return {
-            isCorrect: isCorrect,
-            accuracy: accuracy,
-            similarity: similarity,
-            score: score,
+            isCorrect, accuracy, similarity, score,
             feedback: this.generateFeedback(isCorrect, accuracy, confusion),
             analysis: this.generateAnalysis(attempt),
             nextAdjustment: this.getNextAdjustment()
@@ -58,179 +38,117 @@ class AdaptiveAnimalSoundAnalyzer {
     compareAnimalSounds(expected, recorded) {
         const expectedLower = expected.toLowerCase().trim();
         const recordedLower = recorded.toLowerCase().trim();
-        
         if (expectedLower === recordedLower) return true;
-        
-        const similarity = this.calculateSimilarity(expected, recorded);
-        return similarity >= 75;
+        return this.calculateSimilarity(expected, recorded) >= 75;
     }
 
     calculateSoundAccuracy(expected, recorded) {
         const expectedLower = expected.toLowerCase();
         const recordedLower = recorded.toLowerCase();
-        
         let matches = 0;
         const minLen = Math.min(expectedLower.length, recordedLower.length);
-        
         for (let i = 0; i < minLen; i++) {
-            if (expectedLower[i] === recordedLower[i]) {
-                matches++;
-            }
+            if (expectedLower[i] === recordedLower[i]) matches++;
         }
-        
         return (matches / Math.max(expectedLower.length, recordedLower.length)) * 100;
     }
 
     calculateSimilarity(expected, recorded) {
-        const expectedLower = expected.toLowerCase();
-        const recordedLower = recorded.toLowerCase();
-        
-        const maxLen = Math.max(expectedLower.length, recordedLower.length);
+        const exp = expected.toLowerCase();
+        const rec = recorded.toLowerCase();
+        const maxLen = Math.max(exp.length, rec.length);
         let matches = 0;
-        
-        for (let i = 0; i < Math.min(expectedLower.length, recordedLower.length); i++) {
-            if (expectedLower[i] === recordedLower[i]) {
-                matches++;
-            }
+        for (let i = 0; i < Math.min(exp.length, rec.length); i++) {
+            if (exp[i] === rec[i]) matches++;
         }
-        
-        if (recordedLower.includes(expectedLower) || expectedLower.includes(recordedLower)) {
-            matches = Math.min(maxLen, matches + 10);
-        }
-        
+        if (rec.includes(exp) || exp.includes(rec)) matches = Math.min(maxLen, matches + 10);
         return Math.round((matches / maxLen) * 100);
     }
 
     detectSoundConfusion(expected, recorded) {
         const confusionPairs = {
-            'guau': ['miau', 'quiquiriqui'],
-            'miau': ['guau', 'pío'],
-            'pío': ['miau', 'cua'],
-            'muuu': ['beee', 'guau'],
-            'beee': ['muuu', 'pío'],
-            'quiquiriqui': ['guau', 'pío'],
-            'cua': ['pío', 'muuu'],
-            'sss': ['fff', 'zzz']
+            'woof': ['meow', 'cock-a-doodle-doo'],
+            'meow': ['woof', 'tweet'],
+            'tweet': ['meow', 'quack'],
+            'moo': ['baa', 'woof'],
+            'baa': ['moo', 'tweet'],
+            'cock-a-doodle-doo': ['woof', 'tweet'],
+            'quack': ['tweet', 'moo'],
+            'oink': ['woof', 'moo']
         };
-        
-        const expectedLower = expected.toLowerCase();
-        const recordedLower = recorded.toLowerCase();
-        
-        if (confusionPairs[expectedLower]) {
-            if (confusionPairs[expectedLower].includes(recordedLower)) {
-                return 'Confusión auditiva con sonido similar';
-            }
-        }
-        
-        return 'Sin confusión detectada';
+        const exp = expected.toLowerCase();
+        const rec = recorded.toLowerCase();
+        if (confusionPairs[exp] && confusionPairs[exp].includes(rec)) return 'Auditory confusion with similar sound';
+        return 'No confusion detected';
     }
 
     generateScore(accuracy, isCorrect, similarity) {
         let baseScore = accuracy;
-        
-        if (isCorrect) {
-            baseScore += 30;
-        }
-        
-        if (similarity >= 80) {
-            baseScore += 15;
-        } else if (similarity >= 60) {
-            baseScore += 8;
-        }
-        
+        if (isCorrect) baseScore += 30;
+        if (similarity >= 80) baseScore += 15;
+        else if (similarity >= 60) baseScore += 8;
         return Math.min(100, Math.round(baseScore));
     }
 
     generateFeedback(isCorrect, accuracy, confusion) {
-        let emoji = '';
-        let message = '';
-        let details = [];
-        
+        let emoji = '', message = '', details = [];
         if (isCorrect) {
-            emoji = '🎉';
-            message = '¡Excelente imitación!';
-            details.push('Reprodujiste perfectamente el sonido del animal');
+            emoji = '🎉'; message = 'Excellent imitation!';
+            details.push('You perfectly reproduced the animal sound');
         } else if (accuracy >= 75) {
-            emoji = '👍';
-            message = 'Muy cercano, casi perfecto';
-            details.push('Tu imitación fue muy parecida al original');
-            details.push('Intenta una vez más para perfeccionar');
+            emoji = '👍'; message = 'Very close, almost perfect!';
+            details.push('Your imitation was very similar to the original');
+            details.push('Try once more to perfect it');
         } else if (accuracy >= 50) {
-            emoji = '📢';
-            message = 'Necesitas practicar más';
-            if (confusion !== 'Sin confusión detectada') {
-                details.push('⚠️ ' + confusion);
-            }
-            details.push('Escucha bien el sonido y repite lentamente');
+            emoji = '📢'; message = 'Keep practicing!';
+            if (confusion !== 'No confusion detected') details.push('⚠️ ' + confusion);
+            details.push('Listen to the sound carefully and repeat slowly');
         } else {
-            emoji = '💪';
-            message = 'Sigue intentando';
-            details.push('Escucha el sonido varias veces');
-            details.push('Los sonidos de animales requieren práctica');
+            emoji = '💪'; message = 'Keep trying!';
+            details.push('Listen to the sound several times');
+            details.push('Animal sounds take practice');
         }
-        
-        return {
-            emoji: emoji,
-            message: message,
-            details: details
-        };
+        return { emoji, message, details };
     }
 
     generateAnalysis(attempt) {
         return {
             animal: attempt.animal,
-            exactitud: Math.round(attempt.accuracy) + '%',
-            similitud: attempt.similarity + '%',
-            confusionDetectada: attempt.confusion,
-            puntos: attempt.score
+            accuracy: Math.round(attempt.accuracy) + '%',
+            similarity: attempt.similarity + '%',
+            confusionDetected: attempt.confusion,
+            points: attempt.score
         };
     }
 
     updateSessionStats(attempt) {
         this.sessionStats.totalAttempts++;
-        if (attempt.isCorrect) {
-            this.sessionStats.correctAttempts++;
-        }
-        
-        this.sessionStats.averageAccuracy = 
+        if (attempt.isCorrect) this.sessionStats.correctAttempts++;
+        this.sessionStats.averageAccuracy =
             (this.sessionStats.averageAccuracy * (this.sessionStats.totalAttempts - 1) + attempt.accuracy) / this.sessionStats.totalAttempts;
-        
-        this.sessionStats.discriminationScore = 
-            (this.sessionStats.correctAttempts / this.sessionStats.totalAttempts) * 100;
-        
+        this.sessionStats.discriminationScore = (this.sessionStats.correctAttempts / this.sessionStats.totalAttempts) * 100;
         this.sessionStats.imitationScore = this.sessionStats.averageAccuracy;
-        
-        if (attempt.confusion !== 'Sin confusión detectada') {
-            this.sessionStats.confusionCount++;
-        }
+        if (attempt.confusion !== 'No confusion detected') this.sessionStats.confusionCount++;
     }
 
     adaptDifficulty() {
         if (this.sessionStats.totalAttempts < 2) return;
-        
-        const discriminationScore = this.sessionStats.discriminationScore;
-        const imitationScore = this.sessionStats.imitationScore;
-        
-        if (discriminationScore >= 85 && imitationScore >= 80) {
-            // Aumentar dificultad
+        const ds = this.sessionStats.discriminationScore;
+        const is_ = this.sessionStats.imitationScore;
+        if (ds >= 85 && is_ >= 80) {
             this.currentDifficulty = 'hard';
             this.soundClarity = Math.max(0.6, this.soundClarity - 0.1);
             this.auditoryFilterLevel = 'background-noise';
-        } else if (discriminationScore >= 70 && imitationScore >= 70) {
-            // Mantener dificultad
+        } else if (ds >= 70 && is_ >= 70) {
             this.currentDifficulty = 'medium';
-            this.soundClarity = 0.8;
-            this.auditoryFilterLevel = 'none';
-        } else if (discriminationScore >= 50) {
-            // Reducir ligeramente
+            this.soundClarity = 0.8; this.auditoryFilterLevel = 'none';
+        } else if (ds >= 50) {
             this.currentDifficulty = 'easy';
             this.soundClarity = Math.min(1.0, this.soundClarity + 0.1);
             this.auditoryFilterLevel = 'none';
         } else {
-            // Reducir significativamente
             this.currentDifficulty = 'very-easy';
-            this.soundClarity = 1.0;
-            this.auditoryFilterLevel = 'visual-aid';
+            this.soundClarity = 1.0; this.auditoryFilterLevel = 'visual-aid';
         }
     }
 
@@ -245,15 +163,10 @@ class AdaptiveAnimalSoundAnalyzer {
     }
 
     generateRecommendation() {
-        if (this.sessionStats.discriminationScore >= 85) {
-            return '🌟 Excelente discriminación auditiva. Aumentando dificultad.';
-        } else if (this.sessionStats.discriminationScore >= 70) {
-            return '👂 Buena discriminación. Continúa así.';
-        } else if (this.sessionStats.discriminationScore >= 50) {
-            return '🎯 Discriminación en desarrollo. Mostrando ayudas visuales.';
-        } else {
-            return '📚 Discriminación en entrenamiento. Mejorando sonido.';
-        }
+        if (this.sessionStats.discriminationScore >= 85) return '🌟 Excellent auditory discrimination! Increasing difficulty.';
+        if (this.sessionStats.discriminationScore >= 70) return '👂 Good discrimination. Keep it up!';
+        if (this.sessionStats.discriminationScore >= 50) return '🎯 Discrimination developing. Showing visual aids.';
+        return '📚 Discrimination in training. Improving sound clarity.';
     }
 
     getSessionReport() {
@@ -269,80 +182,65 @@ class AdaptiveAnimalSoundAnalyzer {
 }
 
 // ========================
-// BASE DE DATOS DE ANIMALES
+// ENGLISH ANIMAL DATABASE
 // ========================
 
 const animalDatabase = {
-    'perro': {
-        image: 'https://png.pngtree.com/png-clipart/20231004/original/pngtree-cute-dog-puppy-cartoon-png-image_13098172.png?w=400',
-        sound: 'guau',
-        difficulty: 'easy'
+    'dog': {
+        image: 'https://png.pngtree.com/png-clipart/20231004/original/pngtree-cute-dog-puppy-cartoon-png-image_13098172.png',
+        sound: 'woof', difficulty: 'easy'
     },
-    'gato': {
-        image: 'https://static.vecteezy.com/system/resources/previews/013/089/641/original/illustration-of-cute-colored-cat-cat-cartoon-image-in-eps10-format-suitable-for-children-s-book-design-elements-introduction-of-cats-to-children-books-or-posters-about-animal-vector.jpg?w=400',
-        sound: 'miau',
-        difficulty: 'easy'
+    'cat': {
+        image: 'https://static.vecteezy.com/system/resources/previews/013/089/641/original/illustration-of-cute-colored-cat-cat-cartoon-image-in-eps10-format-suitable-for-children-s-book-design-elements-introduction-of-cats-to-children-books-or-posters-about-animal-vector.jpg',
+        sound: 'meow', difficulty: 'easy'
     },
-    'pájaro': {
-        image: 'https://static.vecteezy.com/system/resources/previews/013/480/622/non_2x/cartoon-illustration-of-a-bird-vector.jpg?w=400',
-        sound: 'pío',
-        difficulty: 'easy'
+    'bird': {
+        image: 'https://static.vecteezy.com/system/resources/previews/013/480/622/non_2x/cartoon-illustration-of-a-bird-vector.jpg',
+        sound: 'tweet', difficulty: 'easy'
     },
-    'vaca': {
-        image: 'https://img.freepik.com/premium-vector/cartoon-cow-with-black-spot-its-face-white-background_730620-516642.jpg?w=400',
-        sound: 'muuu',
-        difficulty: 'medium'
+    'cow': {
+        image: 'https://img.freepik.com/premium-vector/cartoon-cow-with-black-spot-its-face-white-background_730620-516642.jpg',
+        sound: 'moo', difficulty: 'medium'
     },
-    'oveja': {
-        image: 'https://static.vecteezy.com/system/resources/previews/004/650/604/original/a-sheep-farm-animal-cartoon-sticker-free-vector.jpg?w=400',
-        sound: 'beee',
-        difficulty: 'medium'
+    'sheep': {
+        image: 'https://static.vecteezy.com/system/resources/previews/004/650/604/original/a-sheep-farm-animal-cartoon-sticker-free-vector.jpg',
+        sound: 'baa', difficulty: 'medium'
     },
-    'gallo': {
-        image: 'https://image.freepik.com/vector-gratis/dibujos-animados-gallo-adorable_74769-26.jpg?w=400',
-        sound: 'quiquiriqui',
-        difficulty: 'hard'
+    'rooster': {
+        image: 'https://image.freepik.com/vector-gratis/dibujos-animados-gallo-adorable_74769-26.jpg',
+        sound: 'cock-a-doodle-doo', difficulty: 'hard'
     },
-    'pato': {
-        image: 'https://img.freepik.com/vetores-premium/pato-de-ilustracao-de-desenho-animado_323802-361.jpg?w=400',
-        sound: 'cua',
-        difficulty: 'medium'
+    'duck': {
+        image: 'https://img.freepik.com/vetores-premium/pato-de-ilustracao-de-desenho-animado_323802-361.jpg',
+        sound: 'quack', difficulty: 'medium'
     },
-    'cerdo': {
-        image: 'https://static.vecteezy.com/system/resources/previews/003/607/581/large_2x/pig-cartoon-cute-swine-illustration-vector.jpg?w=400',
-        sound: 'oinc',
-        difficulty: 'easy'
+    'pig': {
+        image: 'https://static.vecteezy.com/system/resources/previews/003/607/581/large_2x/pig-cartoon-cute-swine-illustration-vector.jpg',
+        sound: 'oink', difficulty: 'easy'
     }
 };
 
 // ========================
-// VARIABLES DEL JUEGO
+// GAME VARIABLES
 // ========================
 
 let currentRound = 0;
 let score = 0;
 let currentAnimal = null;
-let selectedOption = null;
 let gameStarted = false;
 let isRecording = false;
 let hasPlayed = false;
+const roundStartTime = performance.now();
 
 const analyzer = new AdaptiveAnimalSoundAnalyzer();
 const totalRounds = 5;
 let recognition;
 
 // ========================
-// INICIALIZACIÓN
+// INITIALIZATION
 // ========================
 
-document.addEventListener('DOMContentLoaded', function() {
-    const gameId = 'imitacion-animales-1';
-    api.getBestScore(gameId).then(bestScore => {
-        document.getElementById('score-display').innerHTML = 
-            `🏆 Récord: ${bestScore} pts | <span id="current-score-val">0</span> pts`;
-    }).catch(() => {
-        document.getElementById('score-display').innerHTML = `Actual: <span id="current-score-val">0</span> pts`;
-    });
+document.addEventListener('DOMContentLoaded', function () {
     setupSpeechRecognition();
     setupEventListeners();
     startNewRound();
@@ -350,23 +248,24 @@ document.addEventListener('DOMContentLoaded', function() {
 
 function setupSpeechRecognition() {
     const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-    
     if (SpeechRecognition) {
         recognition = new SpeechRecognition();
         recognition.lang = 'en-US';
         recognition.continuous = false;
         recognition.interimResults = false;
 
-        recognition.onresult = function(event) {
+        recognition.onresult = function (event) {
             const transcript = event.results[0][0].transcript.toLowerCase().trim();
             analyzeImitation(transcript);
         };
 
-        recognition.onerror = function(event) {
-            console.error('Error:', event.error);
-            showFeedback('Error al grabar', false);
+        recognition.onerror = function (event) {
+            console.error('Recognition error:', event.error);
+            showFeedback('Error recording. Please try again.', false);
             stopRecording();
         };
+    } else {
+        alert('Your browser does not support voice recognition. Please use Chrome, Edge or Safari.');
     }
 }
 
@@ -377,118 +276,92 @@ function setupEventListeners() {
 
 function startNewRound() {
     speechSynthesis.cancel();
-    
     const nextAdjustment = analyzer.getNextAdjustment();
     const animals = Object.entries(animalDatabase).filter(([name, data]) => {
-        if (nextAdjustment.difficulty === 'easy') return data.difficulty === 'easy';
-        if (nextAdjustment.difficulty === 'very-easy') return data.difficulty === 'easy';
+        if (nextAdjustment.difficulty === 'easy' || nextAdjustment.difficulty === 'very-easy') return data.difficulty === 'easy';
         if (nextAdjustment.difficulty === 'hard') return data.difficulty !== 'easy';
         return true;
     });
-    
+
     const randomAnimal = animals[Math.floor(Math.random() * animals.length)];
-    currentAnimal = {
-        name: randomAnimal[0],
-        ...randomAnimal[1]
-    };
-    
+    currentAnimal = { name: randomAnimal[0], ...randomAnimal[1] };
+
     gameStarted = false;
     isRecording = false;
     hasPlayed = false;
-    
+
     updateUI();
     setupAnimationIfNeeded();
 }
 
 function setupAnimationIfNeeded() {
     const nextAdjustment = analyzer.getNextAdjustment();
-    const mouthAnimation = document.getElementById('mouth-animation');
-    
-    if (nextAdjustment.showMouthAnimation) {
-        mouthAnimation.style.display = 'block';
-    } else {
-        mouthAnimation.style.display = 'none';
-    }
+    document.getElementById('mouth-animation').style.display = nextAdjustment.showMouthAnimation ? 'block' : 'none';
 }
 
 function updateUI() {
     document.getElementById('current-round').textContent = currentRound + 1;
     document.getElementById('total-rounds').textContent = totalRounds;
-    document.getElementById('score').textContent = score + ' puntos';
-    document.getElementById('score-display').textContent = score + ' puntos';
+    document.getElementById('score').textContent = score + ' points';
+    document.getElementById('score-display').textContent = score + ' points';
 
     const progress = ((currentRound + 1) / totalRounds) * 100;
     document.getElementById('progress-fill').style.width = progress + '%';
 
-    document.getElementById('animal-name').textContent = currentAnimal.name.charAt(0).toUpperCase() + currentAnimal.name.slice(1);
+    const name = currentAnimal.name.charAt(0).toUpperCase() + currentAnimal.name.slice(1);
+    document.getElementById('animal-name').textContent = name;
     document.getElementById('animal-image').src = currentAnimal.image;
 
     const nextAdjustment = analyzer.getNextAdjustment();
-    const badgeElement = document.getElementById('difficulty-badge');
-    badgeElement.textContent = nextAdjustment.recommendation;
+    document.getElementById('difficulty-badge').textContent = nextAdjustment.recommendation;
 
     document.getElementById('similarity-meter').style.display = 'none';
     document.getElementById('feedback').classList.remove('show');
     document.getElementById('recorded-text').style.display = 'none';
 
     const recordButton = document.getElementById('record-button');
-    recordButton.innerHTML = '<i class="fas fa-microphone"></i> Grabar mi voz';
+    recordButton.innerHTML = '<i class="fas fa-microphone"></i> Record my voice';
     recordButton.className = 'btn secondary';
     recordButton.style.display = 'none';
 }
 
 function playAnimalSound() {
     if (!currentAnimal) return;
-    
     const playButton = document.getElementById('play-sound-button');
-    playButton.innerHTML = '<i class="fas fa-volume-up"></i> Reproduciendo...';
+    playButton.innerHTML = '<i class="fas fa-volume-up"></i> Playing...';
     playButton.disabled = true;
 
     const nextAdjustment = analyzer.getNextAdjustment();
-    const rate = nextAdjustment.soundClarity;
-    
     const utterance = new SpeechSynthesisUtterance(currentAnimal.sound);
     utterance.lang = 'en-US';
-    utterance.rate = rate;
+    utterance.rate = nextAdjustment.soundClarity;
     utterance.pitch = 1;
-    
-    utterance.onend = function() {
-        playButton.innerHTML = '<i class="fas fa-volume-up"></i> Escuchar Sonido';
+
+    utterance.onend = function () {
+        playButton.innerHTML = '<i class="fas fa-volume-up"></i> Listen to Sound';
         playButton.disabled = false;
         hasPlayed = true;
-        
         document.getElementById('record-button').style.display = 'inline-flex';
-        
-        if (nextAdjustment.showMouthAnimation) {
-            animateMouth();
-        }
+        if (nextAdjustment.showMouthAnimation) animateMouth();
     };
-    
     speechSynthesis.speak(utterance);
 }
 
 function animateMouth() {
     const mouthAnimation = document.getElementById('mouth-animation');
     mouthAnimation.style.display = 'block';
-    
-    setTimeout(() => {
-        mouthAnimation.style.display = 'none';
-    }, 2000);
+    setTimeout(() => { mouthAnimation.style.display = 'none'; }, 2000);
 }
 
 function toggleRecording() {
-    if (!hasPlayed) {
-        showFeedback('Primero escucha el sonido', false);
-        return;
-    }
-    
+    if (!hasPlayed) { showFeedback('Listen to the sound first', false); return; }
     const recordButton = document.getElementById('record-button');
-    
     if (!isRecording) {
         isRecording = true;
-        recordButton.innerHTML = '<i class="fas fa-stop"></i> Detener grabación';
+        recordButton.innerHTML = '<i class="fas fa-stop"></i> Stop recording';
         recordButton.className = 'btn secondary recording';
-        recognition.start();
+        if (recognition) recognition.start();
+        else { showFeedback('Voice recognition not available', false); stopRecording(); }
     } else {
         stopRecording();
     }
@@ -497,130 +370,84 @@ function toggleRecording() {
 function stopRecording() {
     isRecording = false;
     const recordButton = document.getElementById('record-button');
-    recordButton.innerHTML = '<i class="fas fa-microphone"></i> Analizando...';
+    recordButton.innerHTML = '<i class="fas fa-microphone"></i> Analyzing...';
     recordButton.className = 'btn secondary';
-    recognition.stop();
+    if (recognition) recognition.stop();
 }
 
 function analyzeImitation(transcript) {
     const timeElapsed = performance.now() - roundStartTime;
     const result = analyzer.analyze(currentAnimal.name, currentAnimal.sound, transcript, timeElapsed);
-    
-    const recordedTextElement = document.getElementById('recorded-text');
+
     document.getElementById('recorded-text-content').textContent = '"' + transcript + '"';
-    recordedTextElement.style.display = 'block';
-    
+    document.getElementById('recorded-text').style.display = 'block';
+
     document.getElementById('similarity-meter').style.display = 'block';
     document.getElementById('similarity-fill').style.width = result.similarity + '%';
     document.getElementById('similarity-text').textContent = result.similarity + '%';
-    
+
     const fillElement = document.getElementById('similarity-fill');
     fillElement.className = 'similarity-fill';
-    if (result.similarity >= 75) {
-        fillElement.classList.add('success');
-    } else if (result.similarity >= 50) {
-        fillElement.classList.add('warning');
-    } else {
-        fillElement.classList.add('error');
-    }
+    if (result.similarity >= 75) fillElement.classList.add('success');
+    else if (result.similarity >= 50) fillElement.classList.add('warning');
+    else fillElement.classList.add('error');
 
-    const isCorrect = result.isCorrect;
     const pointsEarned = Math.floor(result.similarity / 10);
+    if (result.isCorrect) score += pointsEarned;
 
-    if (isCorrect) {
-        score += pointsEarned;
-        const feedbackMsg = result.feedback.emoji + ' ' + result.feedback.message;
-        showFeedback(feedbackMsg, true, result.feedback.details);
-    } else {
-        const feedbackMsg = result.feedback.emoji + ' ' + result.feedback.message;
-        showFeedback(feedbackMsg, false, result.feedback.details);
-    }
+    showFeedback(result.feedback.emoji + ' ' + result.feedback.message, result.isCorrect, result.feedback.details);
 
-    document.getElementById('score').textContent = score + ' puntos';
-    document.getElementById('score-display').textContent = score + ' puntos';
-
+    document.getElementById('score').textContent = score + ' points';
+    document.getElementById('score-display').textContent = score + ' points';
     document.getElementById('record-button').style.display = 'none';
 
     setTimeout(() => {
         document.getElementById('feedback').classList.remove('show');
         document.getElementById('feedback').style.display = 'none';
-        
-        if (currentRound + 1 >= totalRounds) {
-            completeGame();
-        } else {
-            currentRound++;
-            startNewRound();
-        }
+        if (currentRound + 1 >= totalRounds) completeGame();
+        else { currentRound++; startNewRound(); }
     }, 3500);
 }
 
 function showFeedback(message, isCorrect, details = []) {
     const feedbackElement = document.getElementById('feedback');
-    const feedbackMessage = document.getElementById('feedback-message');
-    const feedbackDetail = document.getElementById('feedback-detail');
-    const analysisBox = document.getElementById('analysis-box');
-    
-    feedbackMessage.textContent = message;
-    feedbackDetail.textContent = details.join(' • ');
-    
-    let analysisHTML = '<div class="stat-row"><span class="stat-label">Animal:</span><span class="stat-value">' + currentAnimal.name + '</span></div>';
-    analysisHTML += '<div class="stat-row"><span class="stat-label">Sonido esperado:</span><span class="stat-value">' + currentAnimal.sound + '</span></div>';
-    analysisHTML += '<div class="stat-row"><span class="stat-label">Puntos ganados:</span><span class="stat-value">' + Math.floor(document.getElementById('similarity-text').textContent) / 10 + ' pts</span></div>';
-    
-    analysisBox.innerHTML = analysisHTML;
-    
+    document.getElementById('feedback-message').textContent = message;
+    document.getElementById('feedback-detail').textContent = details.join(' • ');
+
+    let html = '<div class="stat-row"><span class="stat-label">Animal:</span><span class="stat-value">' + (currentAnimal ? currentAnimal.name : '') + '</span></div>';
+    html += '<div class="stat-row"><span class="stat-label">Expected sound:</span><span class="stat-value">' + (currentAnimal ? currentAnimal.sound : '') + '</span></div>';
+    html += '<div class="stat-row"><span class="stat-label">Points earned:</span><span class="stat-value">' + (parseInt(document.getElementById('similarity-text').textContent) / 10 | 0) + ' pts</span></div>';
+    document.getElementById('analysis-box').innerHTML = html;
+
     feedbackElement.className = isCorrect ? 'feedback show correct' : 'feedback show incorrect';
     feedbackElement.style.display = 'block';
 }
 
-// --- Función completeGame actualizada ---
 async function completeGame() {
     const mainCard = document.getElementById('main-card');
     const report = analyzer.getSessionReport();
-    
-    // Preparar el objeto para Koyeb
-    const gameData = {
-        gameId: 'imitacion-animales-1',
-        style: 'auditivo',
-        level: analyzer.currentDifficulty === 'hard' ? 3 : (analyzer.currentDifficulty === 'medium' ? 2 : 1),
-        score: score,
-        accuracy: report.averageAccuracy,
-        responseTime: 0 // Opcional en este juego
-    };
 
-    mainCard.innerHTML = '<div class="game-completed"><h2>Guardando tu progreso...</h2></div>';
-
-    try {
-        await api.saveGameResults(gameData);
-    } catch (error) {
-        console.error("Error al guardar:", error);
-    }
-
-    // Renderizar reporte final
     mainCard.innerHTML = `
         <div class="game-completed">
-            <h2 style="margin-bottom: 20px; color: #0066CC;">¡Sesión de Sonidos Terminada!</h2>
+            <h2 style="margin-bottom:20px;color:#0066CC;">Sound Session Complete!</h2>
             <div class="final-score">
-                <h2>Puntuación Final:</h2>
+                <h2>Final Score:</h2>
                 <div class="score-number">${score}</div>
-                <p>puntos</p>
+                <p>points</p>
             </div>
             <div class="analysis-box">
-                <h3 style="text-align: center; margin-bottom: 15px; color: #0066CC;">📊 Análisis Vocal</h3>
-                <div class="stat-row"><span class="stat-label">🎤 Imitación:</span><span class="stat-value">${report.imitationScore}%</span></div>
-                <div class="stat-row"><span class="stat-label">👂 Discriminación:</span><span class="stat-value">${report.discriminationScore}%</span></div>
-                <div class="stat-row"><span class="stat-label">⚠️ Confusiones:</span><span class="stat-value">${report.confusionsDetected}</span></div>
+                <h3 style="text-align:center;margin-bottom:15px;color:#0066CC;">📊 Vocal Analysis</h3>
+                <div class="stat-row"><span class="stat-label">🎤 Imitation:</span><span class="stat-value">${report.imitationScore}%</span></div>
+                <div class="stat-row"><span class="stat-label">👂 Discrimination:</span><span class="stat-value">${report.discriminationScore}%</span></div>
+                <div class="stat-row"><span class="stat-label">⚠️ Confusions:</span><span class="stat-value">${report.confusionsDetected}</span></div>
             </div>
-            <div class="options-container" style="margin-top: 20px;">
-                <button class="option-button primary" onclick="location.reload()">Jugar de Nuevo</button>
-                <button class="option-button blue" onclick="goToMainPage()">Volver</button>
+            <div class="options-container" style="margin-top:20px;">
+                <button class="option-button primary" onclick="location.reload()">Play Again</button>
+                <button class="option-button blue" onclick="goToMainPage()">Back</button>
             </div>
         </div>`;
 }
 
 function goToMainPage() {
-    window.location.href = 'https://plekdev.github.io/BlueMinds/selectores/selector-auditivo.html';
+    window.location.href = '../../../../';
 }
-
-// Iniciar tiempo de ronda
-const roundStartTime = performance.now();

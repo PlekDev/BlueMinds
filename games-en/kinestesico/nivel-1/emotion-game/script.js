@@ -1,10 +1,9 @@
-// Variables globales
+// Global variables
 let currentRound = 0;
 let score = 0;
 let currentEmotion = null;
 let options = [];
 let showFeedback = false;
-let videoSpeed = 1;
 let cameraActive = false;
 let movementAnalysisData = {
     bodyImitation: 0,
@@ -14,34 +13,29 @@ let movementAnalysisData = {
 };
 
 const emotions = [
-    { name: "Feliz", color: "primary", videoUrl: "https://i.pinimg.com/originals/20/57/74/2057740a1b96ddb0b0a306b20cf4d666.gif" },
-    { name: "Triste", color: "blue", videoUrl: "https://cdnl.iconscout.com/lottie/premium/thumb/nina-llorando-a-fuerza-5105643-4277861.gif" },
-    { name: "Enojado", color: "red", videoUrl: "https://media.tenor.com/WYkqpAQVImkAAAAM/euphoria-boy.gif" },
-    { name: "Asustado", color: "purple", videoUrl: "https://media.tenor.com/azK-UXf7o5cAAAAM/anime-scream.gif" },
-    { name: "Sorprendido", color: "accent", videoUrl: "https://cdn-icons-gif.flaticon.com/11175/11175756.gif" },
+    { name: "Happy",     color: "primary", videoUrl: "https://i.pinimg.com/originals/20/57/74/2057740a1b96ddb0b0a306b20cf4d666.gif" },
+    { name: "Sad",       color: "blue",    videoUrl: "https://cdnl.iconscout.com/lottie/premium/thumb/nina-llorando-a-fuerza-5105643-4277861.gif" },
+    { name: "Angry",     color: "red",     videoUrl: "https://media.tenor.com/WYkqpAQVImkAAAAM/euphoria-boy.gif" },
+    { name: "Scared",    color: "purple",  videoUrl: "https://media.tenor.com/azK-UXf7o5cAAAAM/anime-scream.gif" },
+    { name: "Surprised", color: "accent",  videoUrl: "https://cdn-icons-gif.flaticon.com/11175/11175756.gif" },
 ];
 
 const totalRounds = 5;
 
-// ================== INICIALIZACIÓN ==================
-document.addEventListener('DOMContentLoaded', () => {
-    startNewRound();
-});
+// ================== INITIALIZATION ==================
+document.addEventListener('DOMContentLoaded', () => { startNewRound(); });
 
-// ================== RONDAS ==================
+// ================== ROUNDS ==================
 function startNewRound() {
     const randomEmotion = emotions[Math.floor(Math.random() * emotions.length)];
     currentEmotion = randomEmotion;
-    
+
     const wrongOptions = emotions.filter(e => e.name !== randomEmotion.name)
-        .sort(() => Math.random() - 0.5)
-        .slice(0, 2);
-    
+        .sort(() => Math.random() - 0.5).slice(0, 2);
     options = [randomEmotion, ...wrongOptions].sort(() => Math.random() - 0.5);
+
     showFeedback = false;
-    videoSpeed = 1;
     resetAnalysis();
-    
     updateUI();
     loadEmotionVideo();
 }
@@ -49,51 +43,44 @@ function startNewRound() {
 function completeGame() {
     const emotionCard = document.querySelector('.emotion-card');
     emotionCard.innerHTML = `
-        <h2>¡Juego Completado!</h2>
-        <div style="font-size: 80px; margin: 20px 0;">🎉</div>
+        <h2>Game Complete!</h2>
+        <div style="font-size:80px;margin:20px 0;">🎉</div>
         <div class="feedback correct">
-            <p>Tu puntaje final: ${score} puntos</p>
-            <p style="font-size: 16px; margin-top: 10px;">¡Excelente trabajo en comprensión y expresión emocional!</p>
+            <p>Your final score: ${score} points</p>
+            <p style="font-size:16px;margin-top:10px;">Excellent emotional comprehension and expression!</p>
         </div>
-        <div class="options-container" style="margin-top: 30px;">
+        <div class="options-container" style="margin-top:30px;">
             <button class="option-button primary" onclick="location.reload()">
-                <i class="fas fa-redo"></i> Jugar de Nuevo
+                <i class="fas fa-redo"></i> Play Again
             </button>
             <button class="option-button blue" onclick="goToMainPage()">
-                <i class="fas fa-home"></i> Volver al Menú
+                <i class="fas fa-home"></i> Back to Menu
             </button>
-        </div>
-    `;
+        </div>`;
 }
 
 // ================== VIDEO ==================
 function loadEmotionVideo() {
-    const placeholder = document.querySelector('.video-placeholder');
-    
+    const placeholder = document.getElementById('videoPlaceholder');
     const gifImage = document.createElement('img');
     gifImage.src = currentEmotion.videoUrl;
-    gifImage.style.width = '100%';
-    gifImage.style.height = 'auto';
-    gifImage.style.maxHeight = '300px';
-    gifImage.style.objectFit = 'contain';
-    
+    gifImage.style.cssText = 'width:100%;height:auto;max-height:300px;object-fit:contain;';
     placeholder.innerHTML = '';
     placeholder.appendChild(gifImage);
 }
 
-// ================== INTERFAZ ==================
+// ================== UI ==================
 function updateUI() {
     document.getElementById('current-round').textContent = currentRound + 1;
     document.getElementById('total-rounds').textContent = totalRounds;
-    document.getElementById('score').textContent = score + ' puntos';
-    document.getElementById('score-display').textContent = score + ' puntos';
-    
+    document.getElementById('score').textContent = score + ' points';
+    document.getElementById('score-display').textContent = score + ' points';
+
     const progress = ((currentRound + 1) / totalRounds) * 100;
     document.getElementById('progress-fill').style.width = progress + '%';
-    
+
     const optionsContainer = document.getElementById('options-container');
     optionsContainer.innerHTML = '';
-    
     options.forEach(emotion => {
         const button = document.createElement('button');
         button.className = `option-button ${emotion.color}`;
@@ -101,40 +88,33 @@ function updateUI() {
         button.onclick = () => handleAnswer(emotion.name);
         optionsContainer.appendChild(button);
     });
-    
+
     document.getElementById('feedback').classList.add('hidden');
     document.getElementById('aiAnalysis').style.display = 'none';
 }
 
-// ================== CÁMARA ==================
+// ================== CAMERA ==================
 async function startCamera() {
     try {
-        const stream = await navigator.mediaDevices.getUserMedia({
-            video: { width: { ideal: 1280 }, height: { ideal: 720 } }
-        });
-        
+        const stream = await navigator.mediaDevices.getUserMedia({ video: true });
         const video = document.getElementById('cameraFeed');
         video.srcObject = stream;
         video.style.display = 'block';
         document.getElementById('cameraPlaceholder').style.display = 'none';
         document.getElementById('startCameraBtn').style.display = 'none';
         document.getElementById('stopCameraBtn').style.display = 'inline-block';
-        
         cameraActive = true;
         video.play();
-        
         analyzeMovement();
         document.getElementById('aiAnalysis').style.display = 'block';
     } catch (err) {
-        alert('No se pudo acceder a la cámara: ' + err.message);
+        alert('Could not access the camera: ' + err.message);
     }
 }
 
 function stopCamera() {
     const video = document.getElementById('cameraFeed');
-    if (video.srcObject) {
-        video.srcObject.getTracks().forEach(track => track.stop());
-    }
+    if (video.srcObject) video.srcObject.getTracks().forEach(t => t.stop());
     video.style.display = 'none';
     document.getElementById('cameraPlaceholder').style.display = 'flex';
     document.getElementById('startCameraBtn').style.display = 'inline-block';
@@ -142,95 +122,71 @@ function stopCamera() {
     cameraActive = false;
 }
 
-// ================== ANÁLISIS DE MOVIMIENTO ==================
+// ================== MOVEMENT ANALYSIS ==================
 function analyzeMovement() {
     if (!cameraActive) return;
-    
     const simulatedAnalysis = {
         bodyImitation: Math.floor(Math.random() * 100),
         facialExpression: Math.floor(Math.random() * 100),
-        energyLevel: ['Bajo', 'Medio', 'Alto'][Math.floor(Math.random() * 3)],
+        energyLevel: ['Low', 'Medium', 'High'][Math.floor(Math.random() * 3)],
         emotionalUnderstanding: Math.floor(Math.random() * 100)
     };
-    
     movementAnalysisData = simulatedAnalysis;
-    
     document.getElementById('bodyImitation').textContent = simulatedAnalysis.bodyImitation + '%';
     document.getElementById('facialExpression').textContent = simulatedAnalysis.facialExpression + '%';
     document.getElementById('energyLevel').textContent = simulatedAnalysis.energyLevel;
     document.getElementById('emotionalUnderstanding').textContent = simulatedAnalysis.emotionalUnderstanding + '%';
-    
     checkAdaptation();
-    
     setTimeout(analyzeMovement, 1000);
 }
 
 function checkAdaptation() {
     const notice = document.getElementById('adaptationNotice');
     const text = document.getElementById('adaptationText');
-    
     if (movementAnalysisData.bodyImitation < 40) {
         notice.classList.remove('hidden');
-        text.textContent = '¡Muévete un poco más! Trata de imitar los movimientos del video.';
-        reduceVideoSpeed();
+        text.textContent = 'Move a bit more! Try to imitate the movements in the video.';
     } else if (movementAnalysisData.emotionalUnderstanding < 50) {
         notice.classList.remove('hidden');
-        text.textContent = 'Parece que la emoción es un poco compleja. Aquí te muestro una versión más simple...';
+        text.textContent = 'This emotion is a bit complex. Here is a simpler version...';
     } else {
         notice.classList.add('hidden');
     }
 }
 
-function reduceVideoSpeed() {
-    // Los GIFs no se pueden ralentizar directamente, pero podemos mostrar una notificación
-    // En una implementación real, podrías usar una librería para controlar GIFs
-}
-
 function resetAnalysis() {
-    movementAnalysisData = {
-        bodyImitation: 0,
-        facialExpression: 0,
-        energyLevel: 'Neutral',
-        emotionalUnderstanding: 0
-    };
+    movementAnalysisData = { bodyImitation: 0, facialExpression: 0, energyLevel: 'Neutral', emotionalUnderstanding: 0 };
 }
 
-// ================== RESPUESTAS ==================
+// ================== ANSWERS ==================
 function handleAnswer(selectedName) {
     if (showFeedback) return;
-    
     stopCamera();
-    
     const isCorrect = selectedName === currentEmotion.name;
     const feedbackElement = document.getElementById('feedback');
     const feedbackText = document.getElementById('feedback-text');
-    
+
     if (isCorrect) {
         score += 20;
-        feedbackText.textContent = "¡Correcto! 🎉 Excelente imitación emocional";
+        feedbackText.textContent = "Correct! 🎉 Excellent emotional imitation";
         feedbackElement.className = 'feedback correct';
     } else {
-        feedbackText.textContent = `No es correcto. Era: ${currentEmotion.name}`;
+        feedbackText.textContent = `Not quite. It was: ${currentEmotion.name}`;
         feedbackElement.className = 'feedback incorrect';
     }
-    
+
     feedbackElement.classList.remove('hidden');
     showFeedback = true;
-    
-    document.getElementById('score').textContent = score + ' puntos';
-    document.getElementById('score-display').textContent = score + ' puntos';
-    
+    document.getElementById('score').textContent = score + ' points';
+    document.getElementById('score-display').textContent = score + ' points';
+
     setTimeout(() => {
-        if (currentRound + 1 >= totalRounds) {
-            completeGame();
-        } else {
-            currentRound++;
-            startNewRound();
-        }
+        if (currentRound + 1 >= totalRounds) completeGame();
+        else { currentRound++; startNewRound(); }
     }, 2500);
 }
 
-// ================== NAVEGACIÓN ==================
+// ================== NAVIGATION ==================
 function goToMainPage() {
-    window.location.href = 'https://plekdev.github.io/BlueMinds/selectores/selector-kinestesico.html';
+    window.location.href = '../../../';
 }

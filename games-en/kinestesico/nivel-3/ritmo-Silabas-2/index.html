@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ritmo de las Sílabas Simple - Neuro Play World</title>
+    <title>Simple Syllable Rhythm - Neuro Play World</title>
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="style.css">
@@ -12,80 +12,79 @@
     <div class="game-container">
         <header class="game-header">
             <div class="back-button">
-                <button onclick="goToMainPage()">
-                    <i class="fas fa-arrow-left"></i> Volver
-                </button>
+                <button onclick="goToMainPage()"><i class="fas fa-arrow-left"></i> Back</button>
             </div>
-            <h1 class="game-title">Ritmo de las Sílabas</h1>
-            <div class="game-info">
-                <span id="score-display">0 puntos</span>
-            </div>
+            <h1 class="game-title">Simple Syllable Rhythm</h1>
+            <div class="game-info"><span id="score-display">0 points</span></div>
         </header>
 
         <main class="game-content">
-            <!-- Progress -->
             <div class="progress-card">
                 <div class="progress-header">
-                    <span>Ronda <span id="current-round">1</span> de <span id="total-rounds">3</span></span>
-                    <span id="score">0 puntos</span>
+                    <span>Round <span id="current-round">1</span> of <span id="total-rounds">3</span></span>
+                    <span id="score">0 points</span>
                 </div>
-                <div class="progress-bar">
-                    <div id="progress-fill" class="progress-fill"></div>
-                </div>
+                <div class="progress-bar"><div id="progress-fill" class="progress-fill"></div></div>
             </div>
 
-            <!-- Main Game Card -->
             <div class="rhythm-card">
-                <h2>Sigue el Ritmo 🎵</h2>
+                <h2>Follow the Syllable Rhythm 🎵</h2>
 
-                <!-- Syllable Display -->
-                <div class="syllable-stage">
-                    <div id="syllables-container" class="syllables-container">
-                        <!-- Las sílabas se generarán dinámicamente -->
+                <div class="difficulty-level">
+                    <span>Speed:</span>
+                    <div class="speed-indicator">
+                        <span class="speed-dot active" id="speed1"></span>
+                        <span class="speed-dot" id="speed2"></span>
+                        <span class="speed-dot" id="speed3"></span>
                     </div>
                 </div>
 
-                <!-- Tap Detection Area -->
+                <div class="syllable-stage">
+                    <div id="syllables-container" class="syllables-container"></div>
+                </div>
+
                 <div class="tap-area" id="tapArea">
-                    <div class="tap-instruction">
-                        👏 Haz clic aquí al ritmo
-                    </div>
+                    <div class="tap-instruction">👏 Click here to the rhythm</div>
                     <div class="tap-feedback" id="tapFeedback"></div>
                 </div>
 
-                <!-- Simple Feedback -->
-                <div id="feedback" class="feedback hidden">
-                    <span id="feedback-text"></span>
+                <div class="audio-analysis" id="audioAnalysis" style="display:none;">
+                    <h4>🎤 Rhythm Analysis</h4>
+                    <div class="analysis-metrics">
+                        <div class="metric"><span class="metric-label">Rhythm Detected:</span><span class="metric-value" id="rhythmDetected">--%</span></div>
+                        <div class="metric"><span class="metric-label">Motor Precision:</span><span class="metric-value" id="motorPrecision">--%</span></div>
+                        <div class="metric"><span class="metric-label">Syllable Repetition:</span><span class="metric-value" id="syllableRepetition">--%</span></div>
+                    </div>
                 </div>
 
-                <!-- Controls -->
                 <div class="action-controls">
                     <button id="start-button" class="action-button primary">
-                        <i class="fas fa-play"></i> Escuchar Palabra
+                        <i class="fas fa-play"></i> Listen to Word
                     </button>
                 </div>
 
-                <!-- Speech Recognition -->
-                <div class="speech-section" id="speechSection" style="display: none;">
-                    <h4>🎤 Repite la Palabra</h4>
+                <div class="speech-section" id="speechSection" style="display:none;">
+                    <h4>🎤 Repeat the Word</h4>
                     <button id="listen-button" class="listen-button">
-                        <i class="fas fa-microphone"></i> Escuchar
+                        <i class="fas fa-microphone"></i> Listen
                     </button>
                     <div id="speech-feedback" class="speech-feedback hidden">
                         <span id="speech-text"></span>
                     </div>
                 </div>
+
+                <div id="adaptationNotice" class="adaptation-notice hidden">
+                    <i class="fas fa-lightbulb"></i><span id="adaptationText"></span>
+                </div>
+
+                <div id="feedback" class="feedback hidden"><span id="feedback-text"></span></div>
             </div>
 
-            <!-- Instructions -->
             <div class="instructions-card">
-                <p>
-                    💡 <span class="font-bold">Cómo jugar:</span> Escucha la palabra. Haz clic al ritmo de las sílabas y luego repite la palabra.
-                </p>
+                <p>💡 <span class="font-bold">How to play:</span> Listen to the word divided into syllables. Follow the rhythm by clicking, then repeat the full word.</p>
             </div>
         </main>
     </div>
-
     <script src="script.js"></script>
 </body>
 </html>

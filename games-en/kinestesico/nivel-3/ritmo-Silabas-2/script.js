@@ -1,29 +1,20 @@
-// Variables globales
-let currentRound = 0;
-let score = 0;
-let currentWord = null;
-let syllables = [];
-let isPlaying = false;
-let tapCount = 0;
-let expectedTaps = 0;
+let currentRound = 0, score = 0, currentWord = null, syllables = [], isPlaying = false, tapCount = 0, expectedTaps = 0;
 
+// Simple English words for level 3
 const words = [
-    { word: "casa", syllables: ["CA", "SA"] },
-    { word: "mesa", syllables: ["ME", "SA"] },
-    { word: "mano", syllables: ["MA", "NO"] },
-    { word: "libro", syllables: ["LI", "BRO"] },
-    { word: "gato", syllables: ["GA", "TO"] },
-    { word: "sol", syllables: ["SOL"] },
+    { word: "cat",   syllables: ["CAT"]        },
+    { word: "dog",   syllables: ["DOG"]        },
+    { word: "sun",   syllables: ["SUN"]        },
+    { word: "moon",  syllables: ["MOON"]       },
+    { word: "tree",  syllables: ["TREE"]       },
+    { word: "apple", syllables: ["AP", "PLE"]  },
+    { word: "happy", syllables: ["HAP", "PY"]  },
+    { word: "water", syllables: ["WA", "TER"]  },
 ];
-
 const totalRounds = 3;
 let currentSyllableIndex = 0;
 
-// ================== INICIALIZACIÓN ==================
-document.addEventListener('DOMContentLoaded', () => {
-    setupEventListeners();
-    startNewRound();
-});
+document.addEventListener('DOMContentLoaded', () => { setupEventListeners(); startNewRound(); });
 
 function setupEventListeners() {
     document.getElementById('start-button').addEventListener('click', startRhythmActivity);
@@ -31,267 +22,146 @@ function setupEventListeners() {
     document.getElementById('tapArea').addEventListener('click', onTap);
 }
 
-// ================== RONDAS ==================
 function startNewRound() {
     const randomWord = words[Math.floor(Math.random() * words.length)];
-    currentWord = randomWord;
-    syllables = randomWord.syllables;
-    tapCount = 0;
-    expectedTaps = syllables.length;
-    isPlaying = false;
-    currentSyllableIndex = 0;
-    
+    currentWord = randomWord; syllables = randomWord.syllables;
+    tapCount = 0; expectedTaps = syllables.length; isPlaying = false; currentSyllableIndex = 0;
     updateUI();
 }
 
 function completeGame() {
-    const rhythmCard = document.querySelector('.rhythm-card');
-    rhythmCard.innerHTML = `
-        <h2>¡Actividad Completada! 🎉</h2>
-        <div class="syllable-stage" style="display: flex; align-items: center; justify-content: center; min-height: 200px;">
-            <div style="font-size: 80px;">🌟</div>
-        </div>
+    document.querySelector('.rhythm-card').innerHTML = `
+        <h2>Activity Complete! 🎉</h2>
+        <div class="syllable-stage" style="display:flex;align-items:center;justify-content:center;min-height:200px;"><div style="font-size:80px;">🌟</div></div>
         <div class="feedback correct">
-            <p style="font-size: 28px; margin: 20px 0;">Tu puntaje final: ${score} puntos</p>
-            <p style="font-size: 16px;">¡Excelente ritmo y memoria auditiva!</p>
+            <p style="font-size:28px;margin:20px 0;">Your final score: ${score} points</p>
+            <p style="font-size:16px;">Excellent rhythm and auditory memory!</p>
         </div>
         <div class="action-controls">
-            <button class="action-button primary" onclick="location.reload()">
-                <i class="fas fa-redo"></i> Jugar de Nuevo
-            </button>
-            <button class="action-button primary" onclick="goToMainPage()">
-                <i class="fas fa-home"></i> Volver al Menú
-            </button>
-        </div>
-    `;
+            <button class="action-button primary" onclick="location.reload()"><i class="fas fa-redo"></i> Play Again</button>
+            <button class="action-button primary" onclick="goToMainPage()"><i class="fas fa-home"></i> Back</button>
+        </div>`;
 }
 
-// ================== INTERFAZ ==================
 function updateUI() {
     document.getElementById('current-round').textContent = currentRound + 1;
     document.getElementById('total-rounds').textContent = totalRounds;
-    document.getElementById('score').textContent = score + ' puntos';
-    document.getElementById('score-display').textContent = score + ' puntos';
-    
-    const progress = ((currentRound + 1) / totalRounds) * 100;
-    document.getElementById('progress-fill').style.width = progress + '%';
-    
-    // Crear sílabas
+    document.getElementById('score').textContent = score + ' points';
+    document.getElementById('score-display').textContent = score + ' points';
+    document.getElementById('progress-fill').style.width = ((currentRound + 1) / totalRounds * 100) + '%';
     displaySyllables();
-    
-    // Resetear botones
-    const startButton = document.getElementById('start-button');
-    startButton.innerHTML = '<i class="fas fa-play"></i> Escuchar Palabra';
-    startButton.disabled = false;
-    
-    // Ocultar secciones
+    const sb = document.getElementById('start-button');
+    sb.innerHTML = '<i class="fas fa-play"></i> Listen to Word'; sb.disabled = false;
     document.getElementById('speechSection').style.display = 'none';
+    document.getElementById('audioAnalysis').style.display = 'none';
     document.getElementById('feedback').classList.add('hidden');
-    
-    // Resetear área de golpeo
-    const tapArea = document.getElementById('tapArea');
-    tapArea.classList.remove('active');
+    document.getElementById('adaptationNotice').classList.add('hidden');
+    document.getElementById('tapArea').classList.remove('active');
     document.getElementById('tapFeedback').textContent = '';
     tapCount = 0;
+    ['speed1','speed2','speed3'].forEach((id,i) => {
+        document.getElementById(id).classList.toggle('active', i === 0);
+    });
 }
 
 function displaySyllables() {
     const container = document.getElementById('syllables-container');
     container.innerHTML = '';
-    
     syllables.forEach((syllable, index) => {
-        const syllableElement = document.createElement('div');
-        syllableElement.className = 'syllable';
-        syllableElement.textContent = syllable;
-        syllableElement.id = `syllable-${index}`;
-        container.appendChild(syllableElement);
+        const el = document.createElement('div');
+        el.className = 'syllable'; el.textContent = syllable; el.id = `syllable-${index}`;
+        container.appendChild(el);
     });
 }
 
-// ================== ACTIVIDAD PRINCIPAL ==================
 async function startRhythmActivity() {
     if (isPlaying) return;
-    
     isPlaying = true;
-    const startButton = document.getElementById('start-button');
-    startButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Reproduciendo...';
-    startButton.disabled = true;
-    
-    // Reproducir sílabas con ritmo
+    const sb = document.getElementById('start-button');
+    sb.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Playing...'; sb.disabled = true;
+    document.getElementById('audioAnalysis').style.display = 'block';
     await playSyllablesWithRhythm();
-    
-    // Activar área de golpeo
-    const tapArea = document.getElementById('tapArea');
-    tapArea.classList.add('active');
-    
-    startButton.innerHTML = '<i class="fas fa-redo"></i> Repetir';
-    startButton.disabled = false;
+    document.getElementById('tapArea').classList.add('active');
+    sb.innerHTML = '<i class="fas fa-redo"></i> Repeat'; sb.disabled = false;
 }
 
 async function playSyllablesWithRhythm() {
-    const timeBetweenSyllables = 700; // Tiempo constante para nivel simple
-    
+    const timeBetweenSyllables = 700;
     for (let i = 0; i < syllables.length; i++) {
         currentSyllableIndex = i;
         await highlightSyllable(i, timeBetweenSyllables);
-        
-        // Reproducir sonido de la sílaba
-        const syllableText = syllables[i];
-        speakSyllable(syllableText);
-        
-        // Esperar a que termine la sílaba
+        speakSyllable(syllables[i]);
         await new Promise(resolve => setTimeout(resolve, timeBetweenSyllables));
     }
-    
     currentSyllableIndex = 0;
-    
-    // Después de reproducir, esperar entrada del usuario
-    setTimeout(() => {
-        document.getElementById('speechSection').style.display = 'block';
-    }, 500);
+    setTimeout(() => { document.getElementById('speechSection').style.display = 'block'; }, 500);
 }
 
 function highlightSyllable(index, duration) {
     return new Promise(resolve => {
-        const syllableElement = document.getElementById(`syllable-${index}`);
-        
-        syllableElement.classList.add('pulse', 'active');
-        
-        setTimeout(() => {
-            syllableElement.classList.remove('pulse', 'active');
-            resolve();
-        }, duration * 0.8);
+        const el = document.getElementById(`syllable-${index}`);
+        el.classList.add('pulse', 'active');
+        setTimeout(() => { el.classList.remove('pulse', 'active'); resolve(); }, duration * 0.8);
     });
 }
 
 function speakSyllable(text) {
     const utterance = new SpeechSynthesisUtterance(text);
-    utterance.lang = 'en-US';
-    utterance.rate = 1;
-    utterance.pitch = 1.1;
-    utterance.volume = 1;
+    utterance.lang = 'en-US'; utterance.rate = 0.85; utterance.pitch = 1.1; utterance.volume = 1;
     speechSynthesis.speak(utterance);
 }
 
-// ================== DETECCIÓN DE GOLPEO ==================
 function onTap() {
     if (!isPlaying) return;
-    
     tapCount++;
-    
-    // Mostrar feedback
     const tapFeedback = document.getElementById('tapFeedback');
-    tapFeedback.textContent = '👏';
-    tapFeedback.classList.add('tap-detected');
-    
-    setTimeout(() => {
-        tapFeedback.classList.remove('tap-detected');
-    }, 500);
-    
-    // Verificar si completó los golpes
+    tapFeedback.textContent = '👏'; tapFeedback.classList.add('tap-detected');
+    setTimeout(() => tapFeedback.classList.remove('tap-detected'), 500);
     if (tapCount === expectedTaps) {
-        showFeedback('¡Excelente ritmo! 🎉', true);
-        setTimeout(() => {
-            document.getElementById('speechSection').style.display = 'block';
-        }, 800);
+        document.getElementById('feedback-text').textContent = 'Great rhythm! 🎉';
+        document.getElementById('feedback').className = 'feedback correct';
+        document.getElementById('feedback').classList.remove('hidden');
+        setTimeout(() => { document.getElementById('speechSection').style.display = 'block'; }, 800);
     } else if (tapCount > expectedTaps) {
-        showFeedback('Demasiados golpes, intenta de nuevo', false);
-        resetTapArea();
+        document.getElementById('feedback-text').textContent = 'Too many taps, try again';
+        document.getElementById('feedback').className = 'feedback incorrect';
+        document.getElementById('feedback').classList.remove('hidden');
+        document.getElementById('tapArea').classList.remove('active'); tapCount = 0;
+        document.getElementById('tapFeedback').textContent = '';
     }
 }
 
-function resetTapArea() {
-    const tapArea = document.getElementById('tapArea');
-    tapArea.classList.remove('active');
-    tapCount = 0;
-    document.getElementById('tapFeedback').textContent = '';
-}
-
-function showFeedback(message, isCorrect) {
-    const feedbackElement = document.getElementById('feedback');
-    const feedbackText = document.getElementById('feedback-text');
-    
-    feedbackText.textContent = message;
-    feedbackElement.className = isCorrect ? 'feedback correct' : 'feedback incorrect';
-    feedbackElement.classList.remove('hidden');
-}
-
-// ================== RECONOCIMIENTO DE VOZ ==================
 async function startSpeechRecognition() {
     const listenButton = document.getElementById('listen-button');
-    listenButton.disabled = true;
-    listenButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Escuchando...';
-    
+    listenButton.disabled = true; listenButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Listening...';
     const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-    
-    if (!SpeechRecognition) {
-        showSpeechFeedback('Tu navegador no soporta reconocimiento de voz', false);
-        listenButton.disabled = false;
-        listenButton.innerHTML = '<i class="fas fa-microphone"></i> Escuchar';
-        return;
-    }
-    
+    if (!SpeechRecognition) { listenButton.disabled = false; listenButton.innerHTML = '<i class="fas fa-microphone"></i> Listen'; return; }
     const recognition = new SpeechRecognition();
-    recognition.lang = 'en-US';
-    recognition.continuous = false;
-    recognition.interimResults = false;
-    
+    recognition.lang = 'en-US'; recognition.continuous = false; recognition.interimResults = false;
     recognition.onresult = (event) => {
         const transcript = event.results[0][0].transcript.toLowerCase();
         const targetWord = currentWord.word.toLowerCase();
-        
         const isSimilar = transcript.includes(targetWord) || targetWord.includes(transcript);
-        
+        const feedback = document.getElementById('speech-feedback');
         if (isSimilar) {
             score += 20;
-            showSpeechFeedback('¡Excelente! 🎉 Repetiste correctamente', true);
+            document.getElementById('speech-text').textContent = 'Excellent! 🎉 You said it correctly';
+            feedback.className = 'speech-feedback correct'; feedback.classList.remove('hidden');
+            document.getElementById('score').textContent = score + ' points';
+            document.getElementById('score-display').textContent = score + ' points';
+            setTimeout(() => {
+                if (currentRound + 1 >= totalRounds) completeGame();
+                else { currentRound++; startNewRound(); }
+            }, 2000);
         } else {
-            showSpeechFeedback(`Escuchamos: "${transcript}". Intenta de nuevo`, false);
+            document.getElementById('speech-text').textContent = `We heard: "${transcript}". Try again`;
+            feedback.className = 'speech-feedback incorrect'; feedback.classList.remove('hidden');
         }
-        
-        document.getElementById('score').textContent = score + ' puntos';
-        document.getElementById('score-display').textContent = score + ' puntos';
-        
-        listenButton.disabled = false;
-        listenButton.innerHTML = '<i class="fas fa-microphone"></i> Escuchar';
+        listenButton.disabled = false; listenButton.innerHTML = '<i class="fas fa-microphone"></i> Listen';
     };
-    
-    recognition.onerror = (event) => {
-        showSpeechFeedback('Error en reconocimiento de voz', false);
-        listenButton.disabled = false;
-        listenButton.innerHTML = '<i class="fas fa-microphone"></i> Escuchar';
-    };
-    
+    recognition.onerror = () => { listenButton.disabled = false; listenButton.innerHTML = '<i class="fas fa-microphone"></i> Listen'; };
     recognition.start();
-    
-    setTimeout(() => {
-        if (listenButton.disabled) {
-            recognition.stop();
-        }
-    }, 5000);
+    setTimeout(() => { if (listenButton.disabled) recognition.stop(); }, 5000);
 }
 
-function showSpeechFeedback(message, isCorrect) {
-    const feedback = document.getElementById('speech-feedback');
-    const feedbackText = document.getElementById('speech-text');
-    
-    feedbackText.textContent = message;
-    feedback.className = isCorrect ? 'speech-feedback correct' : 'speech-feedback incorrect';
-    feedback.classList.remove('hidden');
-    
-    if (isCorrect) {
-        setTimeout(() => {
-            if (currentRound + 1 >= totalRounds) {
-                completeGame();
-            } else {
-                currentRound++;
-                startNewRound();
-            }
-        }, 2000);
-    }
-}
-
-// ================== NAVEGACIÓN ==================
-function goToMainPage() {
-    window.location.href = 'https://plekdev.github.io/BlueMinds/selectores/selector-kinestesico.html';
-}
+function goToMainPage() { window.location.href = '../../../../'; }

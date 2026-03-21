@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>La Cadena de Palabras - Neuro Play World</title>
+    <title>The Word Chain - Neuro Play World</title>
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="style.css">
@@ -13,21 +13,21 @@
         <header class="game-header">
             <div class="back-button">
                 <button onclick="goToMainPage()">
-                    <i class="fas fa-arrow-left"></i> Volver
+                    <i class="fas fa-arrow-left"></i> Back
                 </button>
             </div>
-            <h1 class="game-title">La Cadena de Palabras</h1>
+            <h1 class="game-title">The Word Chain</h1>
             <div class="game-info">
-              <div class="score-container"style="display: flex; flex-direction: column; align-items: flex-end;">
-                <span id="score-display">0 puntos</span>
+              <div class="score-container" style="display: flex; flex-direction: column; align-items: flex-end;">
+                <span id="score-display">0 points</span>
               </div>
             </div>
         </header>
 
         <div class="progress-card">
             <div class="progress-header">
-                <span>Ronda <span id="current-round">1</span> de <span id="total-rounds">5</span></span>
-                <span id="score">0 puntos</span>
+                <span>Round <span id="current-round">1</span> of <span id="total-rounds">5</span></span>
+                <span id="score">0 points</span>
             </div>
             <div class="progress-bar">
                 <div id="progress-fill" class="progress-fill"></div>
@@ -35,43 +35,41 @@
         </div>
 
         <div class="main-card" id="main-card">
-            <h2>Escucha y ordena las palabras</h2>
+            <h2>Listen and order the words</h2>
 
             <div class="difficulty-info">
-                <div id="difficulty-badge" class="difficulty-badge easy">Dificultad: Fácil</div>
-                <p class="instruction-text" id="instruction-text">Presiona el botón para escuchar una cadena de palabras, luego selecciona las imágenes en el orden correcto</p>
+                <div id="difficulty-badge" class="difficulty-badge easy">Difficulty: Easy</div>
+                <p class="instruction-text" id="instruction-text">Press the button to listen to a chain of words, then select the images in the correct order</p>
             </div>
 
             <div class="audio-controls">
                 <button id="play-button" class="btn primary">
-                    <i class="fas fa-volume-up"></i> Escuchar Cadena
+                    <i class="fas fa-volume-up"></i> Listen to Chain
                 </button>
                 <button id="repeat-button" class="btn secondary" style="display: none;">
-                    <i class="fas fa-redo"></i> Repetir
+                    <i class="fas fa-redo"></i> Repeat
                 </button>
             </div>
 
             <div class="sequence-display" id="sequence-display" style="display: none;">
-                <span class="sequence-text" id="sequence-text">Escucha atentamente...</span>
+                <span class="sequence-text" id="sequence-text">Listen carefully...</span>
             </div>
 
-            <div class="images-grid" id="images-grid">
-                <!-- Se genera dinámicamente -->
-            </div>
+            <div class="images-grid" id="images-grid"></div>
 
             <div class="selected-sequence">
-                <div class="selected-sequence-title">Tu selección:</div>
+                <div class="selected-sequence-title">Your selection:</div>
                 <div class="selected-items" id="selected-items">
-                    <span style="color: #9CA3AF;">Selecciona las imágenes en orden</span>
+                    <span style="color: #9CA3AF;">Select the images in order</span>
                 </div>
             </div>
 
             <div class="action-buttons">
                 <button id="check-button" class="btn primary" style="display: none;">
-                    <i class="fas fa-check"></i> Verificar
+                    <i class="fas fa-check"></i> Check
                 </button>
                 <button id="clear-button" class="btn" style="background-color: #EF4444;" onclick="clearSelection()">
-                    <i class="fas fa-trash"></i> Limpiar
+                    <i class="fas fa-trash"></i> Clear
                 </button>
             </div>
 
@@ -84,12 +82,11 @@
 
         <div class="instructions-card">
             <p>
-                💡 <span style="font-weight: 700;">Tip:</span> Escucha con atención las palabras y recuerda el orden en el que las escuchaste. ¡Puedes repetir cuantas veces necesites!
+                💡 <span style="font-weight: 700;">Tip:</span> Listen carefully to the words and remember the order you heard them in. You can repeat as many times as you need!
             </p>
         </div>
     </div>
 
-    <script src="../../../../api.js"></script>
     <script src="script.js"></script>
 </body>
 </html>

@@ -1,32 +1,32 @@
-// Variables globales
+// Global variables
 let currentRound = 0;
 let score = 0;
 let currentWord = null;
 let syllables = [];
 let isPlaying = false;
-let difficulty = 1; // 1-3
+let difficulty = 1;
 let tapCount = 0;
 let expectedTaps = 0;
-let rhythmAnalysis = {
-    rhythm: 0,
-    motorPrecision: 0,
-    syllableRepetition: 0
-};
+let rhythmAnalysis = { rhythm: 0, motorPrecision: 0, syllableRepetition: 0 };
 
+// English words split into syllables
 const words = [
-    { word: "gato", syllables: ["GA", "TO"], difficulty: 1 },
-    { word: "perro", syllables: ["PE", "RRO"], difficulty: 1 },
-    { word: "mariposa", syllables: ["MA", "RI", "PO", "SA"], difficulty: 2 },
-    { word: "elefante", syllables: ["E", "LE", "FAN", "TE"], difficulty: 2 },
-    { word: "computadora", syllables: ["COM", "PU", "TA", "DO", "RA"], difficulty: 3 },
-    { word: "bicicleta", syllables: ["BI", "CI", "CLE", "TA"], difficulty: 2 },
+    { word: "cat",        syllables: ["CAT"],                difficulty: 1 },
+    { word: "dog",        syllables: ["DOG"],                difficulty: 1 },
+    { word: "apple",      syllables: ["AP", "PLE"],          difficulty: 1 },
+    { word: "rabbit",     syllables: ["RAB", "BIT"],         difficulty: 1 },
+    { word: "butterfly",  syllables: ["BUT", "TER", "FLY"],  difficulty: 2 },
+    { word: "elephant",   syllables: ["EL", "E", "PHANT"],   difficulty: 2 },
+    { word: "computer",   syllables: ["COM", "PU", "TER"],   difficulty: 2 },
+    { word: "bicycle",    syllables: ["BI", "CY", "CLE"],    difficulty: 2 },
+    { word: "caterpillar",syllables: ["CAT", "ER", "PIL", "LAR"], difficulty: 3 },
+    { word: "alligator",  syllables: ["AL", "LI", "GA", "TOR"],   difficulty: 3 },
 ];
 
 const totalRounds = 5;
-let syllableTimeout = null;
 let currentSyllableIndex = 0;
 
-// ================== INICIALIZACIÓN ==================
+// ================== INITIALIZATION ==================
 document.addEventListener('DOMContentLoaded', () => {
     setupEventListeners();
     startNewRound();
@@ -36,14 +36,9 @@ function setupEventListeners() {
     document.getElementById('start-button').addEventListener('click', startRhythmActivity);
     document.getElementById('listen-button').addEventListener('click', startSpeechRecognition);
     document.getElementById('tapArea').addEventListener('click', onTap);
-    
-    // Detectar sonido de golpeo (simulado)
-    if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
-        // En producción se usaría Web Audio API para detectar sonido real
-    }
 }
 
-// ================== RONDAS ==================
+// ================== ROUNDS ==================
 function startNewRound() {
     const randomWord = words[Math.floor(Math.random() * words.length)];
     currentWord = randomWord;
@@ -54,60 +49,48 @@ function startNewRound() {
     isPlaying = false;
     currentSyllableIndex = 0;
     resetRhythmAnalysis();
-    
     updateUI();
 }
 
 function completeGame() {
     const rhythmCard = document.querySelector('.rhythm-card');
     rhythmCard.innerHTML = `
-        <h2>¡Actividad Completada! 🎉</h2>
-        <div class="syllable-stage" style="display: flex; align-items: center; justify-content: center; min-height: 200px;">
-            <div style="font-size: 80px; animation: bounce 1s ease-in-out infinite;">🌟</div>
+        <h2>Activity Complete! 🎉</h2>
+        <div class="syllable-stage" style="display:flex;align-items:center;justify-content:center;min-height:200px;">
+            <div style="font-size:80px;">🌟</div>
         </div>
         <div class="feedback correct">
-            <p style="font-size: 28px; margin: 20px 0;">Tu puntaje final: ${score} puntos</p>
-            <p style="font-size: 16px;">¡Excelente conciencia fonológica y ritmo motor!</p>
+            <p style="font-size:28px;margin:20px 0;">Your final score: ${score} points</p>
+            <p style="font-size:16px;">Excellent phonological awareness and motor rhythm!</p>
         </div>
         <div class="action-controls">
-            <button class="action-button primary" onclick="location.reload()">
-                <i class="fas fa-redo"></i> Jugar de Nuevo
-            </button>
-            <button class="action-button primary" onclick="goToMainPage()">
-                <i class="fas fa-home"></i> Volver al Menú
-            </button>
-        </div>
-    `;
+            <button class="action-button primary" onclick="location.reload()"><i class="fas fa-redo"></i> Play Again</button>
+            <button class="action-button primary" onclick="goToMainPage()"><i class="fas fa-home"></i> Back to Menu</button>
+        </div>`;
 }
 
-// ================== INTERFAZ ==================
+// ================== UI ==================
 function updateUI() {
     document.getElementById('current-round').textContent = currentRound + 1;
     document.getElementById('total-rounds').textContent = totalRounds;
-    document.getElementById('score').textContent = score + ' puntos';
-    document.getElementById('score-display').textContent = score + ' puntos';
-    
+    document.getElementById('score').textContent = score + ' points';
+    document.getElementById('score-display').textContent = score + ' points';
+
     const progress = ((currentRound + 1) / totalRounds) * 100;
     document.getElementById('progress-fill').style.width = progress + '%';
-    
-    // Actualizar velocidad
+
     updateSpeedIndicator();
-    
-    // Crear sílabas
     displaySyllables();
-    
-    // Resetear botones
+
     const startButton = document.getElementById('start-button');
-    startButton.innerHTML = '<i class="fas fa-play"></i> Escuchar Palabra';
+    startButton.innerHTML = '<i class="fas fa-play"></i> Listen to Word';
     startButton.disabled = false;
-    
-    // Ocultar secciones
+
     document.getElementById('audioAnalysis').style.display = 'none';
     document.getElementById('speechSection').style.display = 'none';
     document.getElementById('feedback').classList.add('hidden');
     document.getElementById('adaptationNotice').classList.add('hidden');
-    
-    // Resetear área de golpeo
+
     const tapArea = document.getElementById('tapArea');
     tapArea.classList.remove('active');
     document.getElementById('tapFeedback').textContent = '';
@@ -115,262 +98,202 @@ function updateUI() {
 }
 
 function updateSpeedIndicator() {
-    const speeds = [document.getElementById('speed1'), document.getElementById('speed2'), document.getElementById('speed3')];
-    speeds.forEach((speed, index) => {
-        if (index < difficulty) {
-            speed.classList.add('active');
-        } else {
-            speed.classList.remove('active');
-        }
+    ['speed1', 'speed2', 'speed3'].forEach((id, index) => {
+        document.getElementById(id).classList.toggle('active', index < difficulty);
     });
 }
 
 function displaySyllables() {
     const container = document.getElementById('syllables-container');
     container.innerHTML = '';
-    
     syllables.forEach((syllable, index) => {
-        const syllableElement = document.createElement('div');
-        syllableElement.className = 'syllable';
-        syllableElement.textContent = syllable;
-        syllableElement.id = `syllable-${index}`;
-        container.appendChild(syllableElement);
+        const el = document.createElement('div');
+        el.className = 'syllable';
+        el.textContent = syllable;
+        el.id = `syllable-${index}`;
+        container.appendChild(el);
     });
 }
 
-// ================== ACTIVIDAD PRINCIPAL ==================
+// ================== MAIN ACTIVITY ==================
 async function startRhythmActivity() {
     if (isPlaying) return;
-    
     isPlaying = true;
     const startButton = document.getElementById('start-button');
-    startButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Reproduciendo...';
+    startButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Playing...';
     startButton.disabled = true;
-    
-    // Mostrar análisis
+
     document.getElementById('audioAnalysis').style.display = 'block';
-    
-    // Reproducir sílabas con ritmo
     await playSyllablesWithRhythm();
-    
-    // Activar área de golpeo
-    const tapArea = document.getElementById('tapArea');
-    tapArea.classList.add('active');
-    
-    startButton.innerHTML = '<i class="fas fa-redo"></i> Repetir';
+
+    document.getElementById('tapArea').classList.add('active');
+    startButton.innerHTML = '<i class="fas fa-redo"></i> Repeat';
     startButton.disabled = false;
 }
 
 async function playSyllablesWithRhythm() {
-    // Calcular velocidad basada en dificultad
     const speedMultiplier = difficulty === 1 ? 1 : (difficulty === 2 ? 0.85 : 0.7);
     const timeBetweenSyllables = 800 * speedMultiplier;
-    
+
     for (let i = 0; i < syllables.length; i++) {
         currentSyllableIndex = i;
         await highlightSyllable(i, timeBetweenSyllables);
-        
-        // Reproducir sonido de la sílaba
-        const syllableText = syllables[i];
-        speakSyllable(syllableText);
-        
-        // Esperar a que termine la sílaba
+        speakSyllable(syllables[i]);
         await new Promise(resolve => setTimeout(resolve, timeBetweenSyllables));
     }
-    
     currentSyllableIndex = 0;
-    
-    // Después de reproducir, esperar entrada del usuario
-    setTimeout(() => {
-        document.getElementById('speechSection').style.display = 'block';
-    }, 500);
+    setTimeout(() => { document.getElementById('speechSection').style.display = 'block'; }, 500);
 }
 
 function highlightSyllable(index, duration) {
     return new Promise(resolve => {
-        const syllableElement = document.getElementById(`syllable-${index}`);
-        
-        syllableElement.classList.add('pulse', 'active');
-        
-        setTimeout(() => {
-            syllableElement.classList.remove('pulse', 'active');
-            resolve();
-        }, duration * 0.8);
+        const el = document.getElementById(`syllable-${index}`);
+        el.classList.add('pulse', 'active');
+        setTimeout(() => { el.classList.remove('pulse', 'active'); resolve(); }, duration * 0.8);
     });
 }
 
 function speakSyllable(text) {
     const utterance = new SpeechSynthesisUtterance(text);
     utterance.lang = 'en-US';
-    utterance.rate = 1;
+    utterance.rate = 0.9;
     utterance.pitch = 1.1;
     utterance.volume = 1;
     speechSynthesis.speak(utterance);
 }
 
-// ================== DETECCIÓN DE GOLPEO ==================
+// ================== TAP DETECTION ==================
 function onTap() {
     if (!isPlaying) return;
-    
     tapCount++;
-    
-    // Mostrar feedback
     const tapFeedback = document.getElementById('tapFeedback');
     tapFeedback.textContent = '👏';
     tapFeedback.classList.add('tap-detected');
-    
-    setTimeout(() => {
-        tapFeedback.classList.remove('tap-detected');
-    }, 500);
-    
-    // Actualizar análisis
+    setTimeout(() => tapFeedback.classList.remove('tap-detected'), 500);
+
     updateRhythmMetrics();
-    
-    // Verificar si completó los golpes
+
     if (tapCount === expectedTaps) {
-        showFeedback('¡Excelente ritmo! 🎉', true);
+        showFeedback('Great rhythm! 🎉', true);
         setTimeout(() => {
             document.getElementById('audioAnalysis').style.display = 'none';
             document.getElementById('speechSection').style.display = 'block';
         }, 1000);
     } else if (tapCount > expectedTaps) {
-        showFeedback('Demasiados golpes, intenta de nuevo', false);
+        showFeedback('Too many taps, try again', false);
         resetTapArea();
     }
 }
 
 function resetTapArea() {
-    const tapArea = document.getElementById('tapArea');
-    tapArea.classList.remove('active');
+    document.getElementById('tapArea').classList.remove('active');
     tapCount = 0;
     document.getElementById('tapFeedback').textContent = '';
 }
 
-// ================== ANÁLISIS DE RITMO ==================
+// ================== RHYTHM ANALYSIS ==================
 function updateRhythmMetrics() {
-    // Simulación de análisis
     rhythmAnalysis.rhythm = Math.min(100, 50 + (tapCount * 10));
     rhythmAnalysis.motorPrecision = Math.round(70 + Math.random() * 30);
     rhythmAnalysis.syllableRepetition = Math.round(65 + Math.random() * 35);
-    
+
     document.getElementById('rhythmDetected').textContent = rhythmAnalysis.rhythm + '%';
     document.getElementById('motorPrecision').textContent = rhythmAnalysis.motorPrecision + '%';
     document.getElementById('syllableRepetition').textContent = rhythmAnalysis.syllableRepetition + '%';
-    
+
     checkAdaptation();
 }
 
 function checkAdaptation() {
     const notice = document.getElementById('adaptationNotice');
     const text = document.getElementById('adaptationText');
-    
     if (rhythmAnalysis.rhythm < 50) {
         notice.classList.remove('hidden');
-        text.textContent = '💡 Reduce velocidad: Los golpes se hacen más lentamente la próxima vez...';
+        text.textContent = '💡 Slow down: Taps will go more slowly next time...';
     } else if (rhythmAnalysis.motorPrecision < 60) {
         notice.classList.remove('hidden');
-        text.textContent = '🎵 Agregando pistas visuales más claras...';
+        text.textContent = '🎵 Adding clearer visual cues...';
     } else if (difficulty < 3 && rhythmAnalysis.syllableRepetition > 85) {
         notice.classList.remove('hidden');
-        text.textContent = '⭐ ¡Vamos a aumentar la dificultad!';
+        text.textContent = '⭐ Let\'s increase the difficulty!';
     } else {
         notice.classList.add('hidden');
     }
 }
 
 function resetRhythmAnalysis() {
-    rhythmAnalysis = {
-        rhythm: 0,
-        motorPrecision: 0,
-        syllableRepetition: 0
-    };
+    rhythmAnalysis = { rhythm: 0, motorPrecision: 0, syllableRepetition: 0 };
 }
 
 function showFeedback(message, isCorrect) {
     const feedbackElement = document.getElementById('feedback');
-    const feedbackText = document.getElementById('feedback-text');
-    
-    feedbackText.textContent = message;
+    document.getElementById('feedback-text').textContent = message;
     feedbackElement.className = isCorrect ? 'feedback correct' : 'feedback incorrect';
     feedbackElement.classList.remove('hidden');
 }
 
-// ================== RECONOCIMIENTO DE VOZ ==================
+// ================== SPEECH RECOGNITION ==================
 async function startSpeechRecognition() {
     const listenButton = document.getElementById('listen-button');
     listenButton.disabled = true;
-    listenButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Escuchando...';
-    
+    listenButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Listening...';
+
     const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-    
     if (!SpeechRecognition) {
-        showSpeechFeedback('Tu navegador no soporta reconocimiento de voz', false);
+        showSpeechFeedback('Your browser does not support voice recognition', false);
         listenButton.disabled = false;
-        listenButton.innerHTML = '<i class="fas fa-microphone"></i> Escuchar';
+        listenButton.innerHTML = '<i class="fas fa-microphone"></i> Listen';
         return;
     }
-    
+
     const recognition = new SpeechRecognition();
     recognition.lang = 'en-US';
     recognition.continuous = false;
     recognition.interimResults = false;
-    
+
     recognition.onresult = (event) => {
         const transcript = event.results[0][0].transcript.toLowerCase();
         const targetWord = currentWord.word.toLowerCase();
-        
         const isSimilar = transcript.includes(targetWord) || targetWord.includes(transcript);
-        
+
         if (isSimilar) {
             score += (20 * difficulty);
-            showSpeechFeedback('¡Excelente! 🎉 Repetiste correctamente', true);
+            showSpeechFeedback('Excellent! 🎉 You said it correctly', true);
         } else {
-            showSpeechFeedback(`Escuchamos: "${transcript}". Intenta de nuevo`, false);
+            showSpeechFeedback(`We heard: "${transcript}". Try again`, false);
         }
-        
-        document.getElementById('score').textContent = score + ' puntos';
-        document.getElementById('score-display').textContent = score + ' puntos';
-        
+
+        document.getElementById('score').textContent = score + ' points';
+        document.getElementById('score-display').textContent = score + ' points';
         listenButton.disabled = false;
-        listenButton.innerHTML = '<i class="fas fa-microphone"></i> Escuchar';
+        listenButton.innerHTML = '<i class="fas fa-microphone"></i> Listen';
     };
-    
-    recognition.onerror = (event) => {
-        showSpeechFeedback('Error en reconocimiento de voz', false);
+
+    recognition.onerror = () => {
+        showSpeechFeedback('Voice recognition error', false);
         listenButton.disabled = false;
-        listenButton.innerHTML = '<i class="fas fa-microphone"></i> Escuchar';
+        listenButton.innerHTML = '<i class="fas fa-microphone"></i> Listen';
     };
-    
+
     recognition.start();
-    
-    setTimeout(() => {
-        if (listenButton.disabled) {
-            recognition.stop();
-        }
-    }, 5000);
+    setTimeout(() => { if (listenButton.disabled) recognition.stop(); }, 5000);
 }
 
 function showSpeechFeedback(message, isCorrect) {
     const feedback = document.getElementById('speech-feedback');
-    const feedbackText = document.getElementById('speech-text');
-    
-    feedbackText.textContent = message;
+    document.getElementById('speech-text').textContent = message;
     feedback.className = isCorrect ? 'speech-feedback correct' : 'speech-feedback incorrect';
     feedback.classList.remove('hidden');
-    
+
     if (isCorrect) {
         setTimeout(() => {
-            if (currentRound + 1 >= totalRounds) {
-                completeGame();
-            } else {
-                currentRound++;
-                startNewRound();
-            }
+            if (currentRound + 1 >= totalRounds) completeGame();
+            else { currentRound++; startNewRound(); }
         }, 2000);
     }
 }
 
-// ================== NAVEGACIÓN ==================
+// ================== NAVIGATION ==================
 function goToMainPage() {
-    window.location.href = 'https://plekdev.github.io/BlueMinds/selectores/selector-kinestesico.html';
+    window.location.href = '../../../../';
 }

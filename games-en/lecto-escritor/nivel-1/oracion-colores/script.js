@@ -1,399 +1,290 @@
-// Variables globales
+// Global variables
 let currentRound = 0;
 let score = 0;
-let currentSentence = null;
-let words = [];
-let droppedWords = [];
-let draggedElement = null;
+let currentExercise = null;
+let selectedOption = null;
 let difficulty = 'normal';
 let wrongAttempts = 0;
 let hintUsed = false;
-let hintLevel = 0; // 0 = sin pista, 1 = pista visual, 2 = primera palabra marcada
+let errorFrequency = {};
 
-const sentences = [
-    {
-        words: [
-            { text: "El", color: "blue" },
-            { text: "perro", color: "red" },
-            { text: "corre", color: "green" }
-        ],
-        image: "https://img.freepik.com/vector-premium/lindo-perrito-corriendo-ilustracion-dibujos-animados-vector_2699-745.jpg"
-    },
-    {
-        words: [
-            { text: "La", color: "blue" },
-            { text: "niña", color: "red" },
-            { text: "salta", color: "green" }
-        ],
-        image: "https://img.freepik.com/vector-premium/nina-saltando-aislado-blanco_253263-210.jpg?w=2000"
-    },
-    {
-        words: [
-            { text: "El", color: "blue" },
-            { text: "gato", color: "red" },
-            { text: "duerme", color: "green" }
-        ],
-        image: "https://img.freepik.com/vector-premium/dibujo-dibujos-animados-gato-durmiendo_29937-9676.jpg?w=2000"
-    },
-    {
-        words: [
-            { text: "El", color: "blue" },
-            { text: "pájaro", color: "red" },
-            { text: "vuela", color: "green" }
-        ],
-        image: "https://th.bing.com/th/id/R.ce83d3472f6439efaade884fc47b6f1e?rik=L55fb4CfQuAcOQ&riu=http%3a%2f%2fst.depositphotos.com%2f1199300%2f1509%2fv%2f950%2fdepositphotos_15093187-stock-illustration-flying-bird-cartoon-isolated-on.jpg&ehk=8pgE4ap73POBZLUYjAbuQHk4wtZjcI0d%2bviTP29cANQ%3d&risl=&pid=ImgRaw&r=0"
-    },
-    {
-        words: [
-            { text: "El", color: "blue" },
-            { text: "sol", color: "red" },
-            { text: "brilla", color: "green" }
-        ],
-        image: "https://png.pngtree.com/background/20230519/original/pngtree-cartoon-sun-in-a-sunny-landscape-picture-image_2666701.jpg"
-    }
-];
+const exercises = {
+    easy: [
+        {
+            sentence: "The cats is big.",
+            errorWord: "is",
+            correctWord: "are",
+            options: ["are", "am", "was"],
+            errorType: "verb agreement",
+            explanation: "The subject 'the cats' is plural, so the verb must be 'ARE' (plural), not 'IS' (singular).",
+            hint: "Is there one cat or several? Find the word that matches plural subjects."
+        },
+        {
+            sentence: "She have a red ball.",
+            errorWord: "have",
+            correctWord: "has",
+            options: ["has", "had", "having"],
+            errorType: "verb agreement",
+            explanation: "'She' is a third-person singular pronoun, so it needs 'HAS', not 'HAVE'.",
+            hint: "When the subject is 'he', 'she', or 'it', we usually add -s or -es to the verb."
+        },
+        {
+            sentence: "I goes to school every day.",
+            errorWord: "goes",
+            correctWord: "go",
+            options: ["go", "gone", "went"],
+            errorType: "verb agreement",
+            explanation: "With 'I', the base form of the verb is used: 'I GO'. 'Goes' is only for he/she/it.",
+            hint: "Think about which verb form matches the pronoun 'I'."
+        }
+    ],
+    normal: [
+        {
+            sentence: "The childs played in the park.",
+            errorWord: "childs",
+            correctWord: "children",
+            options: ["children", "childs", "child's"],
+            errorType: "irregular plural",
+            explanation: "'Child' has an irregular plural: 'CHILDREN'. You cannot just add -s.",
+            hint: "Some nouns have irregular plurals — think of 'child' becoming something completely different."
+        },
+        {
+            sentence: "She runned very fast in the race.",
+            errorWord: "runned",
+            correctWord: "ran",
+            options: ["ran", "runned", "runs"],
+            errorType: "irregular past tense",
+            explanation: "'Run' has an irregular past tense: 'RAN'. There is no 'runned' in English.",
+            hint: "Some verbs don't follow the regular -ed rule for past tense."
+        },
+        {
+            sentence: "He is more taller than his brother.",
+            errorWord: "more taller",
+            correctWord: "taller",
+            options: ["taller", "more tall", "tallest"],
+            errorType: "double comparative",
+            explanation: "We never use 'more' and '-er' together. For short adjectives, just use '-er': 'TALLER'.",
+            hint: "Short adjectives use '-er' for comparison. Never use 'more' AND '-er' at the same time."
+        }
+    ],
+    hard: [
+        {
+            sentence: "If I was rich, I would travel everywhere.",
+            errorWord: "was",
+            correctWord: "were",
+            options: ["were", "am", "had been"],
+            errorType: "subjunctive mood",
+            explanation: "In hypothetical 'If' clauses (things that aren't true), we use 'WERE' for all persons, not 'was'.",
+            hint: "In conditional sentences that are imaginary, the verb 'to be' always becomes 'were'."
+        },
+        {
+            sentence: "Neither the students nor the teacher were ready.",
+            errorWord: "were",
+            correctWord: "was",
+            options: ["was", "were", "is"],
+            errorType: "subject-verb agreement",
+            explanation: "With 'neither...nor', the verb agrees with the closest subject ('the teacher' = singular → 'WAS').",
+            hint: "When using 'neither...nor', look at the subject closest to the verb to decide singular or plural."
+        },
+        {
+            sentence: "She suggested that he goes to the doctor.",
+            errorWord: "goes",
+            correctWord: "go",
+            options: ["go", "goes", "went"],
+            errorType: "subjunctive mood",
+            explanation: "After 'suggest', 'recommend', 'insist', etc., the verb in the 'that' clause uses the base form: 'GO'.",
+            hint: "After verbs like 'suggest', 'recommend', 'insist', use the base form of the verb in the next clause."
+        }
+    ]
+};
 
 const totalRounds = 5;
 
-// Inicializar el juego
 document.addEventListener('DOMContentLoaded', () => {
     setupEventListeners();
     startNewRound();
 });
 
-// Configurar event listeners
 function setupEventListeners() {
-    document.getElementById('check-button').addEventListener('click', checkSentence);
-    document.getElementById('reset-button').addEventListener('click', resetSentence);
+    document.getElementById('check-button').addEventListener('click', checkAnswer);
+    document.getElementById('reset-button').addEventListener('click', resetRound);
     document.getElementById('hint-button').addEventListener('click', showHint);
-
-    // Prevenir comportamiento por defecto para permitir drag and drop
-    document.addEventListener('dragover', (e) => {
-        e.preventDefault();
-    });
-
-    document.addEventListener('drop', (e) => {
-        e.preventDefault();
-    });
 }
 
-// Iniciar una nueva ronda
 function startNewRound() {
-    const randomSentence = sentences[Math.floor(Math.random() * sentences.length)];
-    currentSentence = randomSentence;
-
-    // Mezclar las palabras
-    words = [...randomSentence.words].sort(() => Math.random() - 0.5);
-    droppedWords = [];
+    const difficultyPool = selectDifficultyPool();
+    const randomIndex = Math.floor(Math.random() * difficultyPool.length);
+    currentExercise = difficultyPool[randomIndex];
+    selectedOption = null;
     wrongAttempts = 0;
     hintUsed = false;
-    hintLevel = 0;
-
-    // Actualizar la interfaz
     updateUI();
     updateDifficulty();
 }
 
-// Actualizar la interfaz de usuario
+function selectDifficultyPool() {
+    if (wrongAttempts >= 3) { difficulty = 'easy'; return exercises.easy; }
+    if (score >= 80 && currentRound > 2) { difficulty = 'hard'; return exercises.hard; }
+    difficulty = 'normal';
+    return exercises.normal;
+}
+
 function updateUI() {
-    // Actualizar progreso
     document.getElementById('current-round').textContent = currentRound + 1;
     document.getElementById('total-rounds').textContent = totalRounds;
-    document.getElementById('score').textContent = score + ' puntos';
-    document.getElementById('score-display').textContent = score + ' puntos';
+    document.getElementById('score').textContent = score + ' points';
+    document.getElementById('score-display').textContent = score + ' points';
 
-    // Actualizar barra de progreso
     const progress = ((currentRound + 1) / totalRounds) * 100;
     document.getElementById('progress-fill').style.width = progress + '%';
 
-    // Actualizar imagen
-    document.getElementById('sentence-image').src = currentSentence.image;
+    const sentenceText = document.getElementById('sentence-text');
+    const parts = currentExercise.sentence.split(currentExercise.errorWord);
+    sentenceText.innerHTML = parts[0] +
+        `<span class="error-word">${currentExercise.errorWord}</span>` +
+        (parts[1] || '');
 
-    // Actualizar banco de palabras
-    const wordsBank = document.getElementById('words-bank');
-    wordsBank.innerHTML = '';
+    const badges = {
+        'verb agreement':      '🔤 Error: Verb Agreement',
+        'irregular plural':    '📊 Error: Irregular Plural',
+        'irregular past tense':'⏰ Error: Irregular Past Tense',
+        'double comparative':  '📝 Error: Double Comparative',
+        'subjunctive mood':    '📚 Error: Subjunctive Mood',
+        'subject-verb agreement': '🔤 Error: Subject-Verb Agreement'
+    };
+    document.getElementById('word-type-badge').textContent = badges[currentExercise.errorType] || 'Grammar Error';
 
-    words.forEach((word, index) => {
-        const wordElement = createWordElement(word, index);
-        wordsBank.appendChild(wordElement);
+    const container = document.getElementById('options-container');
+    container.innerHTML = '';
+    currentExercise.options.forEach(option => {
+        const button = document.createElement('button');
+        button.className = 'option-button';
+        button.textContent = option;
+        button.addEventListener('click', () => selectOption(option, button));
+        container.appendChild(button);
     });
 
-    // Crear slots para las palabras
-    const dropZone = document.getElementById('sentence-drop-zone');
-    dropZone.innerHTML = '';
-
-    for (let i = 0; i < currentSentence.words.length; i++) {
-        const slot = document.createElement('div');
-        slot.className = 'word-slot';
-        slot.id = `slot-${i}`;
-        slot.dataset.slotIndex = i;
-        slot.addEventListener('dragover', handleDragOver);
-        slot.addEventListener('drop', (e) => handleDrop(e, i));
-        dropZone.appendChild(slot);
-    }
-
-    // Ocultar feedback
     document.getElementById('feedback').classList.add('hidden');
-    document.getElementById('order-hint').classList.add('hidden');
+    document.getElementById('explanation').classList.add('hidden');
+    document.getElementById('error-hint').classList.add('hidden');
 }
 
-// Crear elemento de palabra
-function createWordElement(word, index) {
-    const wordElement = document.createElement('div');
-    wordElement.className = `word-item word-${word.color}`;
-    wordElement.textContent = word.text;
-    wordElement.draggable = true;
-    wordElement.dataset.index = index;
-
-    // Event listeners para drag and drop
-    wordElement.addEventListener('dragstart', (e) => {
-        draggedElement = e.target;
-        e.target.style.opacity = '0.6';
-    });
-
-    wordElement.addEventListener('dragend', (e) => {
-        e.target.style.opacity = '1';
-    });
-
-    return wordElement;
+function selectOption(option, button) {
+    document.querySelectorAll('.option-button').forEach(btn => btn.classList.remove('selected'));
+    button.classList.add('selected');
+    selectedOption = option;
 }
 
-// Manejar dragover
-function handleDragOver(e) {
-    e.preventDefault();
-    e.currentTarget.style.backgroundColor = 'rgba(0, 102, 204, 0.1)';
-}
-
-// Manejar drop
-function handleDrop(e, slotIndex) {
-    e.preventDefault();
-    e.currentTarget.style.backgroundColor = '';
-
-    if (!draggedElement) return;
-
-    const index = parseInt(draggedElement.dataset.index);
-    const word = words[index];
-    const slot = document.getElementById(`slot-${slotIndex}`);
-
-    // Si el slot ya tiene una palabra, devolverla al banco
-    if (slot.innerHTML) {
-        const existingWord = slot.querySelector('.word-item');
-        if (existingWord) {
-            existingWord.style.display = '';
-            document.getElementById('words-bank').appendChild(existingWord);
-        }
-    }
-
-    // Crear nueva palabra en el slot
-    const newWordElement = document.createElement('div');
-    newWordElement.className = `word-item word-${word.color}`;
-    newWordElement.textContent = word.text;
-    newWordElement.style.cursor = 'pointer';
-
-    // Permitir eliminar la palabra del slot
-    newWordElement.addEventListener('click', () => {
-        newWordElement.remove();
-        draggedElement.style.display = '';
-        const idx = droppedWords.findIndex(w => w.slotIndex === slotIndex);
-        if (idx !== -1) droppedWords.splice(idx, 1);
-        slot.classList.remove('filled');
-    });
-
-    slot.innerHTML = '';
-    slot.appendChild(newWordElement);
-    slot.classList.add('filled');
-
-    draggedElement.style.display = 'none';
-
-    // Actualizar lista de palabras arrastradas
-    droppedWords = droppedWords.filter(w => w.slotIndex !== slotIndex);
-    droppedWords.push({ index, word, slotIndex });
-}
-
-// Reiniciar oración
-function resetSentence() {
-    // Devolver todas las palabras al banco
-    droppedWords.forEach(item => {
-        const slot = document.getElementById(`slot-${item.slotIndex}`);
-        slot.innerHTML = '';
-        slot.classList.remove('filled');
-    });
-
-    // Mostrar todas las palabras
-    const wordItems = document.querySelectorAll('.word-item');
-    wordItems.forEach(item => item.style.display = '');
-
-    // Limpiar lista de palabras arrastradas
-    droppedWords = [];
-    document.getElementById('feedback').classList.add('hidden');
-    document.getElementById('order-hint').classList.add('hidden');
-}
-
-// Mostrar pista progresiva
 function showHint() {
-    if (hintLevel >= 2) {
-        showFeedback("Ya usaste todas las pistas disponibles", false);
-        return;
-    }
-
-    hintLevel++;
+    if (hintUsed) { showFeedback("You already used the hint", false); return; }
     hintUsed = true;
-    const hintDiv = document.getElementById('order-hint');
-    hintDiv.innerHTML = '';
-
-    if (hintLevel === 1) {
-        // Pista 1: Mostrar la estructura de colores
-        hintDiv.classList.remove('hidden');
-        hintDiv.className = 'order-hint visible';
-        
-        currentSentence.words.forEach((word, idx) => {
-            const hint = document.createElement('div');
-            hint.className = `hint-item hint-color word-${word.color}`;
-            hint.innerHTML = `<span class="hint-position">${idx + 1}</span><span class="hint-word hidden-hint">${word.text}</span>`;
-            hintDiv.appendChild(hint);
-        });
-        
-        showFeedback("💡 Pista 1: Los colores indican el orden. Mira qué color va primero, segundo, tercero.", true);
-    } else if (hintLevel === 2) {
-        // Pista 2: Mostrar la primera palabra
-        hintDiv.classList.remove('hidden');
-        hintDiv.className = 'order-hint visible';
-        
-        currentSentence.words.forEach((word, idx) => {
-            const hint = document.createElement('div');
-            hint.className = `hint-item word-${word.color}`;
-            
-            if (idx === 0) {
-                hint.innerHTML = `<span class="hint-word">${word.text}</span> <span class="hint-label">1ª palabra</span>`;
-            } else {
-                hint.innerHTML = `<span class="hint-position">${idx + 1}</span>`;
-            }
-            hintDiv.appendChild(hint);
-        });
-        
-        showFeedback("💡 Pista 2: La primera palabra es: <strong>" + currentSentence.words[0].text + "</strong>", true);
-    }
+    document.getElementById('hint-text').textContent = currentExercise.hint;
+    document.getElementById('error-hint').classList.remove('hidden');
+    showFeedback("💡 Hint shown", true);
 }
 
-// Verificar oración
-function checkSentence() {
-    if (droppedWords.length !== currentSentence.words.length) {
-        showFeedback("Debes usar todas las palabras (" + currentSentence.words.length + ")", false);
-        wrongAttempts++;
-        updateDifficulty();
-        return;
-    }
+function checkAnswer() {
+    if (!selectedOption) { showFeedback("You must select an option", false); return; }
 
-    // Ordenar palabras por slot
-    droppedWords.sort((a, b) => a.slotIndex - b.slotIndex);
-
-    // Verificar orden correcto
-    let isCorrect = true;
-    let errorDetails = [];
-
-    for (let i = 0; i < droppedWords.length; i++) {
-        if (droppedWords[i].word.text !== currentSentence.words[i].text) {
-            isCorrect = false;
-            errorDetails.push(`Posición ${i + 1}: encontré "${droppedWords[i].word.text}", esperaba "${currentSentence.words[i].text}"`);
-        }
-    }
+    const isCorrect = selectedOption === currentExercise.correctWord;
 
     if (isCorrect) {
-        let points = 20;
-        if (hintLevel === 1) points = 15;
-        if (hintLevel === 2) points = 10;
-        
+        let points = hintUsed ? 15 : 20;
         score += points;
-        showFeedback(`¡Oración correcta! +${points} puntos 🎉`, true);
+        const key = currentExercise.errorType;
+        errorFrequency[key] = (errorFrequency[key] || 0) + 1;
 
-        // Colorear la imagen para indicar éxito
-        const imageDisplay = document.getElementById('image-display');
-        imageDisplay.classList.add('success');
+        showFeedback(`Correct! +${points} points 🎉`, true);
 
-        // Deshabilitar botones
+        document.querySelectorAll('.option-button').forEach(btn => {
+            if (btn.textContent === selectedOption) btn.classList.add('correct');
+        });
+
+        setTimeout(() => showExplanation(), 500);
+
         document.getElementById('check-button').disabled = true;
         document.getElementById('reset-button').disabled = true;
         document.getElementById('hint-button').disabled = true;
 
-        // Avanzar a la siguiente ronda o finalizar el juego
         setTimeout(() => {
             if (currentRound + 1 >= totalRounds) {
                 completeGame();
             } else {
                 currentRound++;
                 startNewRound();
-
-                // Rehabilitar botones
                 document.getElementById('check-button').disabled = false;
                 document.getElementById('reset-button').disabled = false;
                 document.getElementById('hint-button').disabled = false;
-
-                // Quitar clase de éxito
-                imageDisplay.classList.remove('success');
             }
-        }, 2000);
+        }, 3000);
     } else {
         wrongAttempts++;
+        showFeedback("Incorrect. Try again", false);
+        document.querySelectorAll('.option-button').forEach(btn => {
+            if (btn.textContent === selectedOption) btn.classList.add('incorrect');
+        });
         updateDifficulty();
-        let message = "La oración no es correcta.\n" + errorDetails.join("\n");
-        showFeedback(message, false);
     }
 
-    // Actualizar puntaje
-    document.getElementById('score').textContent = score + ' puntos';
-    document.getElementById('score-display').textContent = score + ' puntos';
+    document.getElementById('score').textContent = score + ' points';
+    document.getElementById('score-display').textContent = score + ' points';
 }
 
-// Mostrar feedback
+function showExplanation() {
+    document.getElementById('explanation-text').textContent = currentExercise.explanation;
+    document.getElementById('explanation').classList.remove('hidden');
+}
+
+function resetRound() {
+    selectedOption = null;
+    document.querySelectorAll('.option-button').forEach(btn => {
+        btn.classList.remove('selected', 'incorrect', 'correct');
+    });
+    document.getElementById('feedback').classList.add('hidden');
+    document.getElementById('explanation').classList.add('hidden');
+    document.getElementById('error-hint').classList.add('hidden');
+    wrongAttempts = 0;
+    hintUsed = false;
+}
+
 function showFeedback(message, isCorrect) {
     const feedbackElement = document.getElementById('feedback');
-
-    if (message.includes('\n')) {
-        feedbackElement.innerHTML = `<div>${message.split('\n')[0]}</div><div class="error-details">${message.split('\n').slice(1).join('<br>')}</div>`;
-    } else {
-        feedbackElement.innerHTML = message;
-    }
-
+    feedbackElement.textContent = message;
     feedbackElement.className = isCorrect ? 'feedback correct' : 'feedback incorrect';
     feedbackElement.classList.remove('hidden');
 }
 
-// Actualizar dificultad según intentos fallidos
 function updateDifficulty() {
-    if (wrongAttempts === 0) {
-        difficulty = 'normal';
-    } else if (wrongAttempts >= 2) {
-        difficulty = 'easy';
-    }
-
+    let newDifficulty = wrongAttempts >= 3 ? 'easy' : (score >= 80 && currentRound > 2 ? 'hard' : 'normal');
     const badge = document.getElementById('difficulty-badge');
-    badge.textContent = difficulty === 'easy' ? '🎯 Fácil' : difficulty === 'hard' ? '⭐ Avanzado' : 'Normal';
+    badge.textContent = { easy: '🎯 Easy', normal: 'Normal', hard: '⭐ Advanced' }[newDifficulty];
 }
 
-// Completar el juego
 function completeGame() {
-    // Mostrar mensaje de finalización
-    const sentenceCard = document.querySelector('.sentence-card');
-    sentenceCard.innerHTML = `
-        <h2>¡Juego Completado! 🏆</h2>
-        <div class="image-display">
-            <img src="dino-feliz.jpeg" alt="Juego completado">
+    const errorSummary = Object.entries(errorFrequency)
+        .sort((a, b) => b[1] - a[1]).slice(0, 2)
+        .map(([type, count]) => `${type} (${count})`).join(', ');
+
+    document.querySelector('.error-card').innerHTML = `
+        <h2>Game Complete! 🏆</h2>
+        <div class="feedback correct" style="margin-top:20px;">
+            <p><strong>Your final score:</strong> ${score} points</p>
         </div>
-        <div class="feedback correct">
-            <p><strong>Tu puntaje final:</strong> ${score} puntos</p>
+        <div class="explanation" style="margin-top:20px;">
+            <h3>Error Types Practiced</h3>
+            <p>You mainly worked on: ${errorSummary || 'Various grammar errors'}</p>
+            <p style="margin-top:10px;font-size:14px;">Keep practicing these structures to improve your grammar.</p>
         </div>
-        <div class="action-controls">
+        <div class="action-controls" style="margin-top:30px;">
             <button class="action-button primary" onclick="location.reload()">
-                <i class="fas fa-redo"></i> Jugar de Nuevo
+                <i class="fas fa-redo"></i> Play Again
             </button>
             <button class="action-button blue" onclick="goToMainPage()">
-                <i class="fas fa-home"></i> Volver al Menú
+                <i class="fas fa-home"></i> Back to Menu
             </button>
-        </div>
-    `;
+        </div>`;
 }
 
-// Función para volver a la página principal
 function goToMainPage() {
-    window.location.href = 'https://plekdev.github.io/BlueMinds/selectores/selector-lecto-escritor.html';
+    window.location.href = '../../../';
 }

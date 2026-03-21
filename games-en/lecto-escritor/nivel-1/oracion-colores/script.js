@@ -286,5 +286,5 @@ function completeGame() {
 }
 
 function goToMainPage() {
-    window.location.href = '../../../';
+     window.location.href = 'https://plekdev.github.io/BlueMinds/selectores/selector-lecto-escritor.html';
 }

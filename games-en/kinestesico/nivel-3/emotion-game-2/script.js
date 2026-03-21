@@ -100,4 +100,4 @@ function handleAnswer(selectedName) {
     }, 2000);
 }
 
-function goToMainPage() { if (cameraActive) stopCamera(); window.location.href = '../../../../'; }
+function goToMainPage() { if (cameraActive) stopCamera(); window.location.href = '../../../../selectores/selector-kinestesico.html'; }

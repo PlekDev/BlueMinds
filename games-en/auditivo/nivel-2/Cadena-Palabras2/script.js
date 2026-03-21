@@ -430,7 +430,7 @@ function completeGame() {
 }
 
 function goToMainPage() {
-    window.location.href = '../../../../';
+    window.location.href = '../../../../selectores/selector-auditivo.html';
 }
 
 document.getElementById('play-button').addEventListener('click', playSequence);

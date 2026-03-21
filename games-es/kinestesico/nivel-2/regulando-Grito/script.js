@@ -325,5 +325,5 @@ function continueToNextRound() {
 // ================== NAVEGACIÓN ==================
 function goToMainPage() {
     if (cameraActive) stopCamera();
-    window.location.href = 'https://plekdev.github.io/BlueMinds/selectores/selector-kinestesico.html';
+    window.location.href = '../../../../selectores/selector-kinestesico.html';
 }

@@ -293,5 +293,5 @@ function showSpeechFeedback(message, isCorrect) {
 
 // ================== NAVEGACIÓN ==================
 function goToMainPage() {
-    window.location.href = 'https://plekdev.github.io/BlueMinds/selectores/selector-kinestesico.html';
+    window.location.href = '../../../../selectores/selector-kinestesico.html';
 }

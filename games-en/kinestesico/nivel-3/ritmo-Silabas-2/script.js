@@ -164,4 +164,4 @@ async function startSpeechRecognition() {
     setTimeout(() => { if (listenButton.disabled) recognition.stop(); }, 5000);
 }
 
-function goToMainPage() { window.location.href = '../../../../'; }
+function goToMainPage() {window.location.href = '../../../../selectores/selector-kinestesico.html'; }

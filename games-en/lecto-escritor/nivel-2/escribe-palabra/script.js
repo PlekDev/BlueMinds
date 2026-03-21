@@ -232,4 +232,4 @@ function completeGame() {
         </div>`;
 }
 
-function goToMainPage() { window.location.href = '../../../../'; }
+function goToMainPage() {  window.location.href = 'https://plekdev.github.io/BlueMinds/selectores/selector-lecto-escritor.html'; }

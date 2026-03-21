@@ -188,5 +188,5 @@ function handleAnswer(selectedName) {
 
 // ================== NAVIGATION ==================
 function goToMainPage() {
-    window.location.href = '../../../';
+    window.location.href = '../../../../selectores/selector-kinestesico.html';
 }
